@@ -6,7 +6,7 @@ const PrivateLayout = () => {
     const auth = useAuth()
 
     if(!auth){
-        <Navigate to="/login" />
+        return <Navigate to="/login" />
     }
 
     return (
