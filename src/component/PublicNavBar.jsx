@@ -1,11 +1,10 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
+
+import { profile } from '../assets/Navigation/index.js'
 
 const PublicNavBar = () => {
   return (
-    <nav className="bg-black text-white">
-        <NavLink to="/login">Login</NavLink>
-        <NavLink to="/signup">Signup</NavLink>
-    </nav>
+
   )
 }
 
