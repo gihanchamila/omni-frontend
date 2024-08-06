@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 import plugin from "tailwindcss/plugin";
+import {fontFamily} from "tailwindcss/defaultTheme";
 
 export default {
   content: [
@@ -15,27 +16,35 @@ export default {
           p : "var(--color-primary)",
           s : "var(--color-secondary)",
           a : "var(--color-accent)",
-          l : "var(--color-light)"
+          l : "var(--color-light)",
+          b : "var(--color-blue)"
         }
+      },
+      fontFamily : {
+        sans:["var(--font-InterTight)", ...fontFamily.sans]
       }
     },
   },
   plugins: [plugin(function({ addUtilities, addComponents, addBase}) {
     addBase({});
     addComponents({
-
       ".container": {
           "@apply  max-w-[77.5rem] mx-auto px-5 md:px-10 xl:max-w-[87.5rem]":
           {},
       },
 
       ".input-box": {
-        "@apply w-full rounded-md border-2 border-p-8 bg-white py-3 px-6 text-base font-medium text-p-8 outline-none focus:border-s-10  focus:border-2":
+        "@apply w-full rounded-md border-2 border-color-s bg-white py-2 px-6 text-sm   outline-none":
+        {},
+      },
+
+      ".label": {
+        "@apply text-base font-medium text-color-s font-semibold tracking-normal body-1":
         {},
       },
 
       ".h1": {
-        "@apply font-semibold  text-p-10 text-[2.5rem] leading-[3.25rem] md:text-[2.75rem] md:leading-[3.75rem] lg:text-[3.25rem] lg:leading-[4.0625rem] xl:text-[3.75rem] xl:leading-[4.5rem]":
+        "@apply font-semibold text-[2.5rem] leading-[3.25rem] md:text-[2.75rem] md:leading-[3.75rem] lg:text-[3.25rem] lg:leading-[4.0625rem] xl:text-[3.75rem] xl:leading-[4.5rem]":
           {},
       },
       ".h2": {
