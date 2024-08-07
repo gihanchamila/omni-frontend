@@ -15,7 +15,7 @@
       --font-DMSans:"DM Sans", sans-serif;
       --font-Lexend:"Lexend Deca", DM Sans, sans-serif;
       --font-InterTight: "Inter Tight", sans-serif;
-      --color-primary: #050C9C;
+      --color-primary: #5863F8;
       --color-secondary: #393E46;
       --color-accent: #D65A31;
       --color-light: #EEEEEE;
@@ -34,18 +34,52 @@
 
     .button {
 
-      @apply font-medium rounded-lg text-sm px-5 py-2.5 me-2  focus:outline-none tracking-wider
+      @apply font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none tracking-wider 
 
     }
 
     .navlink {
 
-      @apply text-sm font-normal tracking-wider text-color-s leading-6
+      @apply font-normal tracking-wider text-slate-800 hover:text-sky-500 leading-6 py-4 text-sm
 
     }
 
     .grid-background{
       @apply absolute bg-slate-100 w-full;
+    }
+
+    {/* Toast */}
+
+    .toast {
+      @apply relative w-[22rem] h-[4rem] rounded-xl inline-flex items-center p-5 border font-bold
+    }
+
+    .error {
+      @apply bg-red-50  border-red-200 text-red-500 
+    }
+
+    .success {
+      @apply  bg-green-50  border-green-200 text-green-500 
+    }
+
+    .warning {
+      @apply  bg-yellow-50  border-yellow-200 text-yellow-500 
+    }
+
+    .info {
+      @apply  bg-blue-50 border-blue-200 text-blue-500 
+    }
+
+    .toastTitle {
+      @apply pl-2
+    }
+
+    .iconSize {
+      @apply w-5 h-5
+    }
+
+    .closeButton {
+      @apply absolute left-[20rem] top-4 w-10 h-10 hover:font-bold  hover:bg-none 
     }
   }
   
