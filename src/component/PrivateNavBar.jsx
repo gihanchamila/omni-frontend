@@ -1,20 +1,19 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { omni } from "../assets/Navigation/index.js";
+import { omni, profile } from "../assets/Navigation/index.js";
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
-import { HiBars3, HiOutlineXMark } from "react-icons/hi2";
 
 const PrivateNavBar = () => {
-  const [openNavigation, setOpenNavigation] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
 
-  const toggleNavigation = () => {
-    setOpenNavigation(prev => !prev);
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
   };
 
-  // Close navigation when the route changes
+  // Close dropdown when the route changes
   useEffect(() => {
-    setOpenNavigation(false);
+    setDropdownOpen(false);
   }, [location]);
 
   return (
@@ -25,28 +24,28 @@ const PrivateNavBar = () => {
           <img className="w-20 h-20" src={omni} alt="Logo" />
         </div>
         
-        {/* Toggle Button */}
-        <button
-          onClick={toggleNavigation}
-          className="lg:hidden absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center p-2 text-gray-500 z-50"
-        >
-          {openNavigation ? <HiOutlineXMark /> : <HiBars3 />}
-        </button>
-        
         {/* Navigation Links */}
-        <div
-          className={`lg:flex lg:items-center lg:space-x-4 lg:static lg:bg-transparent lg:backdrop-blur-none fixed inset-0 ${openNavigation ? "flex flex-col items-center justify-center backdrop-blur-sm bg-white/60 z-40" : "hidden lg:flex"}`}
-        >
+        <div className="flex items-center space-x-4">
           <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/categories">Categories</NavLink>
           <NavLink className="navlink" to="/posts">Posts</NavLink>
-          <NavLink className="navlink" to="/profile">Profile</NavLink>
-          <NavLink className="navlink" to="/setting">Setting</NavLink>
-          <Button to="/login">Logout</Button>
+          <div className="relative">
+            <button onClick={toggleDropdown} className="flex items-center">
+              <img src={profile} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
+                <NavLink className="dropdown" to="/profile">Profile</NavLink>
+                <NavLink className="dropdown" to="/settings">Settings</NavLink>
+                <div className="my-2 border-t border-color-s"></div>
+                <NavLink className="dropdown" to="/login">Logout</NavLink>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
     </div>
-  );
+  )
 };
 
 export default PrivateNavBar;
