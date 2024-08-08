@@ -1,15 +1,26 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { omni, profile } from "../assets/Navigation/index.js";
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
+import { useAuth } from "./context/useAuth.jsx";
+import { toast } from "sonner";
 
 const PrivateNavBar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate()
 
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
   };
+
+  //logout
+
+  const handleLogOut = () => {
+    window.localStorage.removeItem('blogData');
+    toast.success("Logout successfull")
+    navigate('/login')
+  }
 
   // Close dropdown when the route changes
   useEffect(() => {
@@ -37,8 +48,8 @@ const PrivateNavBar = () => {
               <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
                 <NavLink className="dropdown" to="/profile">Profile</NavLink>
                 <NavLink className="dropdown" to="/settings">Settings</NavLink>
-                <div className="my-2 border-t border-color-s"></div>
-                <NavLink className="dropdown" to="/login">Logout</NavLink>
+                <div className="my-2 border-t border-color-s opacity-20 "></div>
+                <NavLink className="dropdown" to="/login" onClick={handleLogOut}>Logout</NavLink>
               </div>
             )}
           </div>

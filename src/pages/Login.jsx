@@ -14,7 +14,6 @@ const Login = () => {
 
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
-  const [openNavigation, setOpenNavigation] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -40,7 +39,13 @@ const Login = () => {
 
         {/* api request */}
 
-        const response = await axios.post('/auth/signin', formData)
+        const requestbody = {
+          name : formData.name,
+          email : formData.email,
+          password : formData.password
+        }
+
+        const response = await axios.post('/auth/signin', requestbody)
         const data = response.data
 
         window.localStorage.setItem("blogData", JSON.stringify(data.data))
@@ -125,9 +130,9 @@ const Login = () => {
           </div>
 
         </div>
-        <Button className="w-full bg-color-p" disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
+        <Button primary={true} className={`w-full`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
         <div>
-          <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline' to="/signup">Sign up</Link></span>
+          <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link></span>
         </div>
       </form>
     </div>

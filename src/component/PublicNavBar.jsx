@@ -28,9 +28,9 @@ const PublicNavBar = () => {
         {/* Toggle Button */}
         <button
           onClick={toggleNavigation}
-          className="lg:hidden absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center p-2 text-gray-500 z-50"
+          className="lg:hidden absolute  top-1/2 right-4 transform -translate-y-1/2 flex items-center p-2 text-gray-500 z-50"
         >
-          {openNavigation ? <HiOutlineXMark /> : <HiBars3 />}
+          {openNavigation ? <HiOutlineXMark className="w-50 h-50" /> : <HiBars3 className="w-50 h-50" />}
         </button>
         
         {/* Navigation Links */}

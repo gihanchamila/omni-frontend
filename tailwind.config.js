@@ -2,6 +2,7 @@
 
 import plugin from "tailwindcss/plugin";
 import {fontFamily} from "tailwindcss/defaultTheme";
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 export default {
   content: [
@@ -10,6 +11,22 @@ export default {
     'node_modules/flowbite-react/lib/esm/**/*.js'
   ],
   theme: {
+    screens: {
+      'sm': '412px',
+      // => @media (min-width: 640px) { ... }
+
+      'md': '768px',
+      // => @media (min-width: 768px) { ... }
+
+      'lg': '1024px',
+      // => @media (min-width: 1024px) { ... }
+
+      'xl': '1280px',
+      // => @media (min-width: 1280px) { ... }
+
+      '2xl': '1536px',
+      // => @media (min-width: 1536px) { ... }
+    },
     extend: {
       colors : {
         color : {
@@ -17,12 +34,13 @@ export default {
           s : "var(--color-secondary)",
           a : "var(--color-accent)",
           l : "var(--color-light)",
-          b : "var(--color-blue)"
+          b : "var(--color-blue)",
+          m : "var(--color-main)",
         }
       },
       fontFamily : {
         sans:["var(--font-InterTight)", ...fontFamily.sans]
-      }
+      },
     },
   },
   plugins: [plugin(function({ addUtilities, addComponents, addBase}) {
