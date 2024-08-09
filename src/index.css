@@ -47,44 +47,63 @@
     .dropdown {
 
       @apply block px-4 py-2 text-color-s text-sm hover:text-sky-500
+      
     }
 
     .grid-background{
+
       @apply absolute bg-slate-100 w-full;
+
     }
 
     {/* Toast */}
 
     .toast {
+
       @apply relative w-[22rem] h-[4rem] rounded-xl inline-flex items-center p-5 border font-bold
+
     }
 
     .error {
+
       @apply bg-red-50  border-red-200 text-red-500 
+
     }
 
     .success {
+
       @apply  bg-green-50  border-green-200 text-green-500 
+
     }
 
     .warning {
+
       @apply  bg-yellow-50  border-yellow-200 text-yellow-500 
+
     }
 
     .info {
+
       @apply  bg-blue-50 border-blue-200 text-blue-500 
+
     }
 
     .toastTitle {
+
       @apply pl-2
+
     }
 
     .iconSize {
+
       @apply w-5 h-5
+
     }
 
     .closeButton {
+
       @apply absolute left-[20rem] top-4 w-10 h-10 hover:font-bold  hover:bg-none 
+
     }
 
     {/*Form*/}
@@ -92,6 +111,14 @@
     .validateError {
 
       @apply text-[0.75rem] text-red-500
+
+    }
+
+    {/*Page pagination*/}
+
+    .pageButton {
+
+      @apply flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700
 
     }
   }
