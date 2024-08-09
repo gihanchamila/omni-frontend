@@ -34,7 +34,7 @@ function App() {
   
   return (
     <>
-      <div className="relative">
+      <div className="relative container">
         <Routes>
           <Route element={<PrivateLayout />}>
             <Route path="/" element={<Home />} />

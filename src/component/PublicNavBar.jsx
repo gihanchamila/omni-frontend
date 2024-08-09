@@ -18,7 +18,7 @@ const PublicNavBar = () => {
   }, [location]);
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="">
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
