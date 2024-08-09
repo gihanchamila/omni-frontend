@@ -79,7 +79,7 @@ const CategoryList = () => {
             </form>
           </div>
           <div>
-           <Button primary={true} className="justify-self-end">Add new category</Button>
+           <Button primary={true} className="justify-self-end" onClick={() => {navigate("new-category")}}>Add new category</Button>
           </div>
       </div>
       {loading ? "Loading" : (
