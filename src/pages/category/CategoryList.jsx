@@ -1,5 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import axios from '../../utils/axiosInstance.js'
 
@@ -14,6 +16,30 @@ const CategoryList = () => {
   const [searchValue, setSearchValue] = useState("")
   const [categoryId, setCategoryId] = useState(null)
 
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const getCategories = async () => {
+
+      try{
+        setLoading(true)
+        const response = await axios.get('/category')
+        const data = response.data.data
+
+        setCategories(data.categories)
+        setTotalPage(data.pages)
+        setLoading(false)
+
+      }catch(error){
+        setLoading(false)
+        const response = error.response;
+        const data = response.data;
+        toast.error(data.message)
+      }
+    }
+
+    getCategories()
+  }, [currentPage])
 
   return (
 
