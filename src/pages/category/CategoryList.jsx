@@ -252,22 +252,7 @@ const CategoryList = () => {
               <span className="sr-only">Close modal</span>
             </button>
             <div className="p-4 md:p-5 text-center">
-              <svg
-                className="mx-auto mb-4 text-gray-400 w-12 h-12"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-              <h3 className="mb-5 text-lg font-normal text-gray-500">
+              <h3 className="mb-5 mt-10 font-normal text-gray-500 text-md">
                 Are you sure you want to delete this product?
               </h3>
               <button
