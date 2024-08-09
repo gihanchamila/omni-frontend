@@ -8,6 +8,8 @@ import moment from 'moment';
 const CategoryList = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState(null)
+  const [showModal, setShowModal] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
@@ -78,6 +80,35 @@ const CategoryList = () => {
       toast.error(data.message);
     }
   };
+
+  const handleDelete = async () => {
+    try{
+
+      const response = await axios.delete(`/category/${categoryId}`)
+      const data = response.data
+      toast.success(data.message)
+
+      const response2 = await axios.get(`/category?page=${currentPage}&q=${searchValue}`)
+      const data2 = response2.data.data
+      setCategories(data2.categories)
+      setTotalPage(data2.pages)
+      setShowModal(false)
+
+    }catch(error){
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
+  }
+
+  const openModal = (id) => {
+    setCategoryId(id)
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+  }
 
   const handleSort = (field) => {
     setSortField(field);
@@ -162,8 +193,8 @@ const CategoryList = () => {
                   <td className="border border-slate-300 px-2 lg:px-4 py-2">{moment(category.updatedAt).format("YYYY-MM-DD HH:mm:ss")}</td>
                   <td className="border border-slate-300 px-2 lg:px-4 py-2 text-center">
                     <div className="flex justify-center space-x-2">
-                      <Button variant='info' className="lg:px-2 lg:py-1 sm:text-xs sm:px-1 sm:py-1 rounded-md">Update</Button>
-                      <Button variant='error' className="lg:px-2 lg:py-1 sm:text-xs rounded-md sm:px-1 sm:py-1" >Delete</Button>
+                      <Button variant='info' className="lg:px-2 lg:py-1 sm:text-xs sm:px-1 sm:py-1 rounded-md" >Update</Button>
+                      <Button variant='error' className="lg:px-2 lg:py-1 sm:text-xs rounded-md sm:px-1 sm:py-1" data-modal-target="popup-modal" data-modal-toggle="popup-modal" onClick={() => {openModal(category._id)}} >Delete</Button>
                     </div>
                   </td>
                 </tr>
@@ -189,7 +220,81 @@ const CategoryList = () => {
           </ul>
         </nav>
       )}
+      {showModal && (
+        <div
+          id="popup-modal"
+          tabIndex="-1"
+          className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        >
+        <div className="relative p-4 w-full max-w-md max-h-full">
+          <div className="relative bg-white rounded-lg shadow">
+            <button
+              type="button"
+              className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+              data-modal-hide="popup-modal"
+              onClick={closeModal}
+            >
+              <svg
+                className="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span className="sr-only">Close modal</span>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+              <svg
+                className="mx-auto mb-4 text-gray-400 w-12 h-12"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <h3 className="mb-5 text-lg font-normal text-gray-500">
+                Are you sure you want to delete this product?
+              </h3>
+              <button
+                data-modal-hide="popup-modal"
+                type="button"
+                className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                onClick={handleDelete}
+              >
+                Yes, I'm sure
+              </button>
+              <button
+                data-modal-hide="popup-modal"
+                type="button"
+                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                onClick={closeModal}
+              >
+                No, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
+      
     </div>
+
+    
   );
 };
 
