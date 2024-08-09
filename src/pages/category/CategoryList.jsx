@@ -41,6 +41,17 @@ const CategoryList = () => {
     getCategories()
   }, [currentPage])
 
+  const handlePrev = () => {
+    setCurrentPage((prev) => prev - 1)
+  }
+  const handleNext = () => {
+    setCurrentPage((prev) => prev + 1)
+  }
+
+  const handlePage = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
+
   const handleSearch = async (e) => {
     try{
       const input = e.target.value;
@@ -101,6 +112,7 @@ const CategoryList = () => {
            <Button primary={true} className="justify-self-end" onClick={() => {navigate("new-category")}}>Add new category</Button>
           </div>
       </div>
+
       {loading ? "Loading" : (
             <table className="table-auto w-full mt-10 border-collapse  border border-slate-400">
             <thead className='text-left'>
@@ -133,33 +145,33 @@ const CategoryList = () => {
           )}
 
             <nav aria-label="Page navigation example">
-            <ul className="inline-flex -space-x-px text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="pageButton rounded-l-lg rounded-r-none"
-                >
-                  Previous
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="pageButton rounded-none"
-                >
-                  1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="pageButton"
-                >
-                  Next
-                </a>
-              </li>
-            </ul>
-          </nav>          
+              <ul className="inline-flex -space-x-px text-sm">
+                <li>
+                  <a
+                    href="#"
+                    className="pageButton rounded-l-lg rounded-r-none"
+                  >
+                    <button>previous</button>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="pageButton rounded-none"
+                  >
+                    <button>1</button>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="pageButton"
+                  >
+                    <button>Next</button>
+                  </a>
+                </li>
+              </ul>
+            </nav>         
     </div>
   )
 }
