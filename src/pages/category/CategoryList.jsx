@@ -23,7 +23,7 @@ const CategoryList = () => {
 
       try{
         setLoading(true)
-        const response = await axios.get('/category')
+        const response = await axios.get(`/category?page=${currentPage}&q=${searchValue}`)
         const data = response.data.data
 
         setCategories(data.categories)
@@ -40,6 +40,20 @@ const CategoryList = () => {
 
     getCategories()
   }, [currentPage])
+
+  useEffect(() => {
+    if(totalPage > 1){
+      let tempPageCount = []
+
+      for(let i=0; i <= totalPage; i++ ){
+        tempPageCount = [...tempPageCount, i]
+      }
+
+      setPageCount(tempPageCount)
+    }else{
+      setPageCount([])
+    }
+  })
 
   const handlePrev = () => {
     setCurrentPage((prev) => prev - 1)
@@ -148,26 +162,25 @@ const CategoryList = () => {
               <ul className="inline-flex -space-x-px text-sm">
                 <li>
                   <a
-                    href="#"
                     className="pageButton rounded-l-lg rounded-r-none"
                   >
-                    <button>previous</button>
+                    <button onClick={handlePrev} disabled={currentPage === 1}>previous</button>
                   </a>
                 </li>
+                {pageCount.map((pageNumber, index) => (
+                  <li key={index}>
+                    <a
+                      className="pageButton rounded-none"
+                    >
+                      <button onClick={() => handlePage(pageNumber)}>{pageNumber}</button>
+                    </a>
+                  </li>
+                ))}
                 <li>
                   <a
-                    href="#"
-                    className="pageButton rounded-none"
-                  >
-                    <button>1</button>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
                     className="pageButton"
                   >
-                    <button>Next</button>
+                    <button onClick={handleNext} disabled={currentPage === totalPage}>Next</button>
                   </a>
                 </li>
               </ul>
