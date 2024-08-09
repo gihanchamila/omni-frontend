@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import axios from '../../utils/axiosInstance.js'
 
 import Button from '../../component/button/Button.jsx'
+import moment from 'moment'
 
 const CategoryList = () => {
   const [loading, setLoading] = useState(false)
@@ -128,34 +129,33 @@ const CategoryList = () => {
       </div>
 
       {loading ? "Loading" : (
-            <table className="table-auto w-full mt-10 border-collapse  border border-slate-400">
-            <thead className='text-left'>
-              <tr className='mb-5'>
-                <th className='border border-slate-300 ...'>Title</th>
-                <th className='border border-slate-300 ...'>Description</th>
-                <th className='border border-slate-300 ...'>Created At</th>
-                <th className='border border-slate-300 ...'>Updated At</th>
-                <th className='border border-slate-300 ...'>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className='border border-slate-300 ...'>
-                <td className='border border-slate-300 ...'>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                <td className='border border-slate-300 ...'>Malcolm Lockyer</td>
-                <td className='border border-slate-300 ...'>1961</td>
-              </tr>
-              <tr>
-                <td className='border border-slate-300 ...'>Witchy Woman</td>
-                <td className='border border-slate-300 ...'>The Eagles</td>
-                <td className='border border-slate-300 ...'>1972</td>
-              </tr>
-              <tr>
-                <td className='border border-slate-300 ...'>Shining Star</td>
-                <td className='border border-slate-300 ...'>Earth, Wind, and Fire</td>
-                <td className='border border-slate-300 ...'>1975</td>
-              </tr>
-            </tbody>
-          </table>
+           <table className="table-auto overflow-x-auto w-full mt-10 border-collapse border border-slate-400 ">
+           <thead className="text-left bg-gray-100">
+             <tr className="mb-5">
+               <th className="border border-slate-300 px-4 py-2">Title</th>
+               <th className="border border-slate-300 px-4 py-2">Description</th>
+               <th className="border border-slate-300 px-4 py-2">Created At</th>
+               <th className="border border-slate-300 px-4 py-2">Updated At</th>
+               <th className="border border-slate-300 px-4 py-2 text-center">Action</th> {/* Centered "Action" header */}
+             </tr>
+           </thead>
+           <tbody>
+             {categories.map((category) => (
+               <tr key={category._id} className="border border-slate-300 odd:bg-white even:bg-gray-50">
+                 <td className="border border-slate-300 px-4 py-2">{category.title}</td>
+                 <td className="border border-slate-300 px-4 py-2">{category.description}</td>
+                 <td className="border border-slate-300 px-4 py-2">{moment(category.createdAt).format("YYYY-MM-DD HH:mm:ss")}</td>
+                 <td className="border border-slate-300 px-4 py-2">{moment(category.updatedAt).format("YYYY-MM-DD HH:mm:ss")}</td>
+                 <td className="border border-slate-300 px-4 py-2 text-center"> {/* Centered buttons */}
+                   <div className="flex justify-center space-x-2"> {/* Flexbox for alignment */}
+                     <Button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Update</Button>
+                     <Button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Delete</Button>
+                   </div>
+                 </td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
           )}
 
             <nav aria-label="Page navigation example">
@@ -170,9 +170,9 @@ const CategoryList = () => {
                 {pageCount.map((pageNumber, index) => (
                   <li key={index}>
                     <a
-                      className="pageButton rounded-none"
+                      className={ `pageButton rounded-none ${currentPage === pageNumber ? `bg-gray-100 active:bg-gray-200` : ""}`}
                     >
-                      <button onClick={() => handlePage(pageNumber)}>{pageNumber}</button>
+                      <button  onClick={() => handlePage(pageNumber)}>{pageNumber}</button>
                     </a>
                   </li>
                 ))}
