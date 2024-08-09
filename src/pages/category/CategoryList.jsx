@@ -41,6 +41,24 @@ const CategoryList = () => {
     getCategories()
   }, [currentPage])
 
+  const handleSearch = async (e) => {
+    try{
+      const input = e.target.value;
+      searchValue(input)
+
+      const response = await axios.get(`/categories?q=${input}&page=${currentPage}`)
+      const data = response.data.data;
+
+      setCategories(data.categories)
+      setTotalPage(data.pages)
+      
+    }catch(error){
+      const response = error.response
+      const data = response.data
+      toast.error(data.message)
+    }
+  }
+
   return (
 
     <div>
@@ -73,6 +91,7 @@ const CategoryList = () => {
                   id="default-search" 
                   className="block w-full ps-10 text-sm border-2 border-color-s opacity-50 hover:opacity-70 focus:opacity-75 rounded-lg outline-none px-5 py-2" 
                   placeholder="Search categories" 
+                  onChange={handleSearch}
                   required 
                 />
               </div>
