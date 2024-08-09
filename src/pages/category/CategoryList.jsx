@@ -7,6 +7,13 @@ import Button from '../../component/button/Button.jsx'
 
 const CategoryList = () => {
   const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [totalPage, setTotalPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageCount, setPageCount] = useState([])
+  const [searchValue, setSearchValue] = useState("")
+  const [categoryId, setCategoryId] = useState(null)
+
 
   return (
 
