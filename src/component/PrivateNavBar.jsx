@@ -32,7 +32,7 @@ const PrivateNavBar = () => {
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-          <img className="w-20 h-20" src={omni} alt="Logo" />
+          <span>Omni</span>
         </div>
         
         {/* Navigation Links */}

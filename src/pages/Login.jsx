@@ -130,7 +130,7 @@ const Login = () => {
           </div>
 
         </div>
-        <Button primary={true} className={`w-full`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
+        <Button variant="info" className={`w-full`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
         <div>
           <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link></span>
         </div>

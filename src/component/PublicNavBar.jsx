@@ -40,7 +40,7 @@ const PublicNavBar = () => {
           <NavLink className="navlink" to="/our-story">Our Story</NavLink>
           <NavLink className="navlink" to="/write">Write</NavLink>
           <NavLink className="navlink" to="/login">Sign in</NavLink>
-          <Button to="/signup" className="">Get Started</Button>
+          <Button variant="primary" to="/signup" className="">Get Started</Button>
         </div>
       </nav>
     </div>
