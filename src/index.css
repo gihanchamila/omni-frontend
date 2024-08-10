@@ -114,6 +114,12 @@
 
     }
 
+    .input {
+
+      @apply focus:border-2  focus:border-blue-500 outline-none
+
+    }
+
     {/*Page pagination*/}
 
     .pageButton {

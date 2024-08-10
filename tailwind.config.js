@@ -52,12 +52,12 @@ export default {
       },
 
       ".input-box": {
-        "@apply w-full rounded-md border-2 border-slate-800 bg-white py-2 px-6 text-sm active:border-color-p focus:border-color-p  outline-none":
+        "@apply w-full rounded-md border-2 border-slate-800 bg-white py-2 px-6 text-sm active:border-color-p focus:border-blue-500 outline-none":
         {},
       },
 
       ".label": {
-        "@apply text-base font-medium text-slate-800 font-semibold tracking-normal body-1":
+        "@apply block  text-sm font-medium text-gray-900":
         {},
       },
 
