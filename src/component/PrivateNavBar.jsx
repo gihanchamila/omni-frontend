@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { omni, profile } from "../assets/Navigation/index.js";
+import { omni, profile } from "../assets/index.js";
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
 import { useAuth } from "./context/useAuth.jsx";

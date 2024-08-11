@@ -193,7 +193,7 @@ const CategoryList = () => {
                   <td className="border border-slate-300 px-2 lg:px-4 py-2">{moment(category.updatedAt).format("YYYY-MM-DD HH:mm:ss")}</td>
                   <td className="border border-slate-300 px-2 lg:px-4 py-2 text-center">
                     <div className="flex justify-center space-x-2">
-                      <Button variant='info' className="lg:px-2 lg:py-1 sm:text-xs sm:px-1 sm:py-1 rounded-md" >Update</Button>
+                      <Button variant='info' className="lg:px-2 lg:py-1 sm:text-xs sm:px-1 sm:py-1 rounded-md" onClick={() => navigate(`update-category/${category._id}`)} >Update</Button>
                       <Button variant='error' className="lg:px-2 lg:py-1 sm:text-xs rounded-md sm:px-1 sm:py-1" data-modal-target="popup-modal" data-modal-toggle="popup-modal" onClick={() => {openModal(category._id)}} >Delete</Button>
                     </div>
                   </td>
