@@ -13,12 +13,11 @@ const PostList = () => {
   const [likedPosts, setLikedPosts] = useState({});
   const [isVisible, setIsVisible] = useState(false);
   const [latestPosts, setLatestPosts] = useState([])
+  const [popularPosts, setPopularPosts] = useState([])
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-
-
 
   useEffect(() => {
     const getPosts = async () => {
@@ -74,6 +73,46 @@ const PostList = () => {
     };
     getLikedPosts();
   }, []);
+
+  useEffect(() => {
+    const latestPosts = async () => {
+      try {
+
+        setLoading(true)
+
+        const response = await axios.get('/posts/features/latest-posts')
+        const data = response.data.data
+        
+        setLatestPosts(data)
+          
+      } catch (error) {
+        setLoading(false)
+        const response = error.response
+        const data = response.data
+        toast.error(data.message)          
+      }
+    }
+    latestPosts()
+  }, [])
+
+  useEffect(() => {
+    const popularPosts = async () => {
+      try{
+        setLoading(true)
+
+        const response = await axios.get('/posts/features/latest-posts')
+        const data = response.data.data
+
+        setPopularPosts(data)
+
+      }catch(error){
+        const response = error.response
+        const data = response.data
+        toast.error(data.message)
+      }
+    }
+    popularPosts()
+  })
   
   
   useEffect(() => {
@@ -111,7 +150,10 @@ const PostList = () => {
       setPosts(prevPosts =>
         prevPosts.map(post =>
           post._id === postId
-            ? { ...post, likesCount: post.likesCount + (isLiked ? -1 : 1) }
+            ? {
+                ...post,
+                likesCount: Math.max(0, post.likesCount + (isLiked ? -1 : 1))
+              }
             : post
         )
       );
@@ -186,14 +228,14 @@ const PostList = () => {
                     <div className="flex space-x-4">
                       <button className="flex items-center text-gray-500 hover:text-gray-700" onClick={() => handleLike(post._id)}>
                         {likedPosts[post._id] ? (
-                          <IoIosHeart className="w-35 h-3.5" />
+                          <IoIosHeart className="iconSize" />
                         ) : (
-                          <IoIosHeartEmpty className="w-35 h-3.5" />
+                          <IoIosHeartEmpty className="iconSize" />
                         )}
                         <span className="text-xs pl-0.5">{post.likesCount}</span>
                       </button>
                       <button className="flex items-center text-gray-500 hover:text-gray-700">
-                        <IoChatbubblesOutline className='w-35 h-3.5' />
+                        <IoChatbubblesOutline className='iconSize' />
                         <span className='text-xs pl-0.5'>10</span>
                       </button>
                     </div>
@@ -211,22 +253,25 @@ const PostList = () => {
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
             </h5>
+
             <div className="space-y-4">
-              {/* Latest Post Card */}
-              <div className="flex items-center space-x-4">
-                <img
-                  className="w-14 h-14 object-cover rounded-lg"
-                  src={post}
-                  alt="Latest Post"
-                />
-                <div>
-                  <h6 className="text-sm font-semibold text-gray-900">
-                    Latest Post Title
-                  </h6>
-                  <p className="text-xs text-gray-600">Short description here...</p>
+              {latestPosts.map(post => (
+                <div key={post._id} className="flex items-center space-x-4">
+                  <img
+                    className="w-10 h-10 object-cover rounded-lg"
+                    src={postFiles[post._id] || post.file}
+                    alt="Latest Post"
+                  />
+                  <div className="flex-1">
+                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2"> 
+                      {post.title} 
+                    </h6>
+                    <p className="text-xs text-gray-600 line-clamp-1">
+                      {post.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              {/* Add more latest posts here if needed */}
+              ))}
             </div>
           </div>
 
@@ -235,21 +280,24 @@ const PostList = () => {
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Popular Posts
             </h5>
+            {popularPosts.map((post) => (
+              <div key={post._id} className="flex items-center space-x-4">
+              <img
+                className="w-10 h-10 object-cover rounded-lg"
+                src={postFiles[post._id] || post.file}
+                alt="Popular Post"
+              />
+              <div className='flex-1'>
+                <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                  {post.title}
+                </h6>
+                <p className="text-xs text-gray-600 line-clamp-1">{post.description}</p>
+              </div>
+            </div>
+            ))}
             <div className="space-y-4">
               {/* Popular Post Card */}
-              <div className="flex items-center space-x-4">
-                <img
-                  className="w-10 h-10 object-cover rounded-lg"
-                  src={post}
-                  alt="Popular Post"
-                />
-                <div>
-                  <h6 className="text-sm font-semibold text-gray-900">
-                    Popular Post Title
-                  </h6>
-                  <p className="text-xs text-gray-600">Short description here...</p>
-                </div>
-              </div>
+              
               {/* Add more popular posts here if needed */}
             </div>
           </div>
