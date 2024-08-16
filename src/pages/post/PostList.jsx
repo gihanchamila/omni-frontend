@@ -5,6 +5,8 @@ import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
 import { post } from '../../assets/index.js';
 import { toast } from 'sonner';
+import moment from 'moment';
+import { profile } from '../../assets/index.js';
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
@@ -12,8 +14,9 @@ const PostList = () => {
   const [postFiles, setPostFiles] = useState([])
   const [likedPosts, setLikedPosts] = useState({});
   const [isVisible, setIsVisible] = useState(false);
-  const [latestPosts, setLatestPosts] = useState([])
-  const [popularPosts, setPopularPosts] = useState([])
+  const [latestPosts, setLatestPosts] = useState([]);
+  const [popularPosts, setPopularPosts] = useState([]);
+  const [content, setContent] = useState('');
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
@@ -87,8 +90,8 @@ const PostList = () => {
           
       } catch (error) {
         setLoading(false)
-        const response = error.response
-        const data = response.data
+        const response = error.response;
+        const data = response.data;
         toast.error(data.message)          
       }
     }
@@ -100,7 +103,7 @@ const PostList = () => {
       try{
         setLoading(true)
 
-        const response = await axios.get('/posts/features/latest-posts')
+        const response = await axios.get('/posts/features/popular-posts')
         const data = response.data.data
 
         setPopularPosts(data)
@@ -112,8 +115,7 @@ const PostList = () => {
       }
     }
     popularPosts()
-  })
-  
+  }, [])
   
   useEffect(() => {
     if (totalPage > 1) {
@@ -126,6 +128,10 @@ const PostList = () => {
       setPageCount([]);
     }
   }, [totalPage]);
+
+  const handleComment = async (postId) => {
+
+  }
 
   const handleLike = async (postId) => {
     try {
@@ -164,7 +170,6 @@ const PostList = () => {
       toast.error(data.message);
     }
   };
-
 
   const handlePrev = () => {
     setCurrentPage((prev) => prev - 1);
@@ -209,34 +214,44 @@ const PostList = () => {
             <p>Loading...</p>
           ) : (
             posts.map((post) => (
-              <div key={post._id} className="bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
+              <div key={post._id} className="bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:transition-colors duration-100">
                 <div className="flex flex-col md:flex-row">
-                  <div className="flex-shrink-0 w-full md:w-[10rem] h-[10rem]">
+                  <div onClick={() => {navigate(`posts/${post._id}`)}} className="flex-shrink-0 w-full md:w-[10rem] h-[11rem] hover:cursor-pointer">
                     <img
                       className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
+                      onClick={() => {navigate(`posts/${post._id}`)}}
                       src={postFiles[post._id] || post.file}
                       alt={post.title}
                     />
                   </div>
                   <div className="flex flex-col justify-between p-3 w-full">
-                    <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-2">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center text-xs text-gray-500'>
+                        <img className='rounded-full w-5 h-5 object-cover' src={profile} alt="" />
+                        <span className='px-2 text-xs'>Gihan Chamila</span>
+                        <span className='text-blue-500 hover:underline hover:cursor-pointer'>follow</span>
+                      </div>
+                      <span className='text-right mr-6 text-xs text-gray-500'>{moment(post.updatedAt).format('ll')}</span>
+                    </div>
+                   
+                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer">
                       {post.title}
                     </h5>
-                    <p className="text-gray-700 mb-4 text-sm">
+                    <p className="text-gray-700 mb-2 text-sm">
                       {post.description}
                     </p>
                     <div className="flex space-x-4">
                       <button className="flex items-center text-gray-500 hover:text-gray-700" onClick={() => handleLike(post._id)}>
                         {likedPosts[post._id] ? (
-                          <IoIosHeart className="iconSize" />
+                          <IoIosHeart className="iconSize text-red-500" />
                         ) : (
                           <IoIosHeartEmpty className="iconSize" />
                         )}
-                        <span className="text-xs pl-0.5">{post.likesCount}</span>
+                        <span className="text-xs">{post.likesCount}</span>
                       </button>
                       <button className="flex items-center text-gray-500 hover:text-gray-700">
                         <IoChatbubblesOutline className='iconSize' />
-                        <span className='text-xs pl-0.5'>10</span>
+                        <span className='text-xs'>10</span>
                       </button>
                     </div>
                   </div>
@@ -247,9 +262,9 @@ const PostList = () => {
         </div>
 
         {/* Right Section: Sidebar */}
-        <div className="w-full md:w-1/3 space-y-6 hidden md:block">
-          {/* Latest Posts */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+        <div className="w-full md:w-1/3 space-y-4 hidden md:block">
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
             </h5>
@@ -258,7 +273,7 @@ const PostList = () => {
               {latestPosts.map(post => (
                 <div key={post._id} className="flex items-center space-x-4">
                   <img
-                    className="w-10 h-10 object-cover rounded-lg"
+                    className="cardImage"
                     src={postFiles[post._id] || post.file}
                     alt="Latest Post"
                   />
@@ -275,30 +290,31 @@ const PostList = () => {
             </div>
           </div>
 
-          {/* Popular Posts */}
+        
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Popular Posts
             </h5>
-            {popularPosts.map((post) => (
-              <div key={post._id} className="flex items-center space-x-4">
-              <img
-                className="w-10 h-10 object-cover rounded-lg"
-                src={postFiles[post._id] || post.file}
-                alt="Popular Post"
-              />
-              <div className='flex-1'>
-                <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
-                  {post.title}
-                </h6>
-                <p className="text-xs text-gray-600 line-clamp-1">{post.description}</p>
-              </div>
-            </div>
-            ))}
             <div className="space-y-4">
               {/* Popular Post Card */}
               
-              {/* Add more popular posts here if needed */}
+              {latestPosts.map(post => (
+                <div key={post._id} className="flex items-center space-x-4">
+                  <img
+                    className="cardImage"
+                    src={postFiles[post._id] || post.file}
+                    alt="Latest Post"
+                  />
+                  <div className="flex-1">
+                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2"> 
+                      {post.title} 
+                    </h6>
+                    <p className="text-xs text-gray-600 line-clamp-1">
+                      {post.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
