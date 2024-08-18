@@ -152,7 +152,6 @@ const PostList = () => {
         [postId]: !isLiked
       }));
   
-      // Optionally update the post's likes count in the UI
       setPosts(prevPosts =>
         prevPosts.map(post =>
           post._id === postId
@@ -251,7 +250,7 @@ const PostList = () => {
                       </button>
                       <button className="flex items-center text-gray-500 hover:text-gray-700">
                         <IoChatbubblesOutline className='iconSize' />
-                        <span className='text-xs'>10</span>
+                        <span className='text-xs'>{post.commentCount}</span>
                       </button>
                     </div>
                   </div>

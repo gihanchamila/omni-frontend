@@ -20,21 +20,25 @@ const SinglePost = () => {
   const [post,  setPost] = useState([])
   const [postFiles, setPostFiles] = useState([])
   const [comments, setComments] = useState([])
+  const [commentCount, setCommentCount] = useState(0);
   const [fileUrl, setFileUrl] = useState(null)
   const [visibleReplies, setVisibleReplies] = useState({})
+  const [visibleNestedReplies, setVisibleNestedReplies] = useState({});
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [replyFormdata, setReplyFormData] = useState(initialFormData)
   const [replyFormError, setReplyFormError] = useState(initialFormError)
   const [replyingTo, setReplyingTo] = useState(null); 
+  const [replyToReply, setReplyToReply] = useState(null);
   const [replyToReplyFormData, setReplyToReplyFormData] = useState(initialFormData);
   const [replyToReplyFormError, setReplyToReplyFormError] = useState(initialFormError);
   const [replyToReplyingTo, setReplyToReplyingTo] = useState(null);
   const [loading, setLoading] = useState(false)
-
+  const [dropdownOpenParent, setDropdownOpenParent] = useState({})
+  const [dropdownOpenReply, setDropdownOpenReply] = useState({})
+  const [dropdownOpenReplyToReply, setDropdownOpenReplyToReply] = useState({})
 
   // Get related post using postId
-
   useEffect(() => {
     if(postId){
         const getPost = async () => {
@@ -110,15 +114,14 @@ const SinglePost = () => {
   */
 
   const toggleReplies = (commentId) => {
-    setVisibleReplies((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
+    setVisibleReplies((prevState) => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
     }));
   };
-
+    
   const getReplyText = (replies) => {
-    if (!replies || replies.length === 0) return 'Reply';
-    return `${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}`;
+    return replies.length > 0 ? `${replies.length} ${replies.length > 1 ? 'replies' : 'reply'}` : 'Reply';
   };
 
   const handleChange = (e) => {
@@ -149,10 +152,6 @@ const SinglePost = () => {
   };
 
   const toggleReplyForm = (commentId) => {
-    setReplyingTo(prevId => (prevId === commentId ? null : commentId));
-  };
-
-   const toggleReplyFormVisibility = (commentId) => {
     setReplyingTo(prevId => (prevId === commentId ? null : commentId));
   };
 
@@ -218,7 +217,7 @@ const SinglePost = () => {
     try {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${replyId}`, replyToReplyFormData);
-        const newReplyToReply = response.data.data.reply;
+        const newReplyToReply = response.data.data.reply;  // Extracting the newly created reply
 
         setComments(prevComments => {
             const updateReplies = (replies) => {
@@ -228,8 +227,8 @@ const SinglePost = () => {
 
                 return replies.map(reply =>
                     reply._id === replyId
-                        ? { ...reply, replies: [newReplyToReply, ...reply.replies] }
-                        : { ...reply, replies: updateReplies(reply.replies) }
+                        ? { ...reply, replies: [newReplyToReply, ...reply.replies] }  // Prepending the new reply
+                        : { ...reply, replies: updateReplies(reply.replies) }  // Recursively updating replies
                 );
             };
 
@@ -239,8 +238,8 @@ const SinglePost = () => {
 
             return updatedComments;
         });
+
         setReplyToReplyFormData(initialFormData);
-        setReplyToReplyingTo(null);
     } catch (error) {
         setReplyToReplyFormError({ content: error.message || 'An error occurred' });
         toast.error(error.message);
@@ -250,9 +249,70 @@ const SinglePost = () => {
   };
 
   const toggleReplyToReplyForm = (replyId) => {
-    setReplyToReplyingTo(prevId => (prevId === replyId ? null : replyId));
+    console.log('Toggling reply form for ID:', replyId);
+    setReplyToReply(prevId => {
+      const newId = prevId === replyId ? null : replyId;
+      return newId;
+    });
   };
 
+  const toggleNestedReplies = (replyId) => {
+    setVisibleNestedReplies(prevState => {
+      console.log('Previous state:', prevState);
+      const newState = {
+        ...prevState,
+        [replyId]: !prevState[replyId],
+      };
+      console.log('New state:', newState);
+      return newState;
+    });
+  };
+
+  const handleClickToReply = (replyId) => {
+    console.log('Handle click to reply for ID:', replyId);
+    toggleNestedReplies(replyId); 
+    toggleReplyToReplyForm(replyId); 
+  };
+
+  const toggleDropdownParent = (commentId) => {
+    setDropdownOpenParent((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }))
+  }
+
+  const toggleDropdownReply = (commentId) => {
+    setDropdownOpenReply((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }))
+  }
+
+  const toggleDropdownReplyToReply = (commentId) => {
+    setDropdownOpenReplyToReply((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }))
+  }
+
+  const handleDelete = async (commentId) => {
+    try {
+        // Perform delete request
+        const response = await axios.delete(`/comments/${commentId}`);
+        const data = response.data;
+        toast.success(data.message);
+
+        // Fetch updated comments after deletion
+        const response2 = await axios.get(`/comments/${postId}`);
+        const data2 = response2.data.data; // Use response2 instead of response
+        setComments(data2); // Update the comments state with the new data
+    } catch (error) {
+        // Handle errors
+        const response = error.response; // Use error.response for axios errors
+        const data = response?.data || {};
+        toast.error(data.message || 'An error occurred');
+    }
+  };
 
   return (
 
@@ -262,7 +322,7 @@ const SinglePost = () => {
       <div className='px-4 py-8 max-w-5xl space-y-3 m-0'>
         <div className='h2 font-bold'>{post?.title}</div>
         <div className='flex items-center py-4 mt-0'>
-            <img className='w-[4rem] h-[4rem] rounded-full object-cover' src={profile} alt="" />
+            <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="" />
             <span className='m-0 px-4'>{post?.updatedBy?.name}</span>
             <span className='text-blue-500 hover:underline hover:cursor-pointer'>Follow</span>
         </div>
@@ -278,10 +338,10 @@ const SinglePost = () => {
         <section className="bg-white py-8 lg:py-16 antialiased">
           <div className="max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion (20)</h2>
+              <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({post?.commentCount})</h2>
             </div>
             <form className="mb-6" onSubmit={handleSubmit}>
-              <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
+              <div className="py-4 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
                 <label htmlFor="comment" className="sr-only">Your comment</label>
                 <textarea
                   id="comment"
@@ -302,64 +362,58 @@ const SinglePost = () => {
             {/* Parent comments  */}
 
             {comments.map((comment) => (
-              <article key={comment._id} className="pt-4 px-0 text-base bg-white rounded-lg">
-              <footer className="flex justify-between items-center mb-2">
-                <div className="flex items-center">
-                  <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                    <img
-                      className="mr-2 w-6 h-6 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                      alt="Michael Gough"
-                    />
-                    {comment.author?.name || 'Anonymous'}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <time dateTime={comment.createdAt}>
-                      {new Date(comment.createdAt).toLocaleDateString()}
-                    </time>
-                  </p>
-                </div>
-                <button
-                  id="dropdownComment1Button"
-                  data-dropdown-toggle="dropdownComment1"
-                  className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500"
-                  type="button"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 16 3"
+              <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
+                <footer className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                      <img
+                        className="mr-2 w-6 h-6 rounded-full"
+                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                        alt="Michael Gough"
+                      />
+                      {comment.author?.name || 'Anonymous'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <time dateTime={comment.createdAt}>
+                        {new Date(comment.createdAt).toLocaleDateString()}
+                      </time>
+                    </p>
+                  </div>
+                  <button
+                    data-dropdown-toggle="dropdownComment2"
+                    className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
+                    type="button"
+                    onClick={() => toggleDropdownParent(comment._id)}
                   >
-                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                  </svg>
-                  <span className="sr-only">Comment settings</span>
-                </button>
+                    <svg
+                      className="w-4 h-4 text-end"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 3"
+                    >
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                    </svg>
+                    <span className="sr-only">Comment settings</span>
+                  </button>
 
-                {/* Dropdown menu */}
-
-                <div id="dropdownComment1" className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow">
-                  <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownMenuIconHorizontalButton">
-                    <li>
-                      <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                        Edit
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                        Remove
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                        Report
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-
-              </footer>
+                  {/* Dropdown menu */}
+                  {dropdownOpenParent[comment._id] && (
+                    <div className="absolute  -top-50 left-[50rem] ">
+                    <div id={comment._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
+                        </ul>
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li onClick={() => handleDelete(comment._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
+                        </ul>
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
+                        </ul>
+                    </div>
+                    </div>
+                  )}
+                </footer>
 
               <p className="text-gray-500">{comment.content}</p>
               <div className="flex items-center mt-4 space-x-4">
@@ -376,33 +430,32 @@ const SinglePost = () => {
               {/* Reply Comment*/}
 
               {replyingTo === comment._id && (
-              <form onSubmit={(e) => handleReplySubmit(e, comment._id)}>
-                <div className=" mt-4 ml-[4.5rem] p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                  <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
-                  <textarea
-                    id={`reply-${comment._id}`}
-                    rows="4"
-                    className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                    placeholder="Write a reply..."
-                    name="content"
-                    value={replyFormdata.content}
-                    onChange={handleReplyChange}
-                    required
-                  ></textarea>
-                </div>
-                <Button
-                  type="submit"
-                  className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
-                >
-                  Reply
-                </Button>
-              </form>
+                <form onSubmit={(e) => handleReplySubmit(e, comment._id)}>
+                  <div className=" mt-4 ml-[4.5rem]  p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
+                    <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
+                    <textarea
+                      id={`reply-${comment._id}`}
+                      rows="4"
+                      className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
+                      placeholder="Write a reply..."
+                      name="content"
+                      value={replyFormdata.content}
+                      onChange={handleReplyChange}
+                      required
+                    ></textarea>
+                  </div>
+                  <Button
+                    type="submit"
+                    className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
+                  >
+                    Reply
+                  </Button>
+                </form>
               )}
 
               {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
                 <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-
-                <footer className="flex justify-between items-center mb-2">
+                <footer className="flex justify-between  items-center mb-2">
                   <div className="flex items-center">
                     <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
                       <img
@@ -418,14 +471,15 @@ const SinglePost = () => {
                       </time>
                     </p>
                   </div>
+
                   <button
-                    id="dropdownComment2Button"
                     data-dropdown-toggle="dropdownComment2"
-                    className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500"
+                    className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
                     type="button"
+                    onClick={() => toggleDropdownReply(reply._id)}
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-end"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
@@ -435,49 +489,39 @@ const SinglePost = () => {
                     </svg>
                     <span className="sr-only">Comment settings</span>
                   </button>
-
-                  {/* Dropdown menu */}
-
-                  <div
-                    id="dropdownComment2"
-                    className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow"
-                  >
-                    <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownMenuIconHorizontalButton">
-                      <li>
-                        <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                          Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                          Remove
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                          Report
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  
+                  {dropdownOpenReply[reply._id] && (
+                    <div className="absolute  -top-50 left-[50rem] ">
+                    <div id={reply._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
+                        </ul>
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li onClick={() => handleDelete(reply._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
+                        </ul>
+                        <ul className="py-1 text-sm text-gray-700">
+                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
+                        </ul>
+                    </div>
+                    </div>
+                  )}
 
                 </footer>
-
                 <p className="text-gray-500">{reply.content}</p>
                 <div className="flex items-center mt-4 space-x-4">
                   <button
                     type="button"
                     className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                    onClick={() => { toggleReplyToReplyForm(reply._id); }}
+                    onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id) }}
                   >
                     <IoChatbubblesOutline className='iconSize' />
-                    Reply
+                    {getReplyText(reply.replies)}
                   </button>
                 </div>
 
                 {/* Reply to Reply */}
 
-                {replyToReplyingTo === reply._id && (
+                {replyToReply === reply._id && (
                 <form onSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}>
                     <div className="mt-4 ml-[4.5rem] p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
                         <label htmlFor={`replyToReply-${reply._id}`} className="sr-only">Your reply</label>
@@ -499,7 +543,65 @@ const SinglePost = () => {
                         Reply
                     </Button>
                 </form>
-              )}
+                )}
+                  {visibleNestedReplies[comment._id] && reply.replies && reply.replies.map((nestedReply) => (
+                     <article key={nestedReply._id} className='ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg'>
+                      <footer  className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                          <img
+                            className="mr-2 w-6 h-6 rounded-full"
+                            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                            alt="{reply.author.name}"
+                          />
+                          {nestedReply.author?.name || 'Anonymous'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <time dateTime={nestedReply.createdAt}>
+                              {new Date(nestedReply.createdAt).toLocaleDateString()}
+                          </time>
+                        </p>
+                      </div>
+
+                      <button
+                        data-dropdown-toggle="dropdownComment2"
+                        className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
+                        type="button"
+                        onClick={() => toggleDropdownReplyToReply(nestedReply._id)}
+                  >
+                    <svg
+                      className="w-4 h-4 text-end"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 3"
+                    >
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                    </svg>
+                    <span className="sr-only">Comment settings</span>
+                      </button>
+
+                      {/* Dropdown menu */}
+
+                      {dropdownOpenReplyToReply[nestedReply._id] && (
+                        <div className="absolute  -top-50 left-[50rem] ">
+                          <div id={nestedReply._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
+                              <ul className="py-1 text-sm text-gray-700">
+                                  <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
+                              </ul>
+                              <ul className="py-1 text-sm text-gray-700">
+                                  <li onClick={() => handleDelete(nestedReply._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
+                              </ul>
+                              <ul className="py-1 text-sm text-gray-700">
+                                  <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
+                              </ul>
+                          </div>
+                        </div>
+                      )}
+                      </footer>
+                      <p className="text-gray-500 pb-4">{nestedReply.content}</p>
+                    </article>
+                  ))}
                 </article>
               ))}
             <hr className="mt-6 border-t border-gray-200" />
@@ -510,6 +612,7 @@ const SinglePost = () => {
       </div>
     </div>
   )
+  
 }
 
 export default SinglePost
