@@ -129,10 +129,6 @@ const PostList = () => {
     }
   }, [totalPage]);
 
-  const handleComment = async (postId) => {
-
-  }
-
   const handleLike = async (postId) => {
     try {
       const isLiked = likedPosts[postId];

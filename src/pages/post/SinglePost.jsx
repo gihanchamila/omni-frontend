@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
+import io from 'socket.io-client';
+import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 
 import {profile} from '../../assets/index.js'
 import Button from '../../component/button/Button.jsx'
@@ -10,6 +12,8 @@ import addCommentValidator from '../../validators/addCommentValidator.js';
 
 const initialFormData = {content : ""}
 const initialFormError = {content : ""}
+
+const socket = io('http://localhost:8000');
 
 const SinglePost = () => {
 
@@ -21,6 +25,8 @@ const SinglePost = () => {
   const [postFiles, setPostFiles] = useState([])
   const [comments, setComments] = useState([])
   const [commentCount, setCommentCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
   const [visibleReplies, setVisibleReplies] = useState({})
   const [visibleNestedReplies, setVisibleNestedReplies] = useState({});
@@ -38,7 +44,32 @@ const SinglePost = () => {
   const [dropdownOpenReply, setDropdownOpenReply] = useState({})
   const [dropdownOpenReplyToReply, setDropdownOpenReplyToReply] = useState({})
 
-  // Get related post using postId
+  useEffect(() => {
+    // Listen for the 'commentAdded' event
+    socket.on('commentAdded', ({ postId: updatedPostId}) => {
+        if (updatedPostId === postId) {
+            setCommentCount(prevCount => prevCount + 1);
+        }
+    });
+
+    return () => {
+        socket.off('commentAdded');
+    };
+}, [postId]);
+
+useEffect(() => {
+  // Listen for the 'commentAdded' event
+  socket.on('replyAdded', ({ postId: updatedPostId}) => {
+      if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+      }
+  });
+
+  return () => {
+      socket.off('replyAdded');
+  };
+}, [postId]);
+
   useEffect(() => {
     if(postId){
         const getPost = async () => {
@@ -56,8 +87,6 @@ const SinglePost = () => {
       getPost()
     }
   }, [postId])
-
-  // Get post files related to post
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -77,13 +106,11 @@ const SinglePost = () => {
     }
   }, [post]);
 
-  // Get comment of related post
-
   useEffect(() => {
     const getComments = async () => {
       if (postId) {
         try {
-          const response = await axios.get(`/comments/${postId}`);
+          const response = await axios.get(`/comments/${postId}/comments`);
           const data = response.data.data;
           setComments(data);
         } catch (error) {
@@ -94,24 +121,24 @@ const SinglePost = () => {
     getComments();
   }, [postId]);
 
-  // toggle replies
-
-  /* 
-    Manage the visibility of replies for a specific comment.
-     
-    commentId: A unique identifier for the comment whose replies' visibility needs to be toggled.
-
-    setVisibleReplies((prev) => ({ ...prev, [commentId]: !prev[commentId] }))
-
-    This line updates the state of a variable named setVisibleReplies using a functional update pattern.
-    setVisibleReplies is likely a state variable managed by a state management library like React or Vue.
-    The function passed to setVisibleReplies receives the previous state as prev.
-    A new object is created using the spread operator (...) to copy all properties from the prev state.
-    The [commentId] property is dynamically accessed using computed property syntax.
-    The value of the [commentId] property is negated (!prev[commentId]), effectively toggling its boolean value (true becomes false, false becomes true).
-    The updated object is returned, and the setVisibleReplies state is updated with this new object.
-    
-  */
+  useEffect(() => {
+    const getCommentCount = async () => {
+      if(postId){
+        try{
+          const response = await axios.get(`/comments/${postId}/commentCount`)
+          const data = response.data
+          toast.success(data.message)
+          console.log(data.data.count.commentCount)
+          setCommentCount(data.data.count.commentCount)
+        }catch(error){
+          const response = error.response
+          const data = response.data
+          toast.error(data.message)
+        }
+      }
+    }
+    getCommentCount()
+  }, [postId]) 
 
   const toggleReplies = (commentId) => {
     setVisibleReplies((prevState) => ({
@@ -159,7 +186,7 @@ const SinglePost = () => {
     toggleReplies(commentId);
     toggleReplyForm(commentId);
   };
-  
+
   const handleReplyChange = (e) => {
     setReplyFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -268,12 +295,6 @@ const SinglePost = () => {
     });
   };
 
-  const handleClickToReply = (replyId) => {
-    console.log('Handle click to reply for ID:', replyId);
-    toggleNestedReplies(replyId); 
-    toggleReplyToReplyForm(replyId); 
-  };
-
   const toggleDropdownParent = (commentId) => {
     setDropdownOpenParent((prev) => ({
       ...prev,
@@ -281,7 +302,7 @@ const SinglePost = () => {
     }))
   }
 
-  const toggleDropdownReply = (commentId) => {
+  const toggleDropdownReply = (commentId, open = null) => {
     setDropdownOpenReply((prev) => ({
       ...prev,
       [commentId]: !prev[commentId],
@@ -302,13 +323,12 @@ const SinglePost = () => {
         const data = response.data;
         toast.success(data.message);
 
-        // Fetch updated comments after deletion
-        const response2 = await axios.get(`/comments/${postId}`);
-        const data2 = response2.data.data; // Use response2 instead of response
-        setComments(data2); // Update the comments state with the new data
+        const response2 = await axios.get(`/comments/${postId}/comments`);
+        const data2 = response2.data.data; 
+        setComments(data2); 
     } catch (error) {
-        // Handle errors
-        const response = error.response; // Use error.response for axios errors
+
+        const response = error.response;
         const data = response?.data || {};
         toast.error(data.message || 'An error occurred');
     }
@@ -335,10 +355,10 @@ const SinglePost = () => {
 
         {/* Post comment  */}
 
-        <section className="bg-white py-8 lg:py-16 antialiased">
+        <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
           <div className="max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({post?.commentCount})</h2>
+              <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
             </div>
             <form className="mb-6" onSubmit={handleSubmit}>
               <div className="py-4 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
