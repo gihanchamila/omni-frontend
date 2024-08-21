@@ -69,9 +69,8 @@ const PostList = () => {
   useEffect(() => {
     const getLikedPosts = async () => {
       const response = await axios.get('/likes/posts/liked');
-      console.log(response.data.data); // Check the structure of the data
       const likedPostsData = response.data.data.reduce((acc, post) => {
-        acc[post._id] = true;
+        acc[post?._id] = true;
         return acc;
       }, {});
       setLikedPosts(likedPostsData);

@@ -4,7 +4,6 @@ import 'react-quill/dist/quill.snow.css';
 
 const DescriptionEditor = ({ formData, handleChange }) => {
   const quillRef = useRef(null);
-
   
 
   return (
@@ -20,7 +19,7 @@ const DescriptionEditor = ({ formData, handleChange }) => {
           target: {
             name: 'description',
             value: editor.getHTML(),
-          }
+          },
         })}
         className="mt-2"
         placeholder="Your description here"

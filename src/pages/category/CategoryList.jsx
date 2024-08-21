@@ -25,7 +25,6 @@ const CategoryList = () => {
         setLoading(true);
         const response = await axios.get(`/category?page=${currentPage}&q=${searchValue}&sortField=${sortField}&sortOrder=${sortOrder}`);
         const data = response.data.data;
-
         setCategories(data.categories);
         setTotalPage(data.pages);
         setLoading(false);

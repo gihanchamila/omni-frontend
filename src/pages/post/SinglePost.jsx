@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
 import io from 'socket.io-client';
-import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
+import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io'
+import BackButton from '../../component/button/BackButton.jsx';
 
 import {profile} from '../../assets/index.js'
 import Button from '../../component/button/Button.jsx'
 import { IoChatbubblesOutline } from 'react-icons/io5';
 import addCommentValidator from '../../validators/addCommentValidator.js';
+
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 
 const initialFormData = {content : ""}
@@ -44,6 +46,7 @@ const SinglePost = () => {
   const [dropdownOpenParent, setDropdownOpenParent] = useState({})
   const [dropdownOpenReply, setDropdownOpenReply] = useState({})
   const [dropdownOpenReplyToReply, setDropdownOpenReplyToReply] = useState({})
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     // Listen for the 'commentAdded' event
@@ -97,22 +100,39 @@ const SinglePost = () => {
   }, [postId]);
 
   useEffect(() => {
-    if(postId){
+    if (postId) {
         const getPost = async () => {
-          try{
+            try {
+                const response = await axios.get(`/posts/${postId}`);
+                const data = response.data.data;
+                setPost(data.post);
+            } catch (error) {
+                const response = error.response;
+                const data = response?.data?.data || {};
+                toast.error(data.message || 'Failed to fetch post');
+            }
+        };
 
-            const response = await axios.get(`posts/${postId}`)
-            const data = response.data.data
-            setPost(data.post)
-          }catch(error){
-            const response = error.response;
-            const data = response.data.data
-            toast.error(data.message)
+        const getCurrentUser = async () => {
+          try {
+              const response = await axios.get(`/auth/current-user`);
+              const user = response.data.data.user; 
+              console.log('Current User Data:', user); 
+              if (user && user._id) {
+                  setCurrentUser(user._id); 
+                  toast.success(`Your name is ${user._id}`); 
+              } else {
+                  toast.error('User data is incomplete');
+              }
+          } catch (error) {
+              toast.error('Error getting user');
           }
-      }
-      getPost()
+      };
+       
+        getPost();
+        getCurrentUser();
     }
-  }, [postId])
+}, [postId]);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -360,13 +380,47 @@ const SinglePost = () => {
     }
   };
 
+  const handlePostDelete = async (postId) => {
+    try{
+      const response = await axios.delete(`/posts/${postId}`)
+      const data = response.data;
+      toast.success(data.message)
+      navigate('/posts')
+    }catch(error){
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message)
+    }
+  }
+
   return (
 
     /* Post Section */
 
     <div className='flex items-center justify-center'>
-      <div className='px-4 py-8 max-w-5xl space-y-3 m-0'>
-        <div className='h2 font-bold'>{post?.title}</div>
+      <div className=' py-8 max-w-5xl space-y-3 m-0'>
+        <div className='flex justify-between items-center'>
+        <BackButton />
+        <div className='flex space-x-4'>
+        {currentUser && post && currentUser === post?.author?._id ? (
+            <>
+            <Link to={`/posts/update-post/${post._id}`}>
+                <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
+                    Update
+                </div>
+            </Link>
+            <button onClick={() => handlePostDelete(post?._id)}>
+                <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
+                    Delete
+                </div>
+            </button>
+            </>
+            
+        ) : null}
+        </div>
+        
+        </div>
+        <div className='h2 font-bold w-full'>{post?.title}</div>
         <div className='flex items-center py-4 mt-0'>
             <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="" />
             <span className='m-0 px-4'>{post?.updatedBy?.name}</span>
@@ -376,7 +430,9 @@ const SinglePost = () => {
             <img className='rounded-xl w-full h-[50rem] object-cover' src={fileUrl} alt="" />
         </div>
         <div>
-            <p className='text-lg space-y-4 '><SanitizedContent htmlContent={post?.description} allowedTags={['h1', 'strong', 'font']}/></p>
+            <p className='text-lg space-y-4 '>
+              <SanitizedContent htmlContent={post?.description}/> 
+            </p>
         </div>
 
         {/* Post comment  */}

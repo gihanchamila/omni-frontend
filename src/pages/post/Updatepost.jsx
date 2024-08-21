@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
 import Button from '../../component/button/Button.jsx';
@@ -11,7 +11,11 @@ import ReactQuill from 'react-quill';
 const initialFormData = { title: "", description: "", category: "", file: "" };
 const initialFormError = { title: "", description: "", category: "", file: "" };
 
-const NewPost = () => {
+const UpdatePost = () => {
+
+  const params = useParams()
+  const postId = params.id
+
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
   const [categories, setCategories] = useState([]);
@@ -19,6 +23,33 @@ const NewPost = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(postId){
+      const getPost = async() => {
+      try{
+
+        //api request
+        const response = await axios.get(`/posts/${postId}`)
+        const data = response.data.data
+        console.log(data)
+        toast.success("Post get successfull")
+
+        setFormData({
+            title : data.post.title, 
+            description : data.post.description,
+            file : data.post?.file?._id,
+            category : data.post.category._id
+        })
+      }catch(error){
+        const response = error.response
+        const data = response.data
+        toast.error(data.message);
+      }
+      }
+      getPost()
+    }
+  }, [postId])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +106,7 @@ const NewPost = () => {
     });
 
     if (errors.title || errors.category) {
-      setFormError(errors);
+      setFormError("need things");
     } else {
       try {
         setLoading(true);
@@ -86,13 +117,13 @@ const NewPost = () => {
           input = { ...input, file: fileId };
         }
 
-        const response = await axios.post('/posts', input);
+        const response = await axios.put(`/posts/${postId}`, input);
         toast.success(response.data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
         navigate('/posts');
       } catch (error) {
-        toast.error(error.message || "Error");
+        toast.error("couldnt update");
       } finally {
         setLoading(false);
       }
@@ -106,7 +137,7 @@ const NewPost = () => {
         {/* Form Section */}
         <div className="lg:w-1/2 md:w-full sm:w-full">
           <BackButton />
-          <h4 className="h4 mb-4 font-bold text-slate-800">New Post</h4>
+          <h4 className="h4 mb-4 font-bold text-slate-800">Update Post</h4>
           <form id='new-post' onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
@@ -163,7 +194,7 @@ const NewPost = () => {
             </div>
 
             <Button variant="info" className="mt-5">
-              Add new post
+              Update post
             </Button>
           </form>
         </div>
@@ -186,4 +217,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default UpdatePost;

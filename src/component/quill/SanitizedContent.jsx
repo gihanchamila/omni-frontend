@@ -4,7 +4,7 @@ import parse from 'html-react-parser';
 
 const SanitizedContent = ({ htmlContent, allowedTags, allowedAttributes }) => {
   const sanitizedHtml = sanitizeHtml(htmlContent, {
-    allowedTags:allowedTags || sanitizeHtml.defaults.allowedTags.concat(allowedTags),
+    allowedTags:allowedTags || sanitizeHtml.defaults.allowedTags.concat([]),
     allowedAttributes: allowedAttributes || sanitizeHtml.defaults.allowedAttributes,
   });
 

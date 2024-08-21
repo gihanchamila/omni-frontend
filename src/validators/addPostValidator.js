@@ -1,8 +1,7 @@
-const addPostValidator = ({title, category, description, file}) => {
+const addPostValidator = ({title, category, description}) => {
     const errors = {
         title: "",
         category: "",
-        file: "",
         description: ""
     };
 
@@ -18,10 +17,6 @@ const addPostValidator = ({title, category, description, file}) => {
         errors.category = "Category is required";
     }
 
-    // If `file` is not mandatory, you might need to adjust this validation rule
-    if (!file) {
-        errors.file = "File is required";  // Remove or adjust this line if file is not always required
-    }
 
     return errors;
 };

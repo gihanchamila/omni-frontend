@@ -169,3 +169,18 @@ const NewPost = () => {
 };
 
 export default NewPost;
+
+
+
+ {currentUser && post && currentUser._id === post.author._id ? (
+            <Link to={`/posts/update-post/${post._id}`}>
+                <div className='p-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
+                    Update
+                </div>
+            </Link>
+        ) : null}
+
+
+<div className='p-2  text-sm px-4bg-red-600 text-white bg-red-500 hover:bg-red-500 rounded-full'>
+        Delete
+        </div>
