@@ -3,6 +3,8 @@ import { omni, profile } from "../assets/index.js";
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
 import { useAuth } from "./context/useAuth.jsx";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoMdCreate } from "react-icons/io";
 import { toast } from "sonner";
 
 const PrivateNavBar = () => {
@@ -40,6 +42,8 @@ const PrivateNavBar = () => {
           <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/categories">Categories</NavLink>
           <NavLink className="navlink" to="/posts">Posts</NavLink>
+          <NavLink className="navlink" to="/posts/new-post">Write</NavLink>
+          <NavLink className="navlink " to=""><IoMdNotificationsOutline className="w-5 h-5" /></NavLink>
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center">
               <img src={profile} alt="Profile" className="w-8 h-8 rounded-full object-cover" />

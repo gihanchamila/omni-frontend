@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
+import Button from '../../component/button/Button.jsx'
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
-import { post } from '../../assets/index.js';
 import { toast } from 'sonner';
 import moment from 'moment';
 import { profile } from '../../assets/index.js';
+import parse from 'html-react-parser';
+import sanitizeHtml from 'sanitize-html';
+import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [postFiles, setPostFiles] = useState([])
   const [likedPosts, setLikedPosts] = useState({});
-  const [isVisible, setIsVisible] = useState(false);
   const [latestPosts, setLatestPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
-  const [content, setContent] = useState('');
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
@@ -68,12 +69,13 @@ const PostList = () => {
   useEffect(() => {
     const getLikedPosts = async () => {
       const response = await axios.get('/likes/posts/liked');
+      console.log(response.data.data); // Check the structure of the data
       const likedPostsData = response.data.data.reduce((acc, post) => {
         acc[post._id] = true;
         return acc;
       }, {});
       setLikedPosts(likedPostsData);
-    };
+    }
     getLikedPosts();
   }, []);
 
@@ -96,7 +98,7 @@ const PostList = () => {
       }
     }
     latestPosts()
-  }, [])
+  }, []);
 
   useEffect(() => {
     const popularPosts = async () => {
@@ -110,12 +112,12 @@ const PostList = () => {
 
       }catch(error){
         const response = error.response
-        const data = response.data
+        const data = response.data.data
         toast.error(data.message)
       }
     }
     popularPosts()
-  }, [])
+  }, []);
   
   useEffect(() => {
     if (totalPage > 1) {
@@ -197,10 +199,19 @@ const PostList = () => {
     }
   };
 
+  const formatDate = (date) => {
+    const updatedDate = moment(date);
+    const now = moment();
+    const diffDays = now.diff(updatedDate, 'days');
+    
+    return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
+  };
+
   const navigate = useNavigate();
 
   return (
     <div className="container mx-auto px-4 md:px-[10rem] py-10">
+
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
         {/* Left Section: Post List */}
         <div className="w-full md:w-2/3 space-y-4">
@@ -226,14 +237,14 @@ const PostList = () => {
                         <span className='px-2 text-xs'>Gihan Chamila</span>
                         <span className='text-blue-500 hover:underline hover:cursor-pointer'>follow</span>
                       </div>
-                      <span className='text-right mr-6 text-xs text-gray-500'>{moment(post.updatedAt).format('ll')}</span>
+                      <span className='text-right  text-xs text-gray-500'>{formatDate(post.updatedAt)}</span>
                     </div>
                    
-                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer">
+                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer line-clamp-2">
                       {post.title}
                     </h5>
-                    <p className="text-gray-700 mb-2 text-sm">
-                      {post.description}
+                    <p className="text-gray-700 mb-2 text-sm line-clamp-2" >
+                     <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']}/>
                     </p>
                     <div className="flex space-x-4">
                       <button className="flex items-center text-gray-500 hover:text-gray-700" onClick={() => handleLike(post._id)}>
@@ -257,8 +268,9 @@ const PostList = () => {
         </div>
 
         {/* Right Section: Sidebar */}
-        <div className="w-full md:w-1/3 space-y-4 hidden md:block">
-          
+        
+        
+        <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
@@ -273,11 +285,19 @@ const PostList = () => {
                     alt="Latest Post"
                   />
                   <div className="flex-1">
-                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2"> 
-                      {post.title} 
+                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                    <SanitizedContent
+                      htmlContent={post.title}
+                      allowedTags={['h1', 'strong', 'font']}
+                      
+                    />
                     </h6>
                     <p className="text-xs text-gray-600 line-clamp-1">
-                      {post.description}
+                    <SanitizedContent
+                      htmlContent={post.description}
+                      allowedTags={['h1', 'strong', 'font']}
+                      
+                    />
                     </p>
                   </div>
                 </div>
@@ -300,12 +320,16 @@ const PostList = () => {
                     src={postFiles[post._id] || post.file}
                     alt="Latest Post"
                   />
-                  <div className="flex-1">
-                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2"> 
+                  <div className="flex-1 w-full overflow-hidden">
+                    <h6 className="text-sm font-semibold  text-gray-900 line-clamp-2"> 
                       {post.title} 
                     </h6>
                     <p className="text-xs text-gray-600 line-clamp-1">
-                      {post.description}
+                    <SanitizedContent
+                      htmlContent={post.description}
+                      allowedTags={['h1', 'strong']}
+                      
+                    />
                     </p>
                   </div>
                 </div>

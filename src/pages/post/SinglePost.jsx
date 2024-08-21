@@ -9,6 +9,7 @@ import {profile} from '../../assets/index.js'
 import Button from '../../component/button/Button.jsx'
 import { IoChatbubblesOutline } from 'react-icons/io5';
 import addCommentValidator from '../../validators/addCommentValidator.js';
+import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 
 const initialFormData = {content : ""}
 const initialFormError = {content : ""}
@@ -46,29 +47,54 @@ const SinglePost = () => {
 
   useEffect(() => {
     // Listen for the 'commentAdded' event
-    socket.on('commentAdded', ({ postId: updatedPostId}) => {
+    socket.on('commentAdd', ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
             setCommentCount(prevCount => prevCount + 1);
         }
     });
 
     return () => {
-        socket.off('commentAdded');
+        socket.off('commentAdd');
     };
 }, [postId]);
 
-useEffect(() => {
-  // Listen for the 'commentAdded' event
-  socket.on('replyAdded', ({ postId: updatedPostId}) => {
-      if (updatedPostId === postId) {
-          setCommentCount(prevCount => prevCount + 1);
-      }
-  });
+  useEffect(() => {
+    // Listen for the 'commentAdded' event
+    socket.on('replyAdd', ({ postId: updatedPostId}) => {
+        if (updatedPostId === postId) {
+            setCommentCount(prevCount => prevCount + 1);
+        }
+    });
 
-  return () => {
-      socket.off('replyAdded');
-  };
-}, [postId]);
+    return () => {
+        socket.off('replyAdd');
+    };
+  }, [postId]);
+
+  useEffect(() => {
+    // Listen for the 'commentAdded' event
+    socket.on('nestedReplyAdd', ({ postId: updatedPostId}) => {
+        if (updatedPostId === postId) {
+            setCommentCount(prevCount => prevCount + 1);
+        }
+    });
+
+    return () => {
+        socket.off('nestedReplyAdd');
+    };
+  }, [postId]);
+
+  useEffect(() => {
+    socket.on('commentRemove', ({postId: updatedPostId }) => {
+        if (updatedPostId === postId) { // Check if the postId matches
+            setCommentCount(prevCount => prevCount - 1);
+        }
+    });
+
+    return () => {
+        socket.off('commentRemove');
+    };
+  }, [postId]);
 
   useEffect(() => {
     if(postId){
@@ -350,7 +376,7 @@ useEffect(() => {
             <img className='rounded-xl w-full h-[50rem] object-cover' src={fileUrl} alt="" />
         </div>
         <div>
-            <p className='text-lg space-y-4 '>{post?.description}</p>
+            <p className='text-lg space-y-4 '><SanitizedContent htmlContent={post?.description} allowedTags={['h1', 'strong', 'font']}/></p>
         </div>
 
         {/* Post comment  */}
@@ -374,7 +400,7 @@ useEffect(() => {
                   required
                 ></textarea>
               </div>
-              <Button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 ro focus:ring-4 focus:ring-primary-200 hover:bg-primary-800">
+              <Button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700  hover:bg-primary-800">
                 Post comment
               </Button>
             </form>
@@ -466,7 +492,7 @@ useEffect(() => {
                   </div>
                   <Button
                     type="submit"
-                    className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
+                    className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg  hover:bg-primary-800"
                   >
                     Reply
                   </Button>
@@ -558,7 +584,7 @@ useEffect(() => {
                     </div>
                     <Button
                         type="submit"
-                        className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
+                        className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800"
                     >
                         Reply
                     </Button>

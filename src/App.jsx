@@ -24,6 +24,7 @@ import UpdateCategory from "./pages/category/UpdateCategory.jsx";
 
 import PostList from "./pages/post/PostList.jsx";
 import SinglePost from "./pages/post/SinglePost.jsx";
+import NewPost from "./pages/post/NewPost.jsx"
 
 import Profile from "./pages/Profile.jsx";
 import Setting from "./pages/Setting.jsx"
@@ -46,6 +47,7 @@ function App() {
             <Route path="categories/update-category/:id" element={<UpdateCategory />} />
             <Route path="posts" element={<PostList />} />
             <Route path="posts/:id" element={<SinglePost />} />
+            <Route path="posts/new-post" element={<NewPost />} />
             <Route path="profile" element={<Profile />} />
             <Route path="setting" element={<Setting />} />
           </Route>
