@@ -135,7 +135,7 @@ const UpdatePost = () => {
       <div className="py-4 mx-auto lg:flex-row md:flex-col sm:flex-col lg:flex gap-8">
         
         {/* Form Section */}
-        <div className="lg:w-1/2 md:w-full sm:w-full">
+        <div className="lg:w-1/2 md:w-full sm:w-full ">
           <BackButton />
           <h4 className="h4 mb-4 font-bold text-slate-800">Update Post</h4>
           <form id='new-post' onSubmit={handleSubmit}>

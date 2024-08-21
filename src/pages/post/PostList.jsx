@@ -233,16 +233,16 @@ const PostList = () => {
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center text-xs text-gray-500'>
                         <img className='rounded-full w-5 h-5 object-cover' src={profile} alt="" />
-                        <span className='px-2 text-xs'>Gihan Chamila</span>
+                        <span className='px-2 text-xs'>{post.author.name}</span>
                         <span className='text-blue-500 hover:underline hover:cursor-pointer'>follow</span>
                       </div>
                       <span className='text-right  text-xs text-gray-500'>{formatDate(post.updatedAt)}</span>
                     </div>
                    
-                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer line-clamp-2">
+                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg leading-6 sm:py-2 lg:pb-0 lg:pt-0 font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer line-clamp-2">
                       {post.title}
                     </h5>
-                    <p className="text-gray-700 mb-2 text-sm line-clamp-2" >
+                    <p className="text-gray-700 lg:mb-0 sm:mb-4 text-sm line-clamp-2" >
                      <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']}/>
                     </p>
                     <div className="flex space-x-4">

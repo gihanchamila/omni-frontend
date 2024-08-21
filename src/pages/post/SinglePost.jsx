@@ -3,8 +3,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
 import io from 'socket.io-client';
-import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io'
 import BackButton from '../../component/button/BackButton.jsx';
+import Modal from '../../component/modal/Modal.jsx'
 
 import {profile} from '../../assets/index.js'
 import Button from '../../component/button/Button.jsx'
@@ -25,11 +25,8 @@ const SinglePost = () => {
   const postId = params.id
 
   const [post,  setPost] = useState([])
-  const [postFiles, setPostFiles] = useState([])
   const [comments, setComments] = useState([])
   const [commentCount, setCommentCount] = useState(0);
-  const [likeCount, setLikeCount] = useState(0);
-  const [hasLiked, setHasLiked] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
   const [visibleReplies, setVisibleReplies] = useState({})
   const [visibleNestedReplies, setVisibleNestedReplies] = useState({});
@@ -41,12 +38,12 @@ const SinglePost = () => {
   const [replyToReply, setReplyToReply] = useState(null);
   const [replyToReplyFormData, setReplyToReplyFormData] = useState(initialFormData);
   const [replyToReplyFormError, setReplyToReplyFormError] = useState(initialFormError);
-  const [replyToReplyingTo, setReplyToReplyingTo] = useState(null);
   const [loading, setLoading] = useState(false)
   const [dropdownOpenParent, setDropdownOpenParent] = useState({})
   const [dropdownOpenReply, setDropdownOpenReply] = useState({})
   const [dropdownOpenReplyToReply, setDropdownOpenReplyToReply] = useState({})
   const [currentUser, setCurrentUser] = useState(null);
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     // Listen for the 'commentAdded' event
@@ -372,6 +369,7 @@ const SinglePost = () => {
         const response2 = await axios.get(`/comments/${postId}/comments`);
         const data2 = response2.data.data; 
         setComments(data2); 
+
     } catch (error) {
 
         const response = error.response;
@@ -385,6 +383,7 @@ const SinglePost = () => {
       const response = await axios.delete(`/posts/${postId}`)
       const data = response.data;
       toast.success(data.message)
+      setShowModal(false)
       navigate('/posts')
     }catch(error){
       const response = error.response;
@@ -393,15 +392,24 @@ const SinglePost = () => {
     }
   }
 
+  const openModal = () => {
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+  }
+
+
   return (
 
     /* Post Section */
 
     <div className='flex items-center justify-center'>
-      <div className=' py-8 max-w-5xl space-y-3 m-0'>
+      <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
         <div className='flex justify-between items-center'>
         <BackButton />
-        <div className='flex space-x-4'>
+        <div className='flex space-x-4 z-auto'>
         {currentUser && post && currentUser === post?.author?._id ? (
             <>
             <Link to={`/posts/update-post/${post._id}`}>
@@ -409,7 +417,7 @@ const SinglePost = () => {
                     Update
                 </div>
             </Link>
-            <button onClick={() => handlePostDelete(post?._id)}>
+            <button onClick={openModal}>
                 <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
                     Delete
                 </div>
@@ -501,7 +509,7 @@ const SinglePost = () => {
 
                   {/* Dropdown menu */}
                   {dropdownOpenParent[comment._id] && (
-                    <div className="absolute  -top-50 left-[50rem] ">
+                    <div key={comment._id} className="absolute  -top-50 left-[50rem] ">
                     <div id={comment._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
                         <ul className="py-1 text-sm text-gray-700">
                             <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
@@ -621,31 +629,31 @@ const SinglePost = () => {
                   </button>
                 </div>
 
-                {/* Reply to Reply */}
+                  {/* Reply to Reply */}
 
-                {replyToReply === reply._id && (
-                <form onSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}>
-                    <div className="mt-4 ml-[4.5rem] p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                        <label htmlFor={`replyToReply-${reply._id}`} className="sr-only">Your reply</label>
-                        <textarea
-                            id={`replyToReply-${reply._id}`}
-                            rows="4"
-                            className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                            placeholder="Write a reply..."
-                            name="content"
-                            value={replyToReplyFormData.content}
-                            onChange={handleReplyToReplyChange}
-                            required
-                        ></textarea>
-                    </div>
-                    <Button
-                        type="submit"
-                        className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800"
-                    >
-                        Reply
-                    </Button>
-                </form>
-                )}
+                  {replyToReply === reply._id && (
+                  <form onSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}>
+                      <div className="mt-4 ml-[4.5rem] p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
+                          <label htmlFor={`replyToReply-${reply._id}`} className="sr-only">Your reply</label>
+                          <textarea
+                              id={`replyToReply-${reply._id}`}
+                              rows="4"
+                              className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
+                              placeholder="Write a reply..."
+                              name="content"
+                              value={replyToReplyFormData.content}
+                              onChange={handleReplyToReplyChange}
+                              required
+                          ></textarea>
+                      </div>
+                      <Button
+                          type="submit"
+                          className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800"
+                      >
+                          Reply
+                      </Button>
+                  </form>
+                  )}
                   {visibleNestedReplies[comment._id] && reply.replies && reply.replies.map((nestedReply) => (
                      <article key={nestedReply._id} className='ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg'>
                       <footer  className="flex justify-between items-center mb-2">
@@ -711,6 +719,12 @@ const SinglePost = () => {
             ))}
           </div>
         </section>
+        <Modal 
+        className='z-auto'
+        showModal={showModal}
+        title="Are you sure you want to delete this post?"
+        onConfirm={() => handlePostDelete(post._id)}
+        onCancel={closeModal}/>
       </div>
     </div>
   )
