@@ -113,8 +113,7 @@ const SinglePost = () => {
         const getCurrentUser = async () => {
           try {
               const response = await axios.get(`/auth/current-user`);
-              const user = response.data.data.user; 
-              console.log('Current User Data:', user); 
+              const user = response.data.data.user;  
               if (user && user._id) {
                   setCurrentUser(user._id); 
                   toast.success(`Your name is ${user._id}`); 
@@ -171,7 +170,6 @@ const SinglePost = () => {
           const response = await axios.get(`/comments/${postId}/commentCount`)
           const data = response.data
           toast.success(data.message)
-          console.log(data.data.count.commentCount)
           setCommentCount(data.data.count.commentCount)
         }catch(error){
           const response = error.response
@@ -319,7 +317,6 @@ const SinglePost = () => {
   };
 
   const toggleReplyToReplyForm = (replyId) => {
-    console.log('Toggling reply form for ID:', replyId);
     setReplyToReply(prevId => {
       const newId = prevId === replyId ? null : replyId;
       return newId;
@@ -328,12 +325,10 @@ const SinglePost = () => {
 
   const toggleNestedReplies = (replyId) => {
     setVisibleNestedReplies(prevState => {
-      console.log('Previous state:', prevState);
       const newState = {
         ...prevState,
         [replyId]: !prevState[replyId],
       };
-      console.log('New state:', newState);
       return newState;
     });
   };
