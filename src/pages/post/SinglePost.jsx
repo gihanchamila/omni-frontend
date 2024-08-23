@@ -5,6 +5,9 @@ import axios from '../../utils/axiosInstance.js';
 import io from 'socket.io-client';
 import BackButton from '../../component/button/BackButton.jsx';
 import Modal from '../../component/modal/Modal.jsx'
+import DropdownMenu from '../../component/comment/DropdownMenu.jsx';
+import CommentForm from '../../component/comment/CommentForm.jsx';
+import CommentFooter from '../../component/comment/CommentFooter.jsx';
 
 import {profile} from '../../assets/index.js'
 import Button from '../../component/button/Button.jsx'
@@ -39,11 +42,23 @@ const SinglePost = () => {
   const [replyToReplyFormData, setReplyToReplyFormData] = useState(initialFormData);
   const [replyToReplyFormError, setReplyToReplyFormError] = useState(initialFormError);
   const [loading, setLoading] = useState(false)
-  const [dropdownOpenParent, setDropdownOpenParent] = useState({})
-  const [dropdownOpenReply, setDropdownOpenReply] = useState({})
-  const [dropdownOpenReplyToReply, setDropdownOpenReplyToReply] = useState({})
   const [currentUser, setCurrentUser] = useState(null);
   const [showModal, setShowModal] = useState(false)
+
+  const actionHandlers = {
+    edit: (commentId) => {
+      // handle edit
+      console.log('Editing comment', commentId);
+    },
+    delete: (commentId) => {
+      handleDelete(commentId)
+      console.log('Deleting comment', commentId);
+    },
+    report: (commentId) => {
+      // handle report
+      console.log('Reporting comment', commentId);
+    },
+  };
 
   useEffect(() => {
     // Listen for the 'commentAdded' event
@@ -333,26 +348,6 @@ const SinglePost = () => {
     });
   };
 
-  const toggleDropdownParent = (commentId) => {
-    setDropdownOpenParent((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }))
-  }
-
-  const toggleDropdownReply = (commentId, open = null) => {
-    setDropdownOpenReply((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }))
-  }
-
-  const toggleDropdownReplyToReply = (commentId) => {
-    setDropdownOpenReplyToReply((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }))
-  }
 
   const handleDelete = async (commentId) => {
     try {
@@ -445,80 +440,14 @@ const SinglePost = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
             </div>
-            <form className="mb-6" onSubmit={handleSubmit}>
-              <div className="py-4 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                <label htmlFor="comment" className="sr-only">Your comment</label>
-                <textarea
-                  id="comment"
-                  rows="6"
-                  className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                  placeholder="Write a comment..."
-                  name = "content"
-                  value = {formData.content}
-                  onChange = {handleChange}
-                  required
-                ></textarea>
-              </div>
-              <Button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700  hover:bg-primary-800">
-                Post comment
-              </Button>
-            </form>
+            <CommentForm handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} formError={formError} placeholder="Write a comment..." buttonText="Post comment"/>
 
             {/* Parent comments  */}
 
             {comments.map((comment) => (
               <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
-                <footer className="flex justify-between items-center mb-2">
-                  <div className="flex items-center">
-                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                      <img
-                        className="mr-2 w-6 h-6 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                        alt="Michael Gough"
-                      />
-                      {comment.author?.name || 'Anonymous'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <time dateTime={comment.createdAt}>
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </time>
-                    </p>
-                  </div>
-                  <button
-                    data-dropdown-toggle="dropdownComment2"
-                    className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
-                    type="button"
-                    onClick={() => toggleDropdownParent(comment._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 text-end"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 3"
-                    >
-                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                    </svg>
-                    <span className="sr-only">Comment settings</span>
-                  </button>
 
-                  {/* Dropdown menu */}
-                  {dropdownOpenParent[comment._id] && (
-                    <div key={comment._id} className="absolute  -top-50 left-[50rem] ">
-                    <div id={comment._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
-                        </ul>
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li onClick={() => handleDelete(comment._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
-                        </ul>
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
-                        </ul>
-                    </div>
-                    </div>
-                  )}
-                </footer>
+                <CommentFooter author={comment.author} createdAt={comment.createdAt} dropdownId={comment._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
 
               <p className="text-gray-500">{comment.content}</p>
               <div className="flex items-center mt-4 space-x-4">
@@ -535,83 +464,12 @@ const SinglePost = () => {
               {/* Reply Comment*/}
 
               {replyingTo === comment._id && (
-                <form onSubmit={(e) => handleReplySubmit(e, comment._id)}>
-                  <div className=" mt-4 ml-[4.5rem]  p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                    <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
-                    <textarea
-                      id={`reply-${comment._id}`}
-                      rows="4"
-                      className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                      placeholder="Write a reply..."
-                      name="content"
-                      value={replyFormdata.content}
-                      onChange={handleReplyChange}
-                      required
-                    ></textarea>
-                  </div>
-                  <Button
-                    type="submit"
-                    className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg  hover:bg-primary-800"
-                  >
-                    Reply
-                  </Button>
-                </form>
+                <CommentForm handleSubmit={(e) => handleReplySubmit(e, comment._id)} handleChange={handleReplyChange} formData={replyFormdata} formError={replyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
               )}
 
               {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
                 <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-                <footer className="flex justify-between  items-center mb-2">
-                  <div className="flex items-center">
-                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                      <img
-                        className="mr-2 w-6 h-6 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                        alt="{reply.author.name}"
-                      />
-                      {reply.author?.name || 'Anonymous'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <time dateTime={reply.createdAt}>
-                          {new Date(reply.createdAt).toLocaleDateString()}
-                      </time>
-                    </p>
-                  </div>
-
-                  <button
-                    data-dropdown-toggle="dropdownComment2"
-                    className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
-                    type="button"
-                    onClick={() => toggleDropdownReply(reply._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 text-end"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 3"
-                    >
-                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                    </svg>
-                    <span className="sr-only">Comment settings</span>
-                  </button>
-                  
-                  {dropdownOpenReply[reply._id] && (
-                    <div className="absolute  -top-50 left-[50rem] ">
-                    <div id={reply._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
-                        </ul>
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li onClick={() => handleDelete(reply._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
-                        </ul>
-                        <ul className="py-1 text-sm text-gray-700">
-                            <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
-                        </ul>
-                    </div>
-                    </div>
-                  )}
-
-                </footer>
+                <CommentFooter author={reply.author} createdAt={reply.createdAt} dropdownId={reply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
                 <p className="text-gray-500">{reply.content}</p>
                 <div className="flex items-center mt-4 space-x-4">
                   <button
@@ -627,86 +485,20 @@ const SinglePost = () => {
                   {/* Reply to Reply */}
 
                   {replyToReply === reply._id && (
-                  <form onSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}>
-                      <div className="mt-4 ml-[4.5rem] p-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-                          <label htmlFor={`replyToReply-${reply._id}`} className="sr-only">Your reply</label>
-                          <textarea
-                              id={`replyToReply-${reply._id}`}
-                              rows="4"
-                              className="px-0 h-[2rem] w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                              placeholder="Write a reply..."
-                              name="content"
-                              value={replyToReplyFormData.content}
-                              onChange={handleReplyToReplyChange}
-                              required
-                          ></textarea>
-                      </div>
-                      <Button
-                          type="submit"
-                          className="ml-[4.5rem] mt-4 inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800"
-                      >
-                          Reply
-                      </Button>
-                  </form>
+                 <CommentForm handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)} handleChange={handleReplyToReplyChange} formData={replyToReplyFormData} formError={replyToReplyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
                   )}
+
+                  {/* Nested reply*/}
+
                   {visibleNestedReplies[comment._id] && reply.replies && reply.replies.map((nestedReply) => (
                      <article key={nestedReply._id} className='ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg'>
-                      <footer  className="flex justify-between items-center mb-2">
-                      <div className="flex items-center">
-                        <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                          <img
-                            className="mr-2 w-6 h-6 rounded-full"
-                            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                            alt="{reply.author.name}"
-                          />
-                          {nestedReply.author?.name || 'Anonymous'}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <time dateTime={nestedReply.createdAt}>
-                              {new Date(nestedReply.createdAt).toLocaleDateString()}
-                          </time>
-                        </p>
-                      </div>
 
-                      <button
-                        data-dropdown-toggle="dropdownComment2"
-                        className="inline-flex items-center p-2 top-5 text-sm font-medium text-center text-gray-500"
-                        type="button"
-                        onClick={() => toggleDropdownReplyToReply(nestedReply._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 text-end"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 3"
-                    >
-                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                    </svg>
-                    <span className="sr-only">Comment settings</span>
-                      </button>
+                      <CommentFooter author={nestedReply.author} createdAt={nestedReply.createdAt} dropdownId={nestedReply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
 
-                      {/* Dropdown menu */}
-
-                      {dropdownOpenReplyToReply[nestedReply._id] && (
-                        <div className="absolute  -top-50 left-[50rem] ">
-                          <div id={nestedReply._id} className="z-10 absolute py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
-                              <ul className="py-1 text-sm text-gray-700">
-                                  <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Edit</li>
-                              </ul>
-                              <ul className="py-1 text-sm text-gray-700">
-                                  <li onClick={() => handleDelete(nestedReply._id)} className='block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer'>Remove</li>
-                              </ul>
-                              <ul className="py-1 text-sm text-gray-700">
-                                  <li className='block py-1 px-4 hover:bg-gray-100 w-full text-left'>Report</li>
-                              </ul>
-                          </div>
-                        </div>
-                      )}
-                      </footer>
                       <p className="text-gray-500 pb-4">{nestedReply.content}</p>
                     </article>
                   ))}
+
                 </article>
               ))}
             <hr className="mt-6 border-t border-gray-200" />
@@ -714,12 +506,7 @@ const SinglePost = () => {
             ))}
           </div>
         </section>
-        <Modal 
-        className='z-auto'
-        showModal={showModal}
-        title="Are you sure you want to delete this post?"
-        onConfirm={() => handlePostDelete(post._id)}
-        onCancel={closeModal}/>
+        <Modal  className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal}/>
       </div>
     </div>
   )
