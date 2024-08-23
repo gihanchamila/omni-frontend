@@ -145,15 +145,23 @@
     }
 
     .ql-container {
-      @apply bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+      @apply bg-white border  border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
     }
     
     .ql-toolbar {
-      @apply bg-gray-100 border-b border-gray-300 rounded-t-lg;
+      @apply bg-gray-100 border-b border-gray-300 rounded-lg;
     }
     
     .ql-editor {
       @apply h-48 text-sm text-gray-900;
+    }
+
+    .social {
+      @apply w-7 h-7 hover:text-blue-500
+    }
+
+    .profile-details {
+      @apply p-2 px-4 border text-sm border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 rounded-full text-gray-500
     }
 
   }

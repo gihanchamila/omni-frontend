@@ -184,3 +184,19 @@ export default NewPost;
 <div className='p-2  text-sm px-4bg-red-600 text-white bg-red-500 hover:bg-red-500 rounded-full'>
         Delete
         </div>
+
+
+        <span
+                          className={`text-blue-500 hover:underline hover:cursor-pointer ${followStatus[post.author._id] ? 'text-red-500' : ''}`}
+                          onClick={() => handleFollow(post.author._id)}
+                        >
+                          {followStatus[post.author._id] ? (<span className='text-blue-500 hover:underline hover:cursor-pointer' >follow</span>) : (<span className='text-blue-500 hover:underline hover:cursor-pointer' >follow</span>)}
+                        </span>
+
+
+
+                        {followStatus[post.author._id] ? (
+                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Unfollow</span>)
+                          ) : (
+                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Follow</span>)
+                          )}

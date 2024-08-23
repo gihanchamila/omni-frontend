@@ -50,7 +50,7 @@ function App() {
             <Route path="posts/:id" element={<SinglePost />} />
             <Route path="posts/new-post" element={<NewPost />} />
             <Route path="posts/update-post/:id" element={<UpdatePost/>} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="/:id" element={<Profile />} />
             <Route path="setting" element={<Setting />} />
           </Route>
           <Route element={<PublicLayout />}>

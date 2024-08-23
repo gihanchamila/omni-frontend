@@ -10,6 +10,9 @@ import { profile } from '../../assets/index.js';
 import parse from 'html-react-parser';
 import sanitizeHtml from 'sanitize-html';
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
+import io from 'socket.io-client'; 
+
+const socket = io('http://localhost:8000');
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
@@ -22,6 +25,10 @@ const PostList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followStatuses, setFollowStatuses] = useState({});
+  const [currentUser, setCurrentUser] = useState('')
+
 
   useEffect(() => {
     const getPosts = async () => {
@@ -42,6 +49,48 @@ const PostList = () => {
     };
     getPosts();
   }, [currentPage, searchValue]);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+    try {
+      const response = await axios.get(`/auth/current-user`);
+      const user = response.data.data.user;  
+      if (user && user._id) {
+          setCurrentUser(user); 
+          toast.success(`Your name is ${user.name}`); 
+      } else {
+          toast.error('User data is incomplete');
+      }
+    }catch(error){
+      toast.error('Error getting user');
+      console.log(error)
+    }
+    };
+
+    getCurrentUser();
+},[]);
+
+useEffect(() => {
+  // Establish connection
+  socket.on('connect', () => {
+    console.log('Connected to socket.io server');
+  });
+
+  // Listen for follow/unfollow events
+  const handleFollowStatusUpdated = ({ followerId, followingId }) => {
+    setFollowStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [followingId]: followerId === socket.id,
+    }));
+  };
+
+  socket.on('follow-status-updated', handleFollowStatusUpdated);
+
+  // Cleanup function to remove the event listener on unmount
+  return () => {
+    socket.off('follow-status-updated', handleFollowStatusUpdated);
+  };
+}, []);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -130,6 +179,46 @@ const PostList = () => {
     }
   }, [totalPage]);
 
+  useEffect(() => {
+    const fetchFollowStatuses = async () => {
+        try {
+            const statuses = {};
+            await Promise.all(posts.map(async (post) => {
+                const cachedStatus = followStatuses[post.author._id];
+                if (cachedStatus) {
+                    statuses[post.author._id] = cachedStatus;
+                    return;
+                }
+
+                const response = await axios.get(`/user/follow-status/${post.author._id}`);
+                statuses[post.author._id] = response.data.data.isFollowing;
+            }));
+            setFollowStatuses(statuses);
+        } catch (error) {
+            console.error("Error fetching follow statuses:", error);
+        }
+    };
+
+    fetchFollowStatuses();
+}, [posts]);
+
+  useEffect(() => {
+    const checkFollowStatuses = async () => {
+      const statuses = {};
+      await Promise.all(posts.map(async (post) => {
+        try {
+          const response = await axios.get(`/user/follow-status/${post.author._id}`);
+          statuses[post.author._id] = response.data.isFollowing;
+        } catch (error) {
+          console.error("Error checking follow status:", error);
+        }
+      }));
+      setFollowStatus(statuses);
+
+    };
+    checkFollowStatuses();
+  }, [posts]);
+
   const handleLike = async (postId) => {
     try {
       const isLiked = likedPosts[postId];
@@ -185,18 +274,37 @@ const PostList = () => {
       setSearchValue(input);
       const response = await axios.get(`/category?q=${input}&page=${currentPage}`);
       const data = response.data.data;
-
       setPosts(data.categories);
       setTotalPage(data.pages);
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message, {
-        position: 'top-right',
-        autoClose: true,
-      });
+      toast.error(data.message, );
     }
   };
+
+  const handleFollow = async (authorId) => {
+  try {
+    const isFollowing = followStatuses[authorId];
+    const response = isFollowing 
+      ? await axios.delete(`/user/follow/${authorId}`) 
+      : await axios.post(`/user/follow/${authorId}`);
+
+    toast.success(response.data.message);
+
+    setFollowStatuses(prev => ({
+      ...prev,
+      [authorId]: !isFollowing
+    }));
+
+    socket.emit('follow-status-changed', { authorId, isFollowing: !isFollowing });
+
+  } catch (error) {
+    const response = error.response;
+    const data = response.data;
+    toast.error(data.message);
+  }
+};
 
   const formatDate = (date) => {
     const updatedDate = moment(date);
@@ -205,6 +313,8 @@ const PostList = () => {
     
     return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
   };
+
+  console.log(isFollowing)
 
   const navigate = useNavigate();
 
@@ -234,7 +344,16 @@ const PostList = () => {
                       <div className='flex items-center text-xs text-gray-500'>
                         <img className='rounded-full w-5 h-5 object-cover' src={profile} alt="" />
                         <span className='px-2 text-xs'>{post.author.name}</span>
-                        <span className='text-blue-500 hover:underline hover:cursor-pointer'>follow</span>
+                        <span
+                          className={`text-blue-500 hover:underline hover:cursor-pointer ${followStatuses[post.author._id] ? 'text-red-500' : ''}`}
+                          onClick={() => handleFollow(post.author._id)}
+                        >
+                          {followStatuses[post.author._id] ? (
+                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Unfollow</span>)
+                          ) : (
+                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Follow</span>)
+                          )}
+                        </span>
                       </div>
                       <span className='text-right  text-xs text-gray-500'>{formatDate(post.updatedAt)}</span>
                     </div>

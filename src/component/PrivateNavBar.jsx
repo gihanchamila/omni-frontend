@@ -1,5 +1,6 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { omni, profile } from "../assets/index.js";
+import axios from '../utils/axiosInstance.js'
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
 import { useAuth } from "./context/useAuth.jsx";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 
 const PrivateNavBar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null)
   const location = useLocation();
   const navigate = useNavigate()
 
@@ -28,6 +30,27 @@ const PrivateNavBar = () => {
   useEffect(() => {
     setDropdownOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+    try {
+      const response = await axios.get(`/auth/current-user`);
+      const user = response.data.data.user;  
+      if (user && user._id) {
+          setCurrentUser(user); 
+          toast.success(`Your name is ${user.name}`); 
+      } else {
+          toast.error('User data is incomplete');
+      }
+    }catch(error){
+      toast.error('Error getting user');
+      console.log(error)
+    }
+    };
+
+    getCurrentUser();
+},[]);
+
 
   return (
     <div className="">
@@ -50,7 +73,7 @@ const PrivateNavBar = () => {
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
-                <NavLink className="dropdown" to="/profile">Profile</NavLink>
+                <NavLink className="dropdown" to={`${currentUser._id}`}>Profile</NavLink>
                 <NavLink className="dropdown" to="/settings">Settings</NavLink>
                 <div className="my-2 border-t border-color-s opacity-20 "></div>
                 <NavLink className="dropdown" to="/login" onClick={handleLogOut}>Logout</NavLink>
