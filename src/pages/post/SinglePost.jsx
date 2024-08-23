@@ -401,10 +401,7 @@ const SinglePost = () => {
     setShowModal(false)
   }
 
-
   return (
-
-    /* Post Section */
 
     <div className='flex items-center justify-center'>
       <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
@@ -460,43 +457,44 @@ const SinglePost = () => {
 
                 <CommentFooter author={comment.author} createdAt={comment.createdAt} dropdownId={comment._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
 
-              <p className="text-gray-500">{comment.content}</p>
-              <div className="flex items-center mt-4 space-x-4">
-                <button
-                  type="button"
-                  className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                  onClick={() => {handleClick(comment._id);}}
-                >
-                  <IoChatbubblesOutline className='iconSize' />
-                  {getReplyText(comment.replies)}
-                </button>
-              </div>
-
-              {/* Reply Comment*/}
-
-              {replyingTo === comment._id && (
-                <CommentForm handleSubmit={(e) => handleReplySubmit(e, comment._id)} handleChange={handleReplyChange} formData={replyFormdata} formError={replyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
-              )}
-
-              {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
-                <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-                <CommentFooter author={reply.author} createdAt={reply.createdAt} dropdownId={reply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
-                <p className="text-gray-500">{reply.content}</p>
+                <p className="text-gray-500">{comment.content}</p>
                 <div className="flex items-center mt-4 space-x-4">
                   <button
                     type="button"
                     className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                    onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id) }}
+                    onClick={() => {handleClick(comment._id);}}
                   >
                     <IoChatbubblesOutline className='iconSize' />
-                    {getReplyText(reply.replies)}
+                    {getReplyText(comment.replies)}
                   </button>
                 </div>
+
+              {/* Reply Comment*/}
+
+              {replyingTo === comment._id && (
+                <CommentForm handleSubmit={(e) => handleReplySubmit(e, comment._id)} handleChange={handleReplyChange} formData={replyFormData} formError={replyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
+              )}
+
+              {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
+                <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
+                
+                  <CommentFooter author={reply.author} createdAt={reply.createdAt} dropdownId={reply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
+                  <p className="text-gray-500">{reply.content}</p>
+                  <div className="flex items-center mt-4 space-x-4">
+                    <button
+                      type="button"
+                      className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                      onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id) }}
+                    >
+                      <IoChatbubblesOutline className='iconSize' />
+                      {getReplyText(reply.replies)}
+                    </button>
+                  </div>
 
                   {/* Reply to Reply */}
 
                   {replyToReply === reply._id && (
-                 <CommentForm handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)} handleChange={handleReplyToReplyChange} formData={replyToReplyFormData} formError={replyToReplyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
+                    <CommentForm handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)} handleChange={handleReplyToReplyChange}   formData={replyToReplyFormData} formError={replyToReplyFormError} placeholder="Write a reply..." buttonText="Reply"    className="mt-4 ml-[4.5rem]" />
                   )}
 
                   {/* Nested reply*/}
@@ -520,8 +518,8 @@ const SinglePost = () => {
         <Modal  className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal}/>
       </div>
     </div>
+
   )
-  
 }
 
 export default SinglePost
