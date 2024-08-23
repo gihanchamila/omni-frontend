@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import axios from '../../utils/axiosInstance.js';
 import io from 'socket.io-client';
+import axios from '../../utils/axiosInstance.js';
+
+// Components
 import BackButton from '../../component/button/BackButton.jsx';
-import Modal from '../../component/modal/Modal.jsx'
-import DropdownMenu from '../../component/comment/DropdownMenu.jsx';
+import Modal from '../../component/modal/Modal.jsx';
 import CommentForm from '../../component/comment/CommentForm.jsx';
 import CommentFooter from '../../component/comment/CommentFooter.jsx';
-
-import {profile} from '../../assets/index.js'
-import Button from '../../component/button/Button.jsx'
-import { IoChatbubblesOutline } from 'react-icons/io5';
-import addCommentValidator from '../../validators/addCommentValidator.js';
-
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
+
+// Assets & Icons
+import { profile } from '../../assets/index.js';
+import { IoChatbubblesOutline } from 'react-icons/io5';
+
+// Validators
+import addCommentValidator from '../../validators/addCommentValidator.js';
 
 const initialFormData = {content : ""}
 const initialFormError = {content : ""}
@@ -27,23 +29,33 @@ const SinglePost = () => {
   const params = useParams()
   const postId = params.id
 
-  const [post,  setPost] = useState([])
-  const [comments, setComments] = useState([])
+  const [post, setPost] = useState([]);
+  const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
-  const [fileUrl, setFileUrl] = useState(null)
-  const [visibleReplies, setVisibleReplies] = useState({})
-  const [visibleNestedReplies, setVisibleNestedReplies] = useState({});
-  const [formData, setFormData] = useState(initialFormData)
-  const [formError, setFormError] = useState(initialFormError)
-  const [replyFormdata, setReplyFormData] = useState(initialFormData)
-  const [replyFormError, setReplyFormError] = useState(initialFormError)
-  const [replyingTo, setReplyingTo] = useState(null); 
+  const [fileUrl, setFileUrl] = useState(null);
+
+  // Form Data States
+  const [formData, setFormData] = useState(initialFormData);
+  const [formError, setFormError] = useState(initialFormError);
+
+  // Reply States
+  const [replyFormData, setReplyFormData] = useState(initialFormData);
+  const [replyFormError, setReplyFormError] = useState(initialFormError);
+  const [replyingTo, setReplyingTo] = useState(null);
   const [replyToReply, setReplyToReply] = useState(null);
   const [replyToReplyFormData, setReplyToReplyFormData] = useState(initialFormData);
   const [replyToReplyFormError, setReplyToReplyFormError] = useState(initialFormError);
-  const [loading, setLoading] = useState(false)
+
+  // Visibility States
+  const [visibleReplies, setVisibleReplies] = useState({});
+  const [visibleNestedReplies, setVisibleNestedReplies] = useState({});
+
+  // User and Modal States
   const [currentUser, setCurrentUser] = useState(null);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   const actionHandlers = {
     edit: (commentId) => {
@@ -143,7 +155,7 @@ const SinglePost = () => {
         getPost();
         getCurrentUser();
     }
-}, [postId]);
+  }, [postId]);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -347,7 +359,6 @@ const SinglePost = () => {
       return newState;
     });
   };
-
 
   const handleDelete = async (commentId) => {
     try {
