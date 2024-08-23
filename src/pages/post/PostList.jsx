@@ -1,33 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
-import Button from '../../component/button/Button.jsx'
-import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
-import { IoChatbubblesOutline } from 'react-icons/io5';
 import { toast } from 'sonner';
 import moment from 'moment';
-import { profile } from '../../assets/index.js';
-import parse from 'html-react-parser';
-import sanitizeHtml from 'sanitize-html';
+import io from 'socket.io-client';
+
+// Custom Components
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
-import io from 'socket.io-client'; 
+import Pagination from '../../component/pagination/Pagination.jsx';
+
+// Icons
+import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
+import { IoChatbubblesOutline } from 'react-icons/io5';
+
+// Assets
+import { profile } from '../../assets/index.js';
 
 const socket = io('http://localhost:8000');
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
+
+  // Posts Data
   const [posts, setPosts] = useState([]);
-  const [postFiles, setPostFiles] = useState([])
+  const [postFiles, setPostFiles] = useState([]);
   const [likedPosts, setLikedPosts] = useState({});
   const [latestPosts, setLatestPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
+  
+  // Pagination
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
+  
+  // Search and Filters
   const [searchValue, setSearchValue] = useState('');
+  
+  // Follow Status
   const [isFollowing, setIsFollowing] = useState(false);
   const [followStatuses, setFollowStatuses] = useState({});
-  const [currentUser, setCurrentUser] = useState('')
+  
+  // User Info
+  const [currentUser, setCurrentUser] = useState('');
 
 
   useEffect(() => {
@@ -63,34 +77,30 @@ const PostList = () => {
       }
     }catch(error){
       toast.error('Error getting user');
-      console.log(error)
     }
     };
 
     getCurrentUser();
-},[]);
+  },[]);
 
-useEffect(() => {
-  // Establish connection
-  socket.on('connect', () => {
-    console.log('Connected to socket.io server');
-  });
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to socket.io server');
+    });
 
-  // Listen for follow/unfollow events
-  const handleFollowStatusUpdated = ({ followerId, followingId }) => {
-    setFollowStatuses((prevStatuses) => ({
-      ...prevStatuses,
-      [followingId]: followerId === socket.id,
-    }));
-  };
+    const handleFollowStatusUpdated = ({ followerId, followingId }) => {
+      setFollowStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [followingId]: followerId === socket.id,
+      }));
+    };
 
-  socket.on('follow-status-updated', handleFollowStatusUpdated);
+    socket.on('follow-status-updated', handleFollowStatusUpdated);
 
-  // Cleanup function to remove the event listener on unmount
-  return () => {
-    socket.off('follow-status-updated', handleFollowStatusUpdated);
-  };
-}, []);
+    return () => {
+      socket.off('follow-status-updated', handleFollowStatusUpdated);
+    };
+  }, []);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -130,14 +140,11 @@ useEffect(() => {
   useEffect(() => {
     const latestPosts = async () => {
       try {
-
         setLoading(true)
 
         const response = await axios.get('/posts/features/latest-posts')
         const data = response.data.data
-        
         setLatestPosts(data)
-          
       } catch (error) {
         setLoading(false)
         const response = error.response;
@@ -213,7 +220,7 @@ useEffect(() => {
           console.error("Error checking follow status:", error);
         }
       }));
-      setFollowStatus(statuses);
+      setFollowStatuses(statuses);
 
     };
     checkFollowStatuses();
@@ -254,18 +261,6 @@ useEffect(() => {
       const data = response.data;
       toast.error(data.message);
     }
-  };
-
-  const handlePrev = () => {
-    setCurrentPage((prev) => prev - 1);
-  };
-
-  const handleNext = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePage = (pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   const handleSearch = async (e) => {
@@ -313,8 +308,6 @@ useEffect(() => {
     
     return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
   };
-
-  console.log(isFollowing)
 
   const navigate = useNavigate();
 
@@ -456,29 +449,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      {pageCount.length > 0 && (
-        <nav className='flex items-center justify-center pb-10 mt-5' aria-label="Page navigation example">
-          <ul className="inline-flex -space-x-px text-sm">
-            <li>
-              <button className="pageButton rounded-l-lg rounded-r-none" onClick={handlePrev} disabled={currentPage === 1}>
-                previous
-              </button>
-            </li>
-            {pageCount.map((pageNumber, index) => (
-              <li key={index}>
-                <button className={`pageButton rounded-none ${currentPage === pageNumber ? 'bg-gray-100 active:bg-gray-200' : ''}`} onClick={() => handlePage(pageNumber)}>
-                  {pageNumber}
-                </button>
-              </li>
-            ))}
-            <li>
-              <button className="pageButton rounded-r-lg rounded-l-none" onClick={handleNext} disabled={currentPage === totalPage}>
-                next
-              </button>
-            </li>
-          </ul>
-        </nav>
-      )}
+      <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
     </div>
   );
 };

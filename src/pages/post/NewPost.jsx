@@ -2,16 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
+
+// Custom Components
 import Button from '../../component/button/Button.jsx';
 import BackButton from '../../component/button/BackButton.jsx';
-import addPostValidator from '../../validators/addPostValidator.js';
 import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
-import ReactQuill from 'react-quill'; 
+
+// Validators
+import addPostValidator from '../../validators/addPostValidator.js';
+
+// Third-Party Libraries
+import ReactQuill from 'react-quill';
 
 const initialFormData = { title: "", description: "", category: "", file: "" };
 const initialFormError = { title: "", description: "", category: "", file: "" };
 
 const NewPost = () => {
+  
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
   const [categories, setCategories] = useState([]);

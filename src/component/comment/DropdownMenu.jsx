@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const DropdownMenu = ({ dropdownId, actionHandlers }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
@@ -20,10 +21,37 @@ const DropdownMenu = ({ dropdownId, actionHandlers }) => {
     } else {
       console.error(`No handler found for action: ${option.action}`);
     }
+    setDropdownOpen(false); // Close dropdown after an option is clicked
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   return (
-    <div className="relative inline-block text-left">
+    <div
+      ref={dropdownRef}
+      className="relative inline-block text-left"
+      onMouseLeave={handleMouseLeave}
+    >
       <button
         data-dropdown-toggle={`dropdown-${dropdownId}`}
         className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500"

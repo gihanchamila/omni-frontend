@@ -266,7 +266,7 @@ const SinglePost = () => {
   const handleReplySubmit = async (e, commentId) => {
     e.preventDefault();
 
-    const errors = addCommentValidator({ content: replyFormdata.content });
+    const errors = addCommentValidator({ content: replyFormData.content });
     if (errors.content) {
         setReplyFormError(errors);
         return;
@@ -274,7 +274,7 @@ const SinglePost = () => {
 
     try {
         setLoading(true);
-        const response = await axios.post(`/comments/${postId}/reply/${commentId}`, replyFormdata);
+        const response = await axios.post(`/comments/${postId}/reply/${commentId}`, replyFormData);
         const newReply = response.data.data.reply;
 
         // Update the state with the new reply

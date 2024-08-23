@@ -2,19 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
+import moment from 'moment';
+
+// Custom Components
 import Button from '../../component/button/Button.jsx';
 import Modal from '../../component/modal/Modal.jsx';
-import moment from 'moment';
+import Pagination from '../../component/pagination/Pagination.jsx';
 
 const CategoryList = () => {
   const [loading, setLoading] = useState(false);
+
   const [categories, setCategories] = useState([]);
-  const [categoryId, setCategoryId] = useState(null)
+  const [categoryId, setCategoryId] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
-  const [totalPage, setTotalPage] = useState(1);
+
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
+
   const [searchValue, setSearchValue] = useState("");
+
   const [sortField, setSortField] = useState("updatedAt");
   const [sortOrder, setSortOrder] = useState("desc");
 
@@ -51,18 +59,6 @@ const CategoryList = () => {
       setPageCount([]);
     }
   }, [totalPage]);
-
-  const handlePrev = () => {
-    setCurrentPage((prev) => prev - 1);
-  };
-
-  const handleNext = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePage = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   const handleSearch = async (e) => {
     try {
@@ -203,33 +199,9 @@ const CategoryList = () => {
           </table>
         </div>
       )}
-      {pageCount.length > 0 && (
-        <nav className='flex items-center justify-center pb-10 mt-5' aria-label="Page navigation example">
-          <ul className="inline-flex -space-x-px text-sm">
-            <li>
-              <button className="pageButton rounded-l-lg rounded-r-none" onClick={handlePrev} disabled={currentPage === 1}>previous</button>
-            </li>
-            {pageCount.map((pageNumber, index) => (
-              <li key={index}>
-                <button className={`pageButton rounded-none ${currentPage === pageNumber ? `bg-gray-100 active:bg-gray-200` : ""}`} onClick={() => handlePage(pageNumber)}>{pageNumber}</button>
-              </li>
-            ))}
-            <li>
-              <button className="pageButton rounded-r-lg rounded-l-none" onClick={handleNext} disabled={currentPage === totalPage}>next</button>
-            </li>
-          </ul>
-        </nav>
-      )}
-      <Modal 
-        className='z-auto'
-        showModal={showModal}
-        title="Are you sure you want to delete this category?"
-        onConfirm={(handleDelete)}
-        onCancel={closeModal}/>
-      
+      <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
+      <Modal  className='z-auto' showModal={showModal} title="Are you sure you want to delete this category?" onConfirm={(handleDelete)} onCancel={closeModal}/>
     </div>
-
-    
   );
 };
 
