@@ -127,10 +127,12 @@ const SinglePost = () => {
     if (postId) {
         const getPost = async () => {
             try {
+                setLoading(true)
                 const response = await axios.get(`/posts/${postId}`);
                 const data = response.data.data;
                 setPost(data.post);
             } catch (error) {
+                setLoading(false)
                 const response = error.response;
                 const data = response?.data?.data || {};
                 toast.error(data.message || 'Failed to fetch post');
@@ -139,6 +141,7 @@ const SinglePost = () => {
 
         const getCurrentUser = async () => {
           try {
+              setLoading(true)
               const response = await axios.get(`/auth/current-user`);
               const user = response.data.data.user;  
               if (user && user._id) {
@@ -148,6 +151,7 @@ const SinglePost = () => {
                   toast.error('User data is incomplete');
               }
           } catch (error) {
+              setLoading(false)
               toast.error('Error getting user');
           }
       };
@@ -161,9 +165,11 @@ const SinglePost = () => {
     const getPostFiles = async () => {
       if (post.file) {
         try {
+          setLoading(true)
           const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
           setFileUrl(response.data.data.url);
         } catch (error) {
+          setLoading(false)
           const response = error.response;
           const data = response.data;
           toast.error(data.message);

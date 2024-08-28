@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate} from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
@@ -43,6 +43,7 @@ const PostList = () => {
   // User Info
   const [currentUser, setCurrentUser] = useState('');
 
+  const authorIds = useMemo(() => posts.map(post => post.author._id), [posts]);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -188,26 +189,27 @@ const PostList = () => {
 
   useEffect(() => {
     const fetchFollowStatuses = async () => {
-        try {
-            const statuses = {};
-            await Promise.all(posts.map(async (post) => {
-                const cachedStatus = followStatuses[post.author._id];
-                if (cachedStatus) {
-                    statuses[post.author._id] = cachedStatus;
-                    return;
-                }
-
-                const response = await axios.get(`/user/follow-status/${post.author._id}`);
-                statuses[post.author._id] = response.data.data.isFollowing;
-            }));
-            setFollowStatuses(statuses);
-        } catch (error) {
-            console.error("Error fetching follow statuses:", error);
-        }
+      try {
+        const statuses = { ...followStatuses }; // Keep existing statuses to avoid unnecessary state updates
+        await Promise.all(
+          authorIds.map(async (authorId) => {
+            if (statuses[authorId] !== undefined) return; // Skip fetching if already cached
+            try {
+              const response = await axios.get(`/user/follow-status/${authorId}`);
+              statuses[authorId] = response.data.data.isFollowing;
+            } catch (error) {
+              console.error(`Error fetching follow status for author ${authorId}:`, error);
+            }
+          })
+        );
+        setFollowStatuses(statuses);
+      } catch (error) {
+        console.error('Error fetching follow statuses:', error);
+      }
     };
 
     fetchFollowStatuses();
-}, [posts]);
+  }, [authorIds]);
 
   useEffect(() => {
     const checkFollowStatuses = async () => {
@@ -215,13 +217,12 @@ const PostList = () => {
       await Promise.all(posts.map(async (post) => {
         try {
           const response = await axios.get(`/user/follow-status/${post.author._id}`);
-          statuses[post.author._id] = response.data.isFollowing;
+          statuses[post.author._id] = response.data.data.isFollowing;
         } catch (error) {
           console.error("Error checking follow status:", error);
         }
       }));
       setFollowStatuses(statuses);
-
     };
     checkFollowStatuses();
   }, [posts]);
@@ -274,7 +275,7 @@ const PostList = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message, );
+      toast.error(data.message);
     }
   };
 
@@ -286,7 +287,6 @@ const PostList = () => {
       : await axios.post(`/user/follow/${authorId}`);
 
     toast.success(response.data.message);
-
     setFollowStatuses(prev => ({
       ...prev,
       [authorId]: !isFollowing
@@ -299,7 +299,7 @@ const PostList = () => {
     const data = response.data;
     toast.error(data.message);
   }
-};
+  };
 
   const formatDate = (date) => {
     const updatedDate = moment(date);
