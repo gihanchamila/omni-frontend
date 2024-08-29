@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
+import socket from '../../utils/socket.js';
 import { toast } from 'sonner';
 
 // Custom Components
@@ -27,11 +28,6 @@ const NewPost = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -49,6 +45,21 @@ const NewPost = () => {
 
     getCategories();
   }, []);
+
+  useEffect(() => {
+    socket.on('postAdded', (newPost) => {
+      toast.success(`New post added: ${newPost.title}`);
+    });
+
+    return () => {
+      socket.off('postAdded');
+    };
+  }, [])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];

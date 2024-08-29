@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate} from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
+import socket from '../../utils/socket.js';
 import { toast } from 'sonner';
 import moment from 'moment';
-import io from 'socket.io-client';
 
 // Custom Components
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
+import Post from '../../component/post/Post.jsx';
 
 // Icons
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
 
-// Assets
-import { profile } from '../../assets/index.js';
-
-const socket = io('http://localhost:8000');
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
@@ -106,21 +103,26 @@ const PostList = () => {
   useEffect(() => {
     const getPostFiles = async () => {
       const files = {};
-      await Promise.all(posts.map(async (post) => {
-        if (post.file) {
-          try {
-            const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-            files[post._id] = response.data.data.url;
-          } catch (error) {
-            const response = error.response;
-            const data = response.data;
-            toast.error(data.message);
+      await Promise.all(
+        posts.map(async (post) => {
+          if (post.file && !files[post._id]) {
+            try {
+              const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
+              const data = response.data.data
+              console.log(data)
+              files[post._id] = data.url;
+              toast.success(response.data.message)
+            } catch (error) {
+              const response = error.response;
+              const data = response?.data;
+              toast.error(data?.message || "Failed to fetch file URL");
+            }
           }
-        }
-      }));
-      setPostFiles(files);
+        })
+      );
+      setPostFiles(prevFiles => ({ ...prevFiles, ...files })); // Merge new files with existing ones
     };
-
+  
     if (posts.length > 0) {
       getPostFiles();
     }
@@ -301,15 +303,6 @@ const PostList = () => {
   }
   };
 
-  const formatDate = (date) => {
-    const updatedDate = moment(date);
-    const now = moment();
-    const diffDays = now.diff(updatedDate, 'days');
-    
-    return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
-  };
-
-  const navigate = useNavigate();
 
   return (
     <div className="container mx-auto px-4 md:px-[10rem] py-10">
@@ -322,58 +315,16 @@ const PostList = () => {
             <p>Loading...</p>
           ) : (
             posts.map((post) => (
-              <div key={post._id} className="bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:transition-colors duration-100">
-                <div className="flex flex-col md:flex-row">
-                  <div onClick={() => {navigate(`posts/${post._id}`)}} className="flex-shrink-0 w-full md:w-[10rem] h-[11rem] hover:cursor-pointer">
-                    <img
-                      className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
-                      onClick={() => {navigate(`posts/${post._id}`)}}
-                      src={postFiles[post._id] || post.file}
-                      alt={post.title}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between p-3 w-full">
-                    <div className='flex items-center justify-between'>
-                      <div className='flex items-center text-xs text-gray-500'>
-                        <img className='rounded-full w-5 h-5 object-cover' src={profile} alt="" />
-                        <span className='px-2 text-xs'>{post.author.name}</span>
-                        <span
-                          className={`text-blue-500 hover:underline hover:cursor-pointer ${followStatuses[post.author._id] ? 'text-red-500' : ''}`}
-                          onClick={() => handleFollow(post.author._id)}
-                        >
-                          {followStatuses[post.author._id] ? (
-                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Unfollow</span>)
-                          ) : (
-                            post.author._id === currentUser._id ? null : (<span className='text-blue-500 hover:underline hover:cursor-pointer'>Follow</span>)
-                          )}
-                        </span>
-                      </div>
-                      <span className='text-right  text-xs text-gray-500'>{formatDate(post.updatedAt)}</span>
-                    </div>
-                   
-                    <h5 onClick={() => {navigate(`/posts/${post._id}`)}} className="text-lg leading-6 sm:py-2 lg:pb-0 lg:pt-0 font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer line-clamp-2">
-                      {post.title}
-                    </h5>
-                    <p className="text-gray-700 lg:mb-0 sm:mb-4 text-sm line-clamp-2" >
-                     <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']}/>
-                    </p>
-                    <div className="flex space-x-4">
-                      <button className="flex items-center text-gray-500 hover:text-gray-700" onClick={() => handleLike(post._id)}>
-                        {likedPosts[post._id] ? (
-                          <IoIosHeart className="iconSize text-red-500" />
-                        ) : (
-                          <IoIosHeartEmpty className="iconSize" />
-                        )}
-                        <span className="text-xs">{post.likesCount}</span>
-                      </button>
-                      <button className="flex items-center text-gray-500 hover:text-gray-700">
-                        <IoChatbubblesOutline className='iconSize' />
-                        <span className='text-xs'>{post.commentCount}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Post
+                key={post._id}
+                post={post}
+                postFile={postFiles[post._id]}
+                liked={likedPosts[post._id]}
+                handleLike={handleLike}
+                followStatuses={followStatuses}
+                currentUser={currentUser}
+                handleFollow={handleFollow}
+              />
             ))
           )}
         </div>
@@ -422,6 +373,7 @@ const PostList = () => {
               Popular Posts
             </h5>
             <div className="space-y-4">
+
               {/* Popular Post Card */}
               
               {latestPosts.map(post => (

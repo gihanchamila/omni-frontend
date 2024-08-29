@@ -34,8 +34,6 @@ const Profile = () => {
     getCurrentUser();
 },[]);
 
-
-
 useEffect(() => {
   const getFollowers = async () => {
     try{
@@ -67,15 +65,13 @@ useEffect(() => {
   getFollowing()
 }, [id])
 
-console.log(currentUser)
-
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-[50rem]">
       <div className="flex flex-col ">
-        <div className="flex relative flex-col items-center bg-gray-200">
-          <img src={coverPhoto} className=" object-cover bg-gray-500 h-[15rem] w-full rounded-lg flex  justify-center" />
-          <img src={profilePic} className="absolute  bg-red-500 object-cover rounded-full h-[10rem] w-[10rem] left-1/2 transform -translate-x-1/2 bottom-[-4.5rem]" />  
+        <div className="flex relative flex-col items-center">
+          <img src={coverPhoto} className=" object-cover h-[15rem] w-full rounded-lg flex  justify-center" />
+          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] left-1/2 transform -translate-x-1/2 bottom-[-4.5rem]" />  
         </div>
       </div>
       <div className="relative flex flex-col justify-center items-center mt-[5rem] space-y-2">
@@ -102,12 +98,12 @@ console.log(currentUser)
         </div>   
       </div>
       <p className="lg:mt-9 sm:mt-10 text-md text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-      <div className="flex lg:space-x-2 justify-between lg:px-[26rem]  sm:mx-[4rem] mt-4">
+      <div className="flex lg:space-x-2 justify-between lg:px-[27rem]  sm:mx-[7rem] mt-4">
         <p className="profile-details">followers : {followers}</p>
         <p className="profile-details">following : {following}</p>
-        <p className="profile-details">Posts : 20</p>
       </div>
-      
+      <hr className="my-6 border-t border-gray-200" />
+      <div className="h4 ">Your posts</div>
     </div>
     
   );

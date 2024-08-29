@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
+import socket from '../../utils/socket.js';
 import { toast } from 'sonner';
 
 // Custom Components
@@ -80,6 +81,16 @@ const UpdatePost = () => {
     getCategories();
   }, []);
 
+  useEffect(() => {
+    socket.on('postUpdated', (updatedPost) => {
+      toast.success(`Post Updated: ${updatedPost.title}`);
+    });
+
+    return () => {
+      socket.off('postUpdated');
+    };
+  }, [])
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
@@ -135,6 +146,7 @@ const UpdatePost = () => {
       }
     }
   };
+
 
   return (
     <section className="bg-white">

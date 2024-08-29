@@ -11,7 +11,6 @@ const PublicNavBar = () => {
     setOpenNavigation(prev => !prev);
   };
 
-  // Close navigation when the route changes
   useEffect(() => {
     setOpenNavigation(false);
   }, [location]);
