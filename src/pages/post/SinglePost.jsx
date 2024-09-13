@@ -500,7 +500,11 @@ const SinglePost = () => {
                   }`}
                   onClick={() => handleFollow(post?.author?._id)}
                 >
-                  {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
+                  {!isLoaded ? (
+                  <Skeleton height="1.5rem" width="5rem" />
+                ) : (
+                  followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'
+                )}
                 </span>
               )}
             </div>
