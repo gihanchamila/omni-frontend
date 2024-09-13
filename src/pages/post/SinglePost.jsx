@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import io from 'socket.io-client';
+import { useSocket } from '../../hooks/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 
 // Components
@@ -21,12 +21,12 @@ import addCommentValidator from '../../validators/addCommentValidator.js';
 const initialFormData = {content : ""}
 const initialFormError = {content : ""}
 
-const socket = io('http://localhost:8000');
 
 const SinglePost = () => {
 
   const navigate = useNavigate()
   const params = useParams()
+  const socket = useSocket()
   const postId = params.id
 
   const [post, setPost] = useState([]);
@@ -37,6 +37,9 @@ const SinglePost = () => {
   // Form Data States
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
+
+  // Follow States
+  const [followStatuses, setFollowStatuses] = useState({});
 
   // Reply States
   const [replyFormData, setReplyFormData] = useState(initialFormData);
@@ -208,6 +211,65 @@ const SinglePost = () => {
     }
     getCommentCount()
   }, [postId]) 
+
+  useEffect(() => {
+
+    const handleFollowStatusUpdated = ({ followerId, followingId }) => {
+      setFollowStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [followingId]: followerId === socket.id,
+      }));
+    };
+
+    socket.on('follow-status-updated', handleFollowStatusUpdated);
+
+    return () => {
+      socket.off('follow-status-updated', handleFollowStatusUpdated);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    const fetchFollowStatus = async () => {
+      if (post && post.author && post.author._id) {
+        try {
+          // Check if follow status is already cached to avoid unnecessary requests
+  
+          // Fetch follow status from API
+          const response = await axios.get(`/user/follow-status/${post.author._id}`);
+          setFollowStatuses((prevStatuses) => ({
+            ...prevStatuses,
+            [post.author._id]: response.data.data.isFollowing,
+          }));
+        } catch (error) {
+          console.error(`Error fetching follow status for author ${post.author._id}:`, error);
+        }
+      }
+    };
+  
+    fetchFollowStatus();
+  }, [post, followStatuses]);
+
+  const handleFollow = async (authorId) => {
+    try {
+      const isFollowing = followStatuses[authorId];
+      const response = isFollowing 
+        ? await axios.delete(`/user/follow/${authorId}`) 
+        : await axios.post(`/user/follow/${authorId}`);
+  
+      toast.success(response.data.message);
+      setFollowStatuses(prev => ({
+        ...prev,
+        [authorId]: !isFollowing
+      }));
+  
+      socket.emit('follow-status-changed', { authorId, isFollowing: !isFollowing });
+  
+    } catch (error) {
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
+  };
 
   const toggleReplies = (commentId) => {
     setVisibleReplies((prevState) => ({
@@ -431,7 +493,16 @@ const SinglePost = () => {
         <div className='flex items-center py-4 mt-0'>
             <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="" />
             <span className='m-0 px-4'>{post?.updatedBy?.name}</span>
-            <span className='text-blue-500 hover:underline hover:cursor-pointer'>Follow</span>
+            {post?.author?._id !== currentUser && (
+              <span
+                className={`hover:underline hover:cursor-pointer ${
+                  followStatuses[post?.author?._id] ? 'text-red-500' : 'text-blue-500'
+                }`}
+                onClick={() => handleFollow(post?.author?._id)}
+              >
+                {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
+              </span>
+            )}
         </div>
         <div>
             <img className='rounded-xl w-full h-[50rem] object-cover' src={fileUrl} alt="" />

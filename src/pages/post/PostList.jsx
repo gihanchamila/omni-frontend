@@ -8,9 +8,6 @@ import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
 
-// Icons
-
-
 const PostList = () => {
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +27,6 @@ const PostList = () => {
   const [searchValue, setSearchValue] = useState('');
   
   // Follow Status
-  const [isFollowing, setIsFollowing] = useState(false);
   const [followStatuses, setFollowStatuses] = useState({});
   
   // User Info
@@ -76,22 +72,6 @@ const PostList = () => {
 
     getCurrentUser();
   },[]);
-
-  useEffect(() => {
-
-    const handleFollowStatusUpdated = ({ followerId, followingId }) => {
-      setFollowStatuses((prevStatuses) => ({
-        ...prevStatuses,
-        [followingId]: followerId === socket.id,
-      }));
-    };
-
-    socket.on('follow-status-updated', handleFollowStatusUpdated);
-
-    return () => {
-      socket.off('follow-status-updated', handleFollowStatusUpdated);
-    };
-  }, [socket]);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -182,10 +162,28 @@ const PostList = () => {
     }
   }, [totalPage]);
 
+  {/* Follow */}
+
+  useEffect(() => {
+
+    const handleFollowStatusUpdated = ({ followerId, followingId }) => {
+      setFollowStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [followingId]: followerId === socket.id,
+      }));
+    };
+
+    socket.on('follow-status-updated', handleFollowStatusUpdated);
+
+    return () => {
+      socket.off('follow-status-updated', handleFollowStatusUpdated);
+    };
+  }, [socket]);
+
   useEffect(() => {
     const fetchFollowStatuses = async () => {
       try {
-        const statuses = { ...followStatuses }; // Keep existing statuses to avoid unnecessary state updates
+        const statuses = { ...followStatuses }; 
         await Promise.all(
           authorIds.map(async (authorId) => {
             if (statuses[authorId] !== undefined) return; // Skip fetching if already cached
@@ -221,6 +219,30 @@ const PostList = () => {
     };
     checkFollowStatuses();
   }, [posts]);
+
+  const handleFollow = async (authorId) => {
+    try {
+      const isFollowing = followStatuses[authorId];
+      const response = isFollowing 
+        ? await axios.delete(`/user/follow/${authorId}`) 
+        : await axios.post(`/user/follow/${authorId}`);
+  
+      toast.success(response.data.message);
+      setFollowStatuses(prev => ({
+        ...prev,
+        [authorId]: !isFollowing
+      }));
+  
+      socket.emit('follow-status-changed', { authorId, isFollowing: !isFollowing });
+  
+    } catch (error) {
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
+  };
+
+  {/* Like */}
 
   const handleLike = async (postId) => {
     try {
@@ -273,35 +295,16 @@ const PostList = () => {
     }
   };
 
-  const handleFollow = async (authorId) => {
-  try {
-    const isFollowing = followStatuses[authorId];
-    const response = isFollowing 
-      ? await axios.delete(`/user/follow/${authorId}`) 
-      : await axios.post(`/user/follow/${authorId}`);
-
-    toast.success(response.data.message);
-    setFollowStatuses(prev => ({
-      ...prev,
-      [authorId]: !isFollowing
-    }));
-
-    socket.emit('follow-status-changed', { authorId, isFollowing: !isFollowing });
-
-  } catch (error) {
-    const response = error.response;
-    const data = response.data;
-    toast.error(data.message);
-  }
-  };
-
   return (
     <div className="container mx-auto px-4 md:px-[10rem] py-10">
-
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+
         {/* Left Section: Post List */}
+
         <div className="w-full md:w-2/3 space-y-4">
+
           {/* Dynamic Posts */}
+
           {loading ? (
             <p>Loading...</p>
           ) : (
@@ -321,7 +324,6 @@ const PostList = () => {
         </div>
 
         {/* Right Section: Sidebar */}
-        
         
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
           <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -349,7 +351,6 @@ const PostList = () => {
                     <SanitizedContent
                       htmlContent={post.description}
                       allowedTags={['h1', 'strong', 'font']}
-                      
                     />
                     </p>
                   </div>
@@ -357,7 +358,6 @@ const PostList = () => {
               ))}
             </div>
           </div>
-
         
           <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
@@ -382,7 +382,6 @@ const PostList = () => {
                     <SanitizedContent
                       htmlContent={post.description}
                       allowedTags={['h1', 'strong']}
-                      
                     />
                     </p>
                   </div>
