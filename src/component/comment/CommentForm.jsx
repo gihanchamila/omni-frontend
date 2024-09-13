@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Button from "../button/Button.jsx";
 import addCommentValidator from "../../validators/addCommentValidator.js";
 
+
 const CommentForm = ({
   handleSubmit,
   handleChange,

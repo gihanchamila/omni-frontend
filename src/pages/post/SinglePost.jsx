@@ -451,7 +451,13 @@ const SinglePost = () => {
       <div className='container mx-auto px-4 md:px-[10rem]'>
           <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
             <div className='flex justify-between items-center'>
-              <BackButton />
+
+              {!isLoaded ? (
+                <Skeleton circle={true} width="2rem" height="2rem" />
+              ) : (
+                <BackButton />
+              )}
+              
               <div className='flex space-x-4 z-auto'>
                 {currentUser && post && currentUser === post?.author?._id ? (
                   <>
@@ -517,25 +523,41 @@ const SinglePost = () => {
               borderRadius="1rem"
             />
           )}
-          <img
+            <img
             className={`rounded-xl w-full h-[50rem] object-cover ${isLoaded ? 'block' : 'hidden'}`}
             src={fileUrl}
             alt="Post Image"
             onLoad={() => setIsLoaded(true)} 
-          />
-        </div>
+            />
+            </div>
             <div>
               <p className='text-lg space-y-4'>
-                <SanitizedContent htmlContent={post?.description} />
+                {!isLoaded ? (
+                  <Skeleton height="2rem" width='full' />
+                  ) : (
+                  <SanitizedContent htmlContent={post?.description} />
+                  )}
               </p>
             </div>
+
             {/* Post comment */}
+
             <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
               <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
+                  {!isLoaded ? (
+                    <Skeleton width='15rem' height='2rem'/>
+                    ) : (
+                    <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
+                    )}
                 </div>
+                {!isLoaded ? (
+                  <Skeleton width='full' height='8rem' />
+                ) : (
                 <CommentForm handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} formError={formError} placeholder="Write a comment..." buttonText="Post comment" />
+                )}
+
+
                 {/* Parent comments */}
                 
                 {comments.map((comment) => (

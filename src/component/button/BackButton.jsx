@@ -9,7 +9,7 @@ const BackButton = ({ children, className, ...props }) => {
       className={`flex items-center p-2 mb-5 bg-gray-100 hover:bg-gray-200 rounded-full gap-2 ${className}`}
       onClick={() => navigate(-1)}
       {...props}
-    >
+    > 
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
