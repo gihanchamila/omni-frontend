@@ -461,17 +461,27 @@ const SinglePost = () => {
               <div className='flex space-x-4 z-auto'>
                 {currentUser && post && currentUser === post?.author?._id ? (
                   <>
-                    <Link to={`/posts/update-post/${post._id}`}>
-                      <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
-                        Update
-                      </div>
-                    </Link>
-                    <button onClick={openModal}>
-                      <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
-                        Delete
-                      </div>
-                    </button>
-                  </>
+                  {!isLoaded  ? (
+                    <div className="flex space-x-2">
+                      <Skeleton width={80} height={30}/> 
+                      <Skeleton width={80} height={30}/> 
+                    </div>
+                  ) : (
+                    // Actual Update and Delete buttons
+                    <>
+                      <Link to={`/posts/update-post/${post._id}`}>
+                        <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
+                          Update
+                        </div>
+                      </Link>
+                      <button onClick={openModal}>
+                        <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
+                          Delete
+                        </div>
+                      </button>
+                    </>
+                  )}
+                </>
                 ) : null}
               </div>
             </div>
@@ -544,7 +554,7 @@ const SinglePost = () => {
 
             <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
               <div className="max-w-5xl mx-auto">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-4">
                   {!isLoaded ? (
                     <Skeleton width='15rem' height='2rem'/>
                     ) : (

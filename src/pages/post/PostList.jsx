@@ -7,9 +7,11 @@ import { toast } from 'sonner';
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
+import PostSkeleton from '../../component/post/PostSkeleton.jsx';
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Posts Data
   const [posts, setPosts] = useState([]);
@@ -220,6 +222,7 @@ const PostList = () => {
 
   const handleFollow = async (authorId) => {
     try {
+      
       const isFollowing = followStatuses[authorId];
       const response = isFollowing 
         ? await axios.delete(`/user/follow/${authorId}`) 
@@ -304,7 +307,9 @@ const PostList = () => {
           {/* Dynamic Posts */}
 
           {loading ? (
-            <p>Loading...</p>
+            Array.from({ length: 3 }).map((_, index) => (
+              <PostSkeleton key={index} />
+            ))
           ) : (
             posts.map((post) => (
               <Post
