@@ -4,10 +4,8 @@ import { useSocket } from "../hooks/useSocket.jsx";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { coverPhoto, profilePic } from "../assets/index.js";
-import { GoVerified } from "react-icons/go";
 import { FaLinkedin, FaFacebookSquare, FaInstagramSquare} from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import Button from './../component/button/Button.jsx'
 import Post from "../component/post/Post.jsx";
 
 const Profile = () => {
