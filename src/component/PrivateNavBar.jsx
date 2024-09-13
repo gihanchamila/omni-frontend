@@ -1,11 +1,8 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { omni, profile } from "../assets/index.js";
+import { profile } from "../assets/index.js";
 import axios from '../utils/axiosInstance.js'
-import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
-import { useAuth } from "./context/useAuth.jsx";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoMdCreate } from "react-icons/io";
 import { toast } from "sonner";
 
 const PrivateNavBar = () => {
