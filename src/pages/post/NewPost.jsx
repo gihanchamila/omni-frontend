@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
-import socket from '../../utils/socket.js';
+import { useSocket } from '../../hooks/useSocket.jsx';
 import { toast } from 'sonner';
 
 // Custom Components
@@ -26,6 +26,7 @@ const NewPost = () => {
   const [fileId, setFileId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const socket = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,14 +48,16 @@ const NewPost = () => {
   }, []);
 
   useEffect(() => {
+
     socket.on('postAdded', (newPost) => {
-      toast.success(`New post added: ${newPost.title}`);
+        console.log(`New post added: ${newPost.title}`);
+        toast.success(`New post added: ${newPost.title}`);
     });
 
     return () => {
-      socket.off('postAdded');
+        socket.off('postAdded');
     };
-  }, [])
+}, [socket]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,7 +108,8 @@ const NewPost = () => {
         }
 
         const response = await axios.post('/posts', input);
-        toast.success(response.data.message);
+        const data = response.data
+        toast.success(data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
         navigate('/posts');

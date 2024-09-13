@@ -60,15 +60,12 @@ const SinglePost = () => {
   const actionHandlers = {
     edit: (commentId) => {
       // handle edit
-      console.log('Editing comment', commentId);
     },
     delete: (commentId) => {
       handleDelete(commentId)
-      console.log('Deleting comment', commentId);
     },
     report: (commentId) => {
       // handle report
-      console.log('Reporting comment', commentId);
     },
   };
 
@@ -146,7 +143,6 @@ const SinglePost = () => {
               const user = response.data.data.user;  
               if (user && user._id) {
                   setCurrentUser(user._id); 
-                  toast.success(`Your name is ${user._id}`); 
               } else {
                   toast.error('User data is incomplete');
               }
@@ -202,7 +198,6 @@ const SinglePost = () => {
         try{
           const response = await axios.get(`/comments/${postId}/commentCount`)
           const data = response.data
-          toast.success(data.message)
           setCommentCount(data.data.count.commentCount)
         }catch(error){
           const response = error.response

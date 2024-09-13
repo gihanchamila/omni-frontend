@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate} from 'react-router-dom';
+import { useSocket } from '../../hooks/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
-import socket from '../../utils/socket.js';
 import { toast } from 'sonner';
 import moment from 'moment';
 
@@ -11,8 +11,6 @@ import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
 
 // Icons
-import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
-import { IoChatbubblesOutline } from 'react-icons/io5';
 
 
 const PostList = () => {
@@ -41,6 +39,7 @@ const PostList = () => {
   const [currentUser, setCurrentUser] = useState('');
 
   const authorIds = useMemo(() => posts.map(post => post.author._id), [posts]);
+  const socket = useSocket()
 
   useEffect(() => {
     const getPosts = async () => {
@@ -69,7 +68,6 @@ const PostList = () => {
       const user = response.data.data.user;  
       if (user && user._id) {
           setCurrentUser(user); 
-          toast.success(`Your name is ${user.name}`); 
       } else {
           toast.error('User data is incomplete');
       }
@@ -82,9 +80,6 @@ const PostList = () => {
   },[]);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to socket.io server');
-    });
 
     const handleFollowStatusUpdated = ({ followerId, followingId }) => {
       setFollowStatuses((prevStatuses) => ({
@@ -98,7 +93,7 @@ const PostList = () => {
     return () => {
       socket.off('follow-status-updated', handleFollowStatusUpdated);
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const getPostFiles = async () => {
@@ -111,7 +106,7 @@ const PostList = () => {
               const data = response.data.data
               console.log(data)
               files[post._id] = data.url;
-              toast.success(response.data.message)
+              //toast.success(response.data.message)
             } catch (error) {
               const response = error.response;
               const data = response?.data;
@@ -170,7 +165,7 @@ const PostList = () => {
 
       }catch(error){
         const response = error.response
-        const data = response.data.data
+        const data = response.data
         toast.error(data.message)
       }
     }
@@ -241,7 +236,6 @@ const PostList = () => {
       }
   
       const data = response.data;
-      toast.success(data.message);
   
       setLikedPosts(prevLikedPosts => ({
         ...prevLikedPosts,
@@ -302,7 +296,6 @@ const PostList = () => {
     toast.error(data.message);
   }
   };
-
 
   return (
     <div className="container mx-auto px-4 md:px-[10rem] py-10">

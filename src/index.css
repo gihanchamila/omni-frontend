@@ -157,11 +157,11 @@
     }
 
     .social {
-      @apply w-7 h-7 hover:text-blue-500
+      @apply w-5 h-5 hover:text-blue-500
     }
 
     .profile-details {
-      @apply p-2 px-4 border text-sm border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 rounded-full text-gray-500
+      @apply p-2 px-4 font-semibold border text-sm border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 rounded-full text-gray-500
     }
 
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSocket } from '../../hooks/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
-import socket from '../../utils/socket.js';
 import { toast } from 'sonner';
 
 // Custom Components
@@ -29,6 +29,7 @@ const UpdatePost = () => {
   const [fileId, setFileId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const socket = useSocket()
   const navigate = useNavigate();
 
   useEffect(() => {

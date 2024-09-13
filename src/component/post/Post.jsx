@@ -16,6 +16,10 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
     return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
   };
 
+  const handleAuthorClick = () => {
+    navigate(`/profile/${post.author._id}`);
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:transition-colors duration-100">
       <div className="flex flex-col md:flex-row">
@@ -33,19 +37,20 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
               <img className="rounded-full w-5 h-5 object-cover" src={profile} alt="" />
-              <span className="px-2 text-xs">{post.author.name}</span>
+              <span className="px-2 text-xs" onClick={handleAuthorClick}>{post.author.name}</span>
+              {currentUser && post.author._id !== currentUser._id && (
               <span
                 className={`text-blue-500 hover:underline hover:cursor-pointer ${
-                  followStatuses[post.author._id] ? 'text-red-500' : ''
+                  followStatuses[post?.author?._id] ? 'text-red-500' : ''
                 }`}
                 onClick={() => handleFollow(post.author._id)}
               >
                 {followStatuses[post.author._id]
                   ? post.author._id !== currentUser._id && 'Unfollow'
                   : post.author._id !== currentUser._id && 'Follow'}
-              </span>
+              </span>)}
             </div>
-            <span className="text-right text-xs text-gray-500">{formatDate(post.updatedAt)}</span>
+            <span className="text-right text-xs text-gray-500">{formatDate(post.createdAt)}</span>
           </div>
           <h5
             onClick={() => navigate(`/posts/${post._id}`)}
