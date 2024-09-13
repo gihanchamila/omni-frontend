@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo  } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSocket } from '../../hooks/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
+
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 // Components
 import BackButton from '../../component/button/BackButton.jsx';
@@ -59,6 +62,7 @@ const SinglePost = () => {
 
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const actionHandlers = {
     edit: (commentId) => {
@@ -73,55 +77,41 @@ const SinglePost = () => {
   };
 
   useEffect(() => {
-    // Listen for the 'commentAdded' event
-    socket.on('commentAdd', ({ postId: updatedPostId}) => {
-        if (updatedPostId === postId) {
-            setCommentCount(prevCount => prevCount + 1);
-        }
-    });
+    const handleSocketEvents = () => {
+      socket.on('commentAdd', ({ postId: updatedPostId }) => {
+        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      });
 
-    return () => {
+      socket.on('replyAdd', ({ postId: updatedPostId }) => {
+        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      });
+
+      socket.on('nestedReplyAdd', ({ postId: updatedPostId }) => {
+        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      });
+
+      socket.on('commentRemove', ({ postId: updatedPostId }) => {
+        if (updatedPostId === postId) setCommentCount(prevCount => prevCount - 1);
+      });
+
+      socket.on('follow-status-updated', ({ followerId, followingId }) => {
+        setFollowStatuses(prevStatuses => ({
+          ...prevStatuses,
+          [followingId]: followerId === socket.id,
+        }));
+      });
+
+      return () => {
         socket.off('commentAdd');
-    };
-}, [postId]);
-
-  useEffect(() => {
-    // Listen for the 'commentAdded' event
-    socket.on('replyAdd', ({ postId: updatedPostId}) => {
-        if (updatedPostId === postId) {
-            setCommentCount(prevCount => prevCount + 1);
-        }
-    });
-
-    return () => {
         socket.off('replyAdd');
-    };
-  }, [postId]);
-
-  useEffect(() => {
-    // Listen for the 'commentAdded' event
-    socket.on('nestedReplyAdd', ({ postId: updatedPostId}) => {
-        if (updatedPostId === postId) {
-            setCommentCount(prevCount => prevCount + 1);
-        }
-    });
-
-    return () => {
         socket.off('nestedReplyAdd');
-    };
-  }, [postId]);
-
-  useEffect(() => {
-    socket.on('commentRemove', ({postId: updatedPostId }) => {
-        if (updatedPostId === postId) { // Check if the postId matches
-            setCommentCount(prevCount => prevCount - 1);
-        }
-    });
-
-    return () => {
         socket.off('commentRemove');
+        socket.off('follow-status-updated');
+      };
     };
-  }, [postId]);
+
+    handleSocketEvents();
+  }, [socket, postId]);
 
   useEffect(() => {
     if (postId) {
@@ -132,7 +122,7 @@ const SinglePost = () => {
                 const data = response.data.data;
                 setPost(data.post);
             } catch (error) {
-                setLoading(false)
+              setLoading(false)
                 const response = error.response;
                 const data = response?.data?.data || {};
                 toast.error(data.message || 'Failed to fetch post');
@@ -154,9 +144,9 @@ const SinglePost = () => {
               toast.error('Error getting user');
           }
       };
-       
-        getPost();
-        getCurrentUser();
+      if (postId) {
+        Promise.all([getPost(), getCurrentUser()]);
+      }
     }
   }, [postId]);
 
@@ -166,7 +156,9 @@ const SinglePost = () => {
         try {
           setLoading(true)
           const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-          setFileUrl(response.data.data.url);
+          const data = response.data.data
+          setFileUrl(data.url);
+          setLoading(false)
         } catch (error) {
           setLoading(false)
           const response = error.response;
@@ -184,10 +176,12 @@ const SinglePost = () => {
     const getComments = async () => {
       if (postId) {
         try {
+          setLoading(true)
           const response = await axios.get(`/comments/${postId}/comments`);
           const data = response.data.data;
           setComments(data);
         } catch (error) {
+          setLoading(false)
           toast.error(error.response.data.message || 'Failed to load comments');
         }
       }
@@ -199,10 +193,13 @@ const SinglePost = () => {
     const getCommentCount = async () => {
       if(postId){
         try{
+          setLoading(true)
           const response = await axios.get(`/comments/${postId}/commentCount`)
           const data = response.data
           setCommentCount(data.data.count.commentCount)
+          setLoading(false)
         }catch(error){
+          setLoading(false)
           const response = error.response
           const data = response.data
           toast.error(data.message)
@@ -213,44 +210,32 @@ const SinglePost = () => {
   }, [postId]) 
 
   useEffect(() => {
-
-    const handleFollowStatusUpdated = ({ followerId, followingId }) => {
-      setFollowStatuses((prevStatuses) => ({
-        ...prevStatuses,
-        [followingId]: followerId === socket.id,
-      }));
-    };
-
-    socket.on('follow-status-updated', handleFollowStatusUpdated);
-
-    return () => {
-      socket.off('follow-status-updated', handleFollowStatusUpdated);
-    };
-  }, [socket]);
-
-  useEffect(() => {
     const fetchFollowStatus = async () => {
       if (post && post.author && post.author._id) {
-        try {
-          // Check if follow status is already cached to avoid unnecessary requests
-  
+        try {  
           // Fetch follow status from API
+          setLoading(true)
           const response = await axios.get(`/user/follow-status/${post.author._id}`);
+          setLoading(false)
           setFollowStatuses((prevStatuses) => ({
             ...prevStatuses,
             [post.author._id]: response.data.data.isFollowing,
+            
           }));
         } catch (error) {
+          setLoading(false)
           console.error(`Error fetching follow status for author ${post.author._id}:`, error);
+          toast.error(`Error fetching follow status for author ${post.author._id}:`, error)
         }
       }
+      
     };
-  
-    fetchFollowStatus();
-  }, [post, followStatuses]);
+    fetchFollowStatus()
+  }, [post]);
 
   const handleFollow = async (authorId) => {
     try {
+      setLoading(true)
       const isFollowing = followStatuses[authorId];
       const response = isFollowing 
         ? await axios.delete(`/user/follow/${authorId}`) 
@@ -263,8 +248,9 @@ const SinglePost = () => {
       }));
   
       socket.emit('follow-status-changed', { authorId, isFollowing: !isFollowing });
-  
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       const response = error.response;
       const data = response.data;
       toast.error(data.message);
@@ -294,18 +280,17 @@ const SinglePost = () => {
       setFormError(errors);
       return; 
     }
-  
     try {
       setLoading(true);
       const response = await axios.post(`/comments/${postId}`, formData);
       const newComment = response.data.data
       setComments((prevComments) => [newComment, ...prevComments]);
       setFormData(initialFormData);
+      setLoading(false);
     } catch (error) {
+      setLoading(false)
       setFormError({ content: error.message || 'An error occurred' });
       toast.error(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -334,7 +319,6 @@ const SinglePost = () => {
         setReplyFormError(errors);
         return;
     }
-
     try {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${commentId}`, replyFormData);
@@ -355,11 +339,11 @@ const SinglePost = () => {
             return addReply(prevComments);
         });
         setReplyFormData(initialFormData);
+        setLoading(false)
     } catch (error) {
+        setLoading(false)
         setReplyFormError({ content: error.message || 'An error occurred' });
         toast.error(error.message);
-    } finally {
-        setLoading(false);
     }
   };
 
@@ -371,12 +355,10 @@ const SinglePost = () => {
         setReplyToReplyFormError(errors);
         return;
     }
-
     try {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${replyId}`, replyToReplyFormData);
         const newReplyToReply = response.data.data.reply;  // Extracting the newly created reply
-
         setComments(prevComments => {
             const updateReplies = (replies) => {
                 if (!Array.isArray(replies)) {
@@ -396,13 +378,12 @@ const SinglePost = () => {
 
             return updatedComments;
         });
-
         setReplyToReplyFormData(initialFormData);
+        setLoading(false)
     } catch (error) {
+        setLoading(false)
         setReplyToReplyFormError({ content: error.message || 'An error occurred' });
         toast.error(error.message);
-    } finally {
-        setLoading(false);
     }
   };
 
@@ -426,6 +407,7 @@ const SinglePost = () => {
   const handleDelete = async (commentId) => {
     try {
         // Perform delete request
+        setLoading(true)
         const response = await axios.delete(`/comments/${commentId}`);
         const data = response.data;
         toast.success(data.message);
@@ -435,7 +417,7 @@ const SinglePost = () => {
         setComments(data2); 
 
     } catch (error) {
-
+        setLoading(false)
         const response = error.response;
         const data = response?.data || {};
         toast.error(data.message || 'An error occurred');
@@ -466,131 +448,147 @@ const SinglePost = () => {
 
   return (
 
-    <div className='flex items-center justify-center'>
-      <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
-        <div className='flex justify-between items-center'>
-        <BackButton />
-        <div className='flex space-x-4 z-auto'>
-        {currentUser && post && currentUser === post?.author?._id ? (
-            <>
-            <Link to={`/posts/update-post/${post._id}`}>
-                <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
-                    Update
-                </div>
-            </Link>
-            <button onClick={openModal}>
-                <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
-                    Delete
-                </div>
-            </button>
-            </>
-            
-        ) : null}
-        </div>
-        
-        </div>
-        <div className='h2 font-bold w-full'>{post?.title}</div>
-        <div className='flex items-center py-4 mt-0'>
-            <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="" />
-            <span className='m-0 px-4'>{post?.updatedBy?.name}</span>
-            {post?.author?._id !== currentUser && (
-              <span
-                className={`hover:underline hover:cursor-pointer ${
-                  followStatuses[post?.author?._id] ? 'text-red-500' : 'text-blue-500'
-                }`}
-                onClick={() => handleFollow(post?.author?._id)}
-              >
-                {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
-              </span>
-            )}
-        </div>
-        <div>
-            <img className='rounded-xl w-full h-[50rem] object-cover' src={fileUrl} alt="" />
-        </div>
-        <div>
-            <p className='text-lg space-y-4 '>
-              <SanitizedContent htmlContent={post?.description}/> 
-            </p>
-        </div>
-
-        {/* Post comment  */}
-
-        <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
-            </div>
-            <CommentForm handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} formError={formError} placeholder="Write a comment..." buttonText="Post comment"/>
-
-            {/* Parent comments  */}
-
-            {comments.map((comment) => (
-              <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
-
-                <CommentFooter author={comment.author} createdAt={comment.createdAt} dropdownId={comment._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
-
-                <p className="text-gray-500">{comment.content}</p>
-                <div className="flex items-center mt-4 space-x-4">
-                  <button
-                    type="button"
-                    className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                    onClick={() => {handleClick(comment._id);}}
-                  >
-                    <IoChatbubblesOutline className='iconSize' />
-                    {getReplyText(comment.replies)}
-                  </button>
-                </div>
-
-              {/* Reply Comment*/}
-
-              {replyingTo === comment._id && (
-                <CommentForm handleSubmit={(e) => handleReplySubmit(e, comment._id)} handleChange={handleReplyChange} formData={replyFormData} formError={replyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
-              )}
-
-              {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
-                <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-                
-                  <CommentFooter author={reply.author} createdAt={reply.createdAt} dropdownId={reply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
-                  <p className="text-gray-500">{reply.content}</p>
-                  <div className="flex items-center mt-4 space-x-4">
-                    <button
-                      type="button"
-                      className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                      onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id) }}
-                    >
-                      <IoChatbubblesOutline className='iconSize' />
-                      {getReplyText(reply.replies)}
+      <div className='container mx-auto px-4 md:px-[10rem]'>
+          <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
+            <div className='flex justify-between items-center'>
+              <BackButton />
+              <div className='flex space-x-4 z-auto'>
+                {currentUser && post && currentUser === post?.author?._id ? (
+                  <>
+                    <Link to={`/posts/update-post/${post._id}`}>
+                      <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
+                        Update
+                      </div>
+                    </Link>
+                    <button onClick={openModal}>
+                      <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
+                        Delete
+                      </div>
                     </button>
-                  </div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+            <div className='h2 font-bold w-full'>
+              {!isLoaded ? (
+                <Skeleton height="2rem" width="80%" />
+              ) : (
+                post?.title
+              )}
+            </div>
+            <div className='flex items-center py-4 mt-0'>
+              <div>
+              {!isLoaded ? (
+                <Skeleton circle={true} height="3rem" width="3rem" />
+              ) : (
+                <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="Image" />
+              )}
+              </div>
 
-                  {/* Reply to Reply */}
+              <span className='m-0 px-4'>
+              {!isLoaded ? (
+                <Skeleton height="1.5rem" width="8rem" />
+              ) : (
+                post?.updatedBy?.name
+              )}
+              </span>
 
-                  {replyToReply === reply._id && (
-                    <CommentForm handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)} handleChange={handleReplyToReplyChange}   formData={replyToReplyFormData} formError={replyToReplyFormError} placeholder="Write a reply..." buttonText="Reply"    className="mt-4 ml-[4.5rem]" />
-                  )}
-
-                  {/* Nested reply*/}
-
-                  {visibleNestedReplies[comment._id] && reply.replies && reply.replies.map((nestedReply) => (
-                     <article key={nestedReply._id} className='ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg'>
-
-                      <CommentFooter author={nestedReply.author} createdAt={nestedReply.createdAt} dropdownId={nestedReply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
-
-                      <p className="text-gray-500 pb-4">{nestedReply.content}</p>
-                    </article>
-                  ))}
-
-                </article>
-              ))}
-            <hr className="mt-6 border-t border-gray-200" />
-            </article>
-            ))}
+              {post?.author?._id !== currentUser && (
+                <span
+                  className={`hover:underline hover:cursor-pointer ${
+                    followStatuses[post?.author?._id] ? 'text-red-500' : 'text-blue-500'
+                  }`}
+                  onClick={() => handleFollow(post?.author?._id)}
+                >
+                  {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
+                </span>
+              )}
+            </div>
+            <div>
+          {/* Skeleton will be displayed while image is loading */}
+          {!isLoaded && (
+            <Skeleton
+              height="50rem"
+              width="100%"
+              borderRadius="1rem"
+            />
+          )}
+          <img
+            className={`rounded-xl w-full h-[50rem] object-cover ${isLoaded ? 'block' : 'hidden'}`}
+            src={fileUrl}
+            alt="Post Image"
+            onLoad={() => setIsLoaded(true)} 
+          />
+        </div>
+            <div>
+              <p className='text-lg space-y-4'>
+                <SanitizedContent htmlContent={post?.description} />
+              </p>
+            </div>
+            {/* Post comment */}
+            <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
+              <div className="max-w-5xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
+                </div>
+                <CommentForm handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} formError={formError} placeholder="Write a comment..." buttonText="Post comment" />
+                {/* Parent comments */}
+                
+                {comments.map((comment) => (
+                  <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
+                    <CommentFooter author={comment.author} createdAt={comment.createdAt} dropdownId={comment._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
+                    <p className="text-gray-500">{comment.content}</p>
+                    <div className="flex items-center mt-4 space-x-4">
+                      <button
+                        type="button"
+                        className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                        onClick={() => {handleClick(comment._id);}}
+                      >
+                        <IoChatbubblesOutline className='iconSize' />
+                        {getReplyText(comment.replies)}
+                      </button>
+                    </div>
+                    {/* Reply Comment */}
+                    {replyingTo === comment._id && (
+                      <CommentForm handleSubmit={(e) => handleReplySubmit(e, comment._id)} handleChange={handleReplyChange} formData={replyFormData} formError={replyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
+                    )}
+                    {visibleReplies[comment._id] && comment.replies && comment.replies.map((reply) => (
+                      <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
+                        <CommentFooter author={reply.author} createdAt={reply.createdAt} dropdownId={reply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
+                        <p className="text-gray-500">{reply.content}</p>
+                        <div className="flex items-center mt-4 space-x-4">
+                          <button
+                            type="button"
+                            className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                            onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id)}}
+                          >
+                            <IoChatbubblesOutline className='iconSize' />
+                            {getReplyText(reply.replies)}
+                          </button>
+                        </div>
+                        {/* Reply to Reply */}
+                        {replyToReply === reply._id && (
+                          <CommentForm handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)} handleChange={handleReplyToReplyChange} formData={replyToReplyFormData} formError={replyToReplyFormError} placeholder="Write a reply..." buttonText="Reply" className="mt-4 ml-[4.5rem]" />
+                        )}
+                        {/* Nested reply */}
+                        {visibleNestedReplies[comment._id] && reply.replies && reply.replies.map((nestedReply) => (
+                          <article key={nestedReply._id} className='ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg'>
+                            <CommentFooter author={nestedReply.author} createdAt={nestedReply.createdAt} dropdownId={nestedReply._id} actionHandlers={actionHandlers} imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg" />
+                            <p className="text-gray-500 pb-4">{nestedReply.content}</p>
+                          </article>
+                        ))}
+                      </article>
+                    ))}
+                    <hr className="mt-6 border-t border-gray-200" />
+                  </article>
+                ))}
+              </div>
+            </section>
+            <Modal className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal} />
           </div>
-        </section>
-        <Modal  className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal}/>
       </div>
-    </div>
 
+  
   )
 }
 
