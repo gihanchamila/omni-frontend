@@ -302,11 +302,8 @@ const PostList = () => {
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
 
         {/* Left Section: Post List */}
-
         <div className="w-full md:w-2/3 space-y-4">
-
           {/* Dynamic Posts */}
-
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <PostSkeleton key={index} />
@@ -330,9 +327,9 @@ const PostList = () => {
         {/* Right Section: Sidebar */}
         
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
             {loading ? (
-              <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
+              <Skeleton width='8rem' height='1.5rem' className='mb-4 border-none'/>
               ) : (
               <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
@@ -342,11 +339,11 @@ const PostList = () => {
               {loading ? (
                 // Render skeletons when loading
                 Array(2).fill(0).map((_, index) => (
-                  <div key={index} className="flex items-center space-x-4 animate-pulse">
-                    <div className="h-14 w-14 bg-gray-300 rounded"></div>
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="h-14 w-14 bg-gray-200 rounded"></div>
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                      <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
                     </div>
                   </div>
                 ))
@@ -379,7 +376,7 @@ const PostList = () => {
             </div>
           </div>
         
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
           {loading ? (
               <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
               ) : (
@@ -394,12 +391,12 @@ const PostList = () => {
                   .map((_, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-4 animate-pulse"
+                      className="flex items-center space-x-4"
                     >
-                      <div className="h-14 w-14 bg-gray-300 rounded"></div>
+                      <div className="h-14 w-14 bg-gray-200 rounded"></div>
                       <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                        <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-5/6"></div>
                       </div>
                     </div>
                   ))
