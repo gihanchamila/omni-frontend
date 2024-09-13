@@ -8,10 +8,11 @@ import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
 import PostSkeleton from '../../component/post/PostSkeleton.jsx';
+import Skeleton from 'react-loading-skeleton';
+
 
 const PostList = () => {
   const [loading, setLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   // Posts Data
   const [posts, setPosts] = useState([]);
@@ -330,66 +331,100 @@ const PostList = () => {
         
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
           <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
+            {loading ? (
+              <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
+              ) : (
+              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
-            </h5>
-
-            <div className="space-y-4">
-              {latestPosts.map(post => (
-                <div key={post._id} className="flex items-center space-x-4">
-                  <img
-                    className="cardImage"
-                    src={postFiles[post._id] || post.file}
-                    alt="Latest Post"
-                  />
-                  <div className="flex-1">
-                    <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
-                    <SanitizedContent
-                      htmlContent={post.title}
-                      allowedTags={['h1', 'strong', 'font']}
-                      
-                    />
-                    </h6>
-                    <p className="text-xs text-gray-600 line-clamp-1">
-                    <SanitizedContent
-                      htmlContent={post.description}
-                      allowedTags={['h1', 'strong', 'font']}
-                    />
-                    </p>
+              </h5>)}
+            
+              <div className="space-y-4">
+              {loading ? (
+                // Render skeletons when loading
+                Array(2).fill(0).map((_, index) => (
+                  <div key={index} className="flex items-center space-x-4 animate-pulse">
+                    <div className="h-14 w-14 bg-gray-300 rounded"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                // Render actual posts when data is available
+                latestPosts.map((post) => (
+                  <div key={post._id} className="flex items-center space-x-4">
+                    <img
+                      className="cardImage"
+                      src={postFiles[post._id] || post.file}
+                      alt="Latest Post"
+                    />
+                    <div className="flex-1">
+                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                        <SanitizedContent
+                          htmlContent={post.title}
+                          allowedTags={['h1', 'strong', 'font']}
+                        />
+                      </h6>
+                      <p className="text-xs text-gray-600 line-clamp-1">
+                        <SanitizedContent
+                          htmlContent={post.description}
+                          allowedTags={['h1', 'strong', 'font']}
+                        />
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         
           <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
-              Popular Posts
-            </h5>
+          {loading ? (
+              <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
+              ) : (
+              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
+                Popular Posts
+              </h5>)}
             <div className="space-y-4">
-
               {/* Popular Post Card */}
-              
-              {latestPosts.map(post => (
-                <div key={post._id} className="flex items-center space-x-4">
-                  <img
-                    className="cardImage"
-                    src={postFiles[post._id] || post.file}
-                    alt="Latest Post"
-                  />
-                  <div className="flex-1 w-full overflow-hidden">
-                    <h6 className="text-sm font-semibold  text-gray-900 line-clamp-2"> 
-                      {post.title} 
-                    </h6>
-                    <p className="text-xs text-gray-600 line-clamp-1">
-                    <SanitizedContent
-                      htmlContent={post.description}
-                      allowedTags={['h1', 'strong']}
+              {loading ? (
+                Array(2)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-4 animate-pulse"
+                    >
+                      <div className="h-14 w-14 bg-gray-300 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                latestPosts.map((post) => (
+                  <div key={post._id} className="flex items-center space-x-4">
+                    <img
+                      className="cardImage"
+                      src={postFiles[post._id] || post.file}
+                      alt="Latest Post"
                     />
-                    </p>
+                    <div className="flex-1 w-full overflow-hidden">
+                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                        {post.title}
+                      </h6>
+                      <p className="text-xs text-gray-600 line-clamp-1">
+                        <SanitizedContent
+                          htmlContent={post.description}
+                          allowedTags={['h1', 'strong']}
+                        />
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
