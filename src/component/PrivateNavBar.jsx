@@ -35,7 +35,6 @@ const PrivateNavBar = () => {
       const user = response.data.data.user;  
       if (user && user._id) {
           setCurrentUser(user); 
-          toast.success(`Your name is ${user.name}`); 
       } else {
           toast.error('User data is incomplete');
       }
@@ -44,7 +43,6 @@ const PrivateNavBar = () => {
       console.log(error)
     }
     };
-
     getCurrentUser();
 },[]);
 
@@ -71,7 +69,7 @@ const PrivateNavBar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
                 <NavLink className="dropdown" to={`${currentUser._id}`}>Profile</NavLink>
-                <NavLink className="dropdown" to="/settings">Settings</NavLink>
+                <NavLink className="dropdown" to={`/settings`}>Settings</NavLink>
                 <div className="my-2 border-t border-color-s opacity-20 "></div>
                 <NavLink className="dropdown" to="/login" onClick={handleLogOut}>Logout</NavLink>
               </div>

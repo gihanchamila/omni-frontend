@@ -9,9 +9,12 @@ import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
 import PostSkeleton from '../../component/post/PostSkeleton.jsx';
 import Skeleton from 'react-loading-skeleton';
+import { useNavigate } from 'react-router-dom';
 
 
 const PostList = () => {
+
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false);
 
   // Posts Data
@@ -355,12 +358,14 @@ const PostList = () => {
                       className="cardImage"
                       src={postFiles[post._id] || post.file}
                       alt="Latest Post"
+                      onClick={() => navigate(`/posts/${post?._id}`)}
                     />
                     <div className="flex-1">
-                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2 hover:underline" onClick={() => navigate(`/posts/${post?._id}`)}>
                         <SanitizedContent
                           htmlContent={post.title}
                           allowedTags={['h1', 'strong', 'font']}
+
                         />
                       </h6>
                       <p className="text-xs text-gray-600 line-clamp-1">
@@ -407,9 +412,10 @@ const PostList = () => {
                       className="cardImage"
                       src={postFiles[post._id] || post.file}
                       alt="Latest Post"
+                      onClick={() => navigate(`/posts/${post?._id}`)}
                     />
                     <div className="flex-1 w-full overflow-hidden">
-                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                      <h6 className="text-sm font-semibold text-gray-900 line-clamp-2 hover:underline" onClick={() => navigate(`/posts/${post?._id}`)}>
                         {post.title}
                       </h6>
                       <p className="text-xs text-gray-600 line-clamp-1">

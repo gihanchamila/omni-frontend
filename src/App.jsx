@@ -51,7 +51,7 @@ function App() {
             <Route path="posts/new-post" element={<NewPost />} />
             <Route path="posts/update-post/:id" element={<UpdatePost/>} />
             <Route path="/:id" element={<Profile />} />
-            <Route path="setting" element={<Setting />} />
+            <Route path="settings" element={<Setting />} />
           </Route>
           <Route element={<PublicLayout />}>
             <Route path="signup" element={<Signup />} />

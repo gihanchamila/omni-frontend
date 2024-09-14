@@ -188,16 +188,19 @@ const handleLike = async (postId) => {
             {/*<GoVerified className="absolute lg:right-[31.5rem] lg:top-1 sm:right-[7.2rem] sm:top-[0.08rem] ml-2 mt-1 w-5 h-5 text-blue-500" /> */}
           </div>
         </div>
-         {/**/}
-         <div className="absolute lg:top-[2.5rem] sm:top-[2.2rem] flex space-x-3">
+         {/*<div className="absolute lg:top-[2.5rem] sm:top-[2.2rem] flex space-x-3">
           <FaLinkedin className="social " />
           <FaFacebookSquare className="social " />
           <FaInstagramSquare className="social "/>
           <FaSquareXTwitter className="social "/>
-        </div>   
+         </div> */}
+           
       </div>
       {/*<p className="lg:mt-9 sm:mt-10 text-md text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>*/}
-      <div className="flex lg:space-x-2 justify-between lg:px-[27rem]  sm:mx-[7rem] mt-10">
+      <div className="flex justify-center items-center space-y-2">
+        <p>algihanchamila@gmail.com</p>
+      </div>
+      <div className="flex lg:space-x-2 mt-2 justify-between lg:px-[27.1rem]  sm:mx-[8.8rem]">
         <p className="profile-details">followers : {followers}</p>
         <p className="profile-details">following : {following}</p>
       </div>
