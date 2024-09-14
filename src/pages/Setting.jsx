@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { FiCamera } from "react-icons/fi";
+import Button from '../component/button/Button.jsx';
 
 const Setting = () => {
 
@@ -75,52 +76,48 @@ const Setting = () => {
 
             {/* Profile Picture */}
 
-            <div className="relative group flex">
-              <img
-                src={profilePic}
-                alt="Profile"
-                className="w-28 h-28 rounded-full object-cover border-2 border-gray-300"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <label htmlFor="profile-pic" className="cursor-pointer">
-                  <FiCamera className="text-white text-3xl" />
-                </label>
-                <input
-                  id="profile-pic"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleUpdatePic}
+            <div className="relative flex">
+              <div className=''>
+                <img
+                  src={profilePic}
+                  alt="Profile"
+                  className="w-28 h-28 group rounded-full object-cover border-2 border-gray-300"
                 />
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100  transition-opacity cursor-pointer">
+                  <label htmlFor="profile-pic" className="cursor-pointer">
+                    <FiCamera className="text-white" />
+                  </label>
+                  <input
+                    id="profile-pic"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleUpdatePic}
+                  />
+                </div>
               </div>
               <div className='flex items-center justify-between pl-6'>
-              <div className='flex-col'>
-                <h2 className="text-lg font-semibold">John Doe</h2>
-                <p className="text-gray-600">john.doe@example.com</p>
+                <div className='flex-col'>
+                  <h2 className="text-lg font-semibold">John Doe</h2>
+                  <p className="text-gray-600">john.doe@example.com</p>
+                </div>
               </div>
             </div>
-            </div>
-
-            {/* Name and Email */}
-            
-            
 
              {/* Buttons */}
 
             <div className='flex-col'>
               <div className="mt-4 space-x-4">
-                <button
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                  onClick={handleRemovePic}
-                >
-                  Remove Picture
-                </button>
-                <label
-                  htmlFor="profile-pic"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
-                >
-                  Update Picture
-                </label>
+                <Button className="" variant='error' onClick={handleRemovePic}>Remove</Button>
+                <Button variant='info'>
+                  <label
+                    htmlFor="profile-pic"
+                    className=""
+                  >
+                    Update
+                  </label>
+                </Button>
+                
               </div>
             </div>
           </div>
