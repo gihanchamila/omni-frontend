@@ -157,7 +157,7 @@
     }
     
     .ql-editor {
-      @apply h-48 text-sm text-gray-900;
+      @apply h-48 p-0 text-sm text-gray-900;
     }
 
     .social {

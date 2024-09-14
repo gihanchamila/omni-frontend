@@ -28,6 +28,14 @@ export default {
       // => @media (min-width: 1536px) { ... }
     },
     extend: {
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        '16': 'repeat(16, minmax(0, 1fr))',
+
+        // Complex site-specific column configuration
+        'footer': '200px minmax(900px, 1fr) 100px',
+      },
+      
       colors : {
         color : {
           p : "var(--color-primary)",
@@ -52,7 +60,7 @@ export default {
       },
 
       ".input-box": {
-        "@apply w-full rounded-md border-2 border-slate-800 bg-white py-2 px-6 text-sm active:border-color-p focus:border-blue-500 outline-none":
+        "@apply w-full border border-gray-300 rounded-md bg-white py-2 px-6 text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
         {},
       },
 

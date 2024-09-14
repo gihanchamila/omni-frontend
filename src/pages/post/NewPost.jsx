@@ -166,7 +166,7 @@ const NewPost = () => {
                   <label htmlFor="category" className="label">Select a category</label>
                   <select
                     id="category"
-                    className="mt-2 block w-full px-4 py-2 text-sm text-gray-900 rounded-lg border-2 border-color-s"
+                    className="mt-2 block w-full px-4 py-2 text-sm text-gray-900 rounded-lg border border-gray-200"
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
@@ -193,7 +193,7 @@ const NewPost = () => {
         {/* Preview Section */}
         <div className="py-14 lg:w-1/2 md:w-full sm:w-full">
           <h4 className="h4 mb-10 font-bold text-slate-800">Preview</h4>
-          <div className="border-2 border-color-s rounded-lg">
+          <div className="border border-gray-200 rounded-lg">
             <h4 className="h4 mb-4 font-bold pt-4 px-4 text-slate-800">{formData.title}</h4>
             <ReactQuill
             className='p-0'
