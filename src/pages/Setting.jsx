@@ -2,7 +2,11 @@ import React from 'react'
 
 const Setting = () => {
   return (
-    <div>Setting</div>
+    <div>
+      <div>
+        <h2 className='title'>Account Setting</h2>
+      </div>
+    </div>
   )
 }
 

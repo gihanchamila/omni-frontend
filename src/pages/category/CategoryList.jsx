@@ -114,7 +114,7 @@ const CategoryList = () => {
   return (
     <div className="">
       <div>
-        <h2 className='h5 font-bold'>Categories</h2>
+        <h2 className='title'>Categories</h2>
       </div>
       <div className='flex justify-between items-center mt-5'>
         <div className=''>
