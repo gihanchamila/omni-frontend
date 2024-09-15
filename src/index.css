@@ -33,7 +33,13 @@
 @layer components  {
 
     .title {
-      @apply h5 font-bold
+      @apply h5 font-bold pb-4
+    }
+
+    .subTitle {
+
+      @apply h6 pb-4
+      
     }
 
     .button {
