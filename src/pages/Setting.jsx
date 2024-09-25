@@ -286,7 +286,7 @@ const Setting = () => {
         {activeTab === "security" && (
           <div>
             <h2 className="text-2xl font-bold mb-6">Security Settings</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Change Password</h3>
@@ -329,19 +329,8 @@ const Setting = () => {
               </div>
 
               {/* Additional Security Settings Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg ">
+              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="two-factor"
-                    id="two-factor"
-                    className="form-checkbox"
-                  />
-                  <label htmlFor="two-factor" className="text-gray-700">
-                    Enable Two-Factor Authentication
-                  </label>
-                </div>
                 <div className="groupBox">
                   <label htmlFor="backup-email" className="text-gray-700 font-medium">Backup Email Address</label>
                   <input
@@ -357,12 +346,49 @@ const Setting = () => {
                   <textarea
                     name="security-questions"
                     id="security-questions"
-                    className="input-box px-4 border rounded-lg pb-5 focus:outline-none"
+                    className="input-box px-4 border rounded-lg pb-2 focus:outline-none"
                     placeholder="Answer security questions"
-                    rows="2"
+                    rows="5"
                   />
                 </div>
                 <Button variant="info">Save Security Settings</Button>
+              </div>
+
+              {/* Two-Factor Authentication Section */}
+              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="two-factor"
+                    id="two-factor"
+                    className="form-checkbox"
+                  />
+                  <label htmlFor="two-factor" className="text-gray-700">
+                    Enable Two-Factor Authentication
+                  </label>
+                </div>
+                <div className="groupBox">
+                  <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email</label>
+                  <input
+                    type="email"
+                    name="verify-email"
+                    id="verify-email"
+                    className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                    placeholder="Enter verification email"
+                  />
+                </div>
+                <div className="groupBox">
+                  <label htmlFor="verify-mobile" className="text-gray-700 font-medium">Verify Mobile</label>
+                  <input
+                    type="tel"
+                    name="verify-mobile"
+                    id="verify-mobile"
+                    className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                    placeholder="Enter verification mobile number"
+                  />
+                </div>
+                <Button variant="info">Save Verification Settings</Button>
               </div>
             </div>
           </div>
