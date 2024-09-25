@@ -16,6 +16,7 @@ const Login = () => {
   const [formError, setFormError] = useState(initialFormError)
   const [loading, setLoading] = useState(false)
 
+
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -39,10 +40,17 @@ const Login = () => {
 
         {/* api request */}
 
+        const userAgent = navigator.userAgent;
+
+        const deviceType = getDeviceType(userAgent); // Captures user agent
+        const browser = getBrowserName(userAgent); // Function to get browser info (see below)
+
         const requestbody = {
           name : formData.name,
           email : formData.email,
-          password : formData.password
+          password : formData.password,
+          deviceType: deviceType || "Unknown Device",
+          browser: browser || "Unknown Browser"
         }
 
         const response = await axios.post('/auth/signin', requestbody)
@@ -55,7 +63,6 @@ const Login = () => {
         setFormError(initialFormError)
         setLoading(false)
         navigate('/')
-
       }catch(error){
         setLoading(false)
         setFormError(initialFormError)
@@ -65,6 +72,32 @@ const Login = () => {
       }
     }
   }
+
+  const getBrowserName = (userAgent) => {
+    if (userAgent.includes("Chrome")) {
+      return "Chrome";
+    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+      return "Safari";
+    } else if (userAgent.includes("Firefox")) {
+      return "Firefox";
+    } else if (userAgent.includes("Edge")) {
+      return "Edge";
+    } else {
+      return "Unknown Browser";
+    }
+  };
+
+  const getDeviceType = (userAgent) => {
+    if (/mobile/i.test(userAgent)) {
+      return 'Mobile';
+    } else if (/tablet/i.test(userAgent)) {
+      return 'Tablet';
+    } else {
+      return 'Laptop'; // Assuming all other cases are laptops
+    }
+  };
+
+
 
   return (
     <div className='container border-2 border-slate-800 w-[25rem] bg-white px-12 py-12 my-4 mt-[5rem] rounded-2xl'>
