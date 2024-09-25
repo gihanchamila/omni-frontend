@@ -357,6 +357,7 @@ const Setting = () => {
               {/* Two-Factor Authentication Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
+                <p className='pb-1'>Two Factor Authentication boosts security by requiring both your password and a code sent to your email, ensuring extra protection against unauthorized access</p>
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -369,7 +370,7 @@ const Setting = () => {
                   </label>
                 </div>
                 <div className="groupBox">
-                  <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email</label>
+                  <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email Address</label>
                   <input
                     type="email"
                     name="verify-email"
@@ -378,6 +379,7 @@ const Setting = () => {
                     placeholder="Enter verification email"
                   />
                 </div>
+                {/*
                 <div className="groupBox">
                   <label htmlFor="verify-mobile" className="text-gray-700 font-medium">Verify Mobile</label>
                   <input
@@ -388,6 +390,7 @@ const Setting = () => {
                     placeholder="Enter verification mobile number"
                   />
                 </div>
+                */}
                 <Button variant="info">Save Verification Settings</Button>
               </div>
             </div>
