@@ -65,7 +65,7 @@ export default {
       },
 
       ".label": {
-        "@apply block  text-sm font-medium text-gray-900":
+        "@apply text-gray-700 font-medium":
         {},
       },
 

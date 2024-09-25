@@ -118,6 +118,12 @@
 
     {/*Form*/}
 
+    .groupBox {
+
+      @apply flex flex-col space-y-2
+
+    }
+
     .validateError {
 
       @apply text-[0.75rem] text-red-500

@@ -75,7 +75,7 @@ const Login = () => {
       {/* Login form */}
 
       <form action="" className="space-y-4" onSubmit={handleSubmit}>
-        <div className="flex flex-col space-y-1">
+        <div className="groupBox">
           <label htmlFor="email" className="label">
             Email address
           </label>
@@ -91,7 +91,7 @@ const Login = () => {
             className="appearance-none input-box"
           />
         </div>
-        <div className="flex flex-col space-y-1">
+        <div className="groupBox">
           <label htmlFor="email" className="label">
             Password
           </label>

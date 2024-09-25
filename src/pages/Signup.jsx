@@ -74,7 +74,7 @@ const Signup = () => {
       <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Name and Email in one row on larger screens, stacked on smaller screens */}
         <div className="flex flex-col md:flex-row md:space-x-4">
-          <div className="flex flex-col w-full md:w-1/2 space-y-1">
+          <div className="flex flex-col w-full md:w-1/2 space-y-2">
             <label htmlFor="name" className="label">
               Name
             </label>
@@ -91,7 +91,7 @@ const Signup = () => {
             />
             {formError.name && <p className="validateError">{formError.name}</p>}
           </div>
-          <div className="flex flex-col w-full md:w-1/2 space-y-1 mt-4 md:mt-0">
+          <div className="flex flex-col w-full md:w-1/2 space-y-2 mt-4 md:mt-0">
             <label htmlFor="email" className="label">
               Email
             </label>
@@ -111,7 +111,7 @@ const Signup = () => {
         
         {/* Password and Confirm Password in one row on larger screens, stacked on smaller screens */}
         <div className="flex flex-col md:flex-row md:space-x-4">
-          <div className="flex flex-col w-full md:w-1/2 space-y-1">
+          <div className="flex flex-col w-full md:w-1/2 space-y-2">
             <label htmlFor="password" className="label">
               Password
             </label>
@@ -127,7 +127,7 @@ const Signup = () => {
             />
             {formError.password && <p className="validateError">{formError.password}</p>}
           </div>
-          <div className="flex flex-col w-full md:w-1/2 space-y-1 mt-4 md:mt-0">
+          <div className="flex flex-col w-full md:w-1/2 space-y-2 mt-4 md:mt-0">
             <label htmlFor="confirmPassword" className="label">
               Confirm Password
             </label>
