@@ -3,16 +3,14 @@ import { FiCamera } from "react-icons/fi";
 import { FaBars, FaTimes } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+
 
 const Setting = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
   const [activeTab, setActiveTab] = useState("general");
   const location = useLocation();
-  const path = location.pathname;
 
-  const activeSetting = path.includes('security') ? 'Security' : 'General';
 
   const handleRemovePic = () => {
     setProfilePic("https://via.placeholder.com/150");
