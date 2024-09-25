@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js"
 import { toast } from 'sonner';
 import { useSwipeable } from 'react-swipeable';
+import { FaLock, FaShieldAlt, FaUserCircle } from 'react-icons/fa'; // Font Awesome
+import { MdSecurity } from 'react-icons/md'; // Material Design
 
 
 const Setting = () => {
@@ -16,6 +18,10 @@ const Setting = () => {
   const [devices, setDevices] = useState([])
   const [loading, setLoading] = useState(false)
   const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
+  const tabs = [
+    { icon: <FaUserCircle />, label: 'General' },
+    { icon: <FaShieldAlt />, label: 'Security' },
+  ];
 
 
   useEffect(() => {
@@ -103,20 +109,16 @@ const Setting = () => {
           {/* Navigation Links */}
           <nav className="mt-8">
             <ul className="space-y-4">
-              {['general', 'security'].map((tab) => (
-                <li key={tab}>
+              {tabs.map((tab) => (
+                <li key={tab.label}>
                   <button
-                    className={`block w-full text-left px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                      activeTab === tab
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'hover:bg-gray-700'
-                    }`}
+                    className={`flex items-center justify-start w-full text-left px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${activeTab === tab.label.toLowerCase() ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-gray-700'}`}
                     onClick={() => {
-                      setActiveTab(tab);
+                      setActiveTab(tab.label.toLowerCase());
                       setSidebarOpen(false); // Close sidebar after selection
                     }}
                   >
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    {tab.icon} <span className="ml-2">{tab.label}</span>
                   </button>
                 </li>
               ))}
