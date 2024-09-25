@@ -130,7 +130,7 @@ const Setting = () => {
         {activeTab === "general" && (
           <div>
             <h2 className="title">General Settings</h2>
-            <div className="grid gap-y-4 md:grid-cols-1">
+            <div className="grid gap-y-7 md:grid-cols-1">
               
               {/* Profile Picture Section - No Changes */}
               <div className="bg-white p-6 rounded-lg">
@@ -215,6 +215,9 @@ const Setting = () => {
                         </div>
                       ))}
                     </div>
+                  </div>
+                  <div className='flex justify-end pt-6'>
+                    <Button variant='info'>Update</Button>
                   </div>
                 </div>
 
