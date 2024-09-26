@@ -281,7 +281,7 @@ const Setting = () => {
                       </div>
                     </div>
                     <div className='flex justify-end pt-6'>
-                      <Button variant='info'>Update</Button>
+                      <Button variant='info'>Update Details</Button>
                     </div>
                   </form>       
                 </div>
