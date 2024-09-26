@@ -78,7 +78,7 @@ const UpdateCategory = () => {
     
 
   return (
-<section className="bg-white">
+    <section className="bg-white">
       <div className="py-12 px-12 mx-auto max-w-2xl lg:py-16">
         <BackButton/>
         <h4 className="h4 mb-4 font-bold text-slate-800">Update category</h4>

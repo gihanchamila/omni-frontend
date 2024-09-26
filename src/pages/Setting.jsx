@@ -1,28 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { FiCamera } from "react-icons/fi";
 import { FaBars, FaTimes } from 'react-icons/fa';
-import Button from '../component/button/Button.jsx';
-import { useLocation } from 'react-router-dom';
-import axios from "../utils/axiosInstance.js"
 import { toast } from 'sonner';
 import { useSwipeable } from 'react-swipeable';
-import { FaLock, FaShieldAlt, FaUserCircle } from 'react-icons/fa'; // Font Awesome
-import { MdSecurity } from 'react-icons/md'; // Material Design
+import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
+import Button from '../component/button/Button.jsx';
+import axios from "../utils/axiosInstance.js"
 
+const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
+const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "" }
 
 const Setting = () => {
+  const [formData, setFormData] = useState(initialFormData)
+  const [formError, setFormError] = useState(initialFormError)
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
   const [activeTab, setActiveTab] = useState("general");
-  const location = useLocation();
+
   const [devices, setDevices] = useState([])
   const [loading, setLoading] = useState(false)
   const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
+  const [currentUser, setCurrentUser] = useState()
+
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (activeDeviceIndex < devices.length - 1) {
+        setActiveDeviceIndex(activeDeviceIndex + 1);
+      }
+    },
+    onSwipedRight: () => {
+      if (activeDeviceIndex > 0) {
+        setActiveDeviceIndex(activeDeviceIndex - 1);
+      }
+    },
+    preventDefaultTouchmoveEvent: true, 
+    trackMouse: true,
+  });
+
   const tabs = [
     { icon: <FaUserCircle />, label: 'General' },
     { icon: <FaShieldAlt />, label: 'Security' },
   ];
-
 
   useEffect(() => {
     const getDevices = async() => {
@@ -41,23 +61,32 @@ const Setting = () => {
     }
 
     getDevices()
-  }, [])
+  }, []);
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (activeDeviceIndex < devices.length - 1) {
-        setActiveDeviceIndex(activeDeviceIndex + 1);
-      }
-    },
-    onSwipedRight: () => {
-      if (activeDeviceIndex > 0) {
-        setActiveDeviceIndex(activeDeviceIndex - 1);
-      }
-    },
-    preventDefaultTouchmoveEvent: true, 
-    trackMouse: true,
-  });
+  useEffect(() => {
+    const getCurrentUser = async () => {
+    try {
+      const response = await axios.get(`/auth/current-user`, formData);
+      const user = response.data.data.user;  
+      if (user && user._id) {
+          setCurrentUser(user); 
+          setFormData({
+            name : user.name,
+            email : user.email,
+            dateOfBirth : user.dateOfBirth,
+            interests : user.interests
+          })
 
+          toast.success(`Your name is ${user.name}`); 
+      } else {
+          toast.error('User data is incomplete');
+      }
+    }catch(error){
+      toast.error('Error getting user');
+    }
+    };
+    getCurrentUser();
+  },[]);
 
   const handleRemovePic = () => {
     setProfilePic("https://via.placeholder.com/150");
@@ -74,6 +103,28 @@ const Setting = () => {
     }
   };
 
+  const handleChange = (e) => {
+    setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+        try{
+            setLoading(true)
+            const response = await axios.put(`/user/update-profile`, formData)
+            const data = response.data
+            toast.success(data.message)
+            setFormData(initialFormData)
+            setFormError(initialFormError)
+            setLoading(false)
+        }catch(error){
+            setLoading(false)
+            setFormError(initialFormError)
+            const response = error.response
+            const data = response.data
+            toast.error(data.message)
+        }
+  };
 
 
   return (
@@ -128,7 +179,7 @@ const Setting = () => {
       </div>
   
       {/* Content Panel */}
-      <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-lg transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-lg transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <div>
             <h2 className="title">General Settings</h2>
@@ -159,8 +210,8 @@ const Setting = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
-                      <h2 className="text-lg font-semibold">John Doe</h2>
-                      <p className="text-gray-600">john.doe@example.com</p>
+                      <h2 className="text-lg font-semibold">{currentUser.name}</h2>
+                      <p className="text-gray-600">{currentUser.email}</p>
                     </div>
                   </div>
 
@@ -178,49 +229,61 @@ const Setting = () => {
 
               {/* Bento Box Layout for User Info and Login Sections */}
               <div className="grid gap-6 md:grid-cols-2">
-                
                 {/* User Information Section */}
                 <div className="bg-white p-6 rounded-lg">
                   <h2 className="subTitle">User Information</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-                    <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
-                      {[
-                        { id: "name", label: "Full Name", type: "text", placeholder: "John Doe" },
-                        { id: "birthday", label: "Birth Day", type: "date" }
-                      ].map(({ id, label, type, placeholder }) => (
-                        <div className="groupBox" key={id}>
-                          <label htmlFor={id} className="label">{label}</label>
-                          <input
-                            id={id}
-                            name={id}
-                            type={type}
-                            placeholder={placeholder}
-                            className="input-box"
-                          />
-                        </div>
-                      ))}
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
+                      <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
+                          <div className="groupBox" >
+                            <label className="label">Full Name</label>
+                            <input
+                              id="name"
+                              name="name"
+                              type="text"
+                              placeholder="John Doe"
+                              value={formData.name}
+                              onChange={handleChange}
+                              className="input-box"
+                            />
+                          </div>
+                          <div className="groupBox" >
+                            <label className="label">Birth Day</label>
+                            <input
+                              id="dateOfBirth"
+                              name="dateOfBirth"
+                              type="date"
+                              placeholder="2001-05-15"
+                              value={formData.dateOfBirth}
+                              onChange={handleChange}
+                              className="input-box"
+                            />
+                          </div>
+                      </div>
+                      <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
+                        {[
+                          { id: "email", name : "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value : formData.email || "" },
+                          { id: "interests", name : "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value : formData.interests || ""}
+                        ].map(({ id, label, type, placeholder, value, name }) => (
+                          <div className="groupBox" key={id}>
+                            <label htmlFor={id} className="label">{label}</label>
+                            <input
+                              id={id}
+                              name={name}
+                              type={type}
+                              placeholder={placeholder}
+                              value={value}
+                              onChange={handleChange}
+                              className="input-box"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
-                      {[
-                        { id: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com" },
-                        { id: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding" }
-                      ].map(({ id, label, type, placeholder }) => (
-                        <div className="groupBox" key={id}>
-                          <label htmlFor={id} className="label">{label}</label>
-                          <input
-                            id={id}
-                            name={id}
-                            type={type}
-                            placeholder={placeholder}
-                            className="input-box"
-                          />
-                        </div>
-                      ))}
+                    <div className='flex justify-end pt-6'>
+                      <Button variant='info'>Update</Button>
                     </div>
-                  </div>
-                  <div className='flex justify-end pt-6'>
-                    <Button variant='info'>Update</Button>
-                  </div>
+                  </form>       
                 </div>
 
                 {/* User Login Section */}
@@ -229,55 +292,42 @@ const Setting = () => {
 
                 <div className="bg-white p-6 rounded-lg">
                   <h2 className="subTitle">Devices Logged In</h2>
-
-                  {/* Swipeable Devices Section */}
                   <div {...handlers} className="overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-300"
-                      style={{ transform: `translateX(-${activeDeviceIndex * 100}%)` }}
-                    >
-                      {devices.map((device, index) => (
-                        <div
-                          key={index}
-                          className="min-w-full p-4 border rounded-lg"
-                        >
-                          <div className="grid grid-cols-2 gap-4 items-center">
-                            {/* Device Image */}
-                            <div>
-                              <img
-                                alt={device.deviceType}
-                                className="w-20 h-20 object-contain"
-                              />
-                            </div>
-                            {/* Device Info */}
-                            <div>
+                    <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${activeDeviceIndex * 100}%)` }}>
+                      {devices.map((device, index) => {
+                        let imageUrl = '';
+
+                        switch (device.deviceType.toLowerCase()) {
+                          case 'mobile':
+                            imageUrl = '/images/mobile.png';  // Path to mobile image
+                            break;
+                          case 'tablet':
+                            imageUrl = '/images/tablet.png';  // Path to tablet image
+                            break;
+                          case 'laptop':
+                          default:
+                            imageUrl = 'public/windows.png';  // Default to laptop image
+                            break;
+                        }
+
+                        return (
+                          <div key={index} className="min-w-full p-4 border rounded-lg">
+                            <div className="grid grid-cols-2 gap-4 items-center">
                               <div>
-                                <strong>Device Type:</strong> {device.deviceType}
+                                {/* Display the image based on deviceType */}
+                                <img src={imageUrl} alt={device.deviceType} className="w-42 h-auto object-cover" />
                               </div>
-                              <div>
-                                <strong>Browser:</strong> {device.browser}
-                              </div>
-                              <div>
-                                <strong>Login Time:</strong>{' '}
-                                {new Date(device.loggedInAt).toLocaleString()}
+                              <div >
+                                <div className='flex py-1'><p className="text-sm">Device Type : </p><p className="text-sm pl-1"> {device.deviceType}</p></div>
+                                <div className='flex py-1'><p className="text-sm">Browser : </p> <p className="text-sm pl-1"> {device.browser}</p></div>
+                                <div className='flex py-1'><p className="text-sm">OS  :</p> <p className="text-sm pl-1"> {device.os}</p></div>
+                                <div className='flex py-1'><p className="text-sm">Login Time : </p> <p className="text-sm pl-1"> {new Date(device.loggedInAt).toLocaleString()}</p></div>  
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                  </div>
-
-                   {/* Pagination Dots */}
-                  <div className="flex justify-center mt-4">
-                    {devices.map((_, index) => (
-                      <span
-                        key={index}
-                        className={`w-2 h-2 rounded-full mx-1 ${
-                          index === activeDeviceIndex ? 'bg-blue-500' : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
                   </div>
                 </div>
               </div>
@@ -398,8 +448,7 @@ const Setting = () => {
             </div>
           </div>
         )}
-
-      </div>
+      </div>)}
     </div>
   );
   

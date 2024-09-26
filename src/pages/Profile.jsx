@@ -23,7 +23,7 @@ const Profile = () => {
 
   const socket = useSocket()
 
-  useEffect(() => {
+useEffect(() => {
     const getCurrentUser = async () => {
     try {
       const response = await axios.get(`/auth/current-user`);

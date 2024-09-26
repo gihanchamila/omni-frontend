@@ -56,7 +56,7 @@ const PrivateNavBar = () => {
         </div>
         
         {/* Navigation Links */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 px-5 rounded-full">
           <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/categories">Categories</NavLink>
           <NavLink className="navlink" to="/posts">Posts</NavLink>

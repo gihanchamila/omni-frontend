@@ -14,6 +14,7 @@ const Login = () => {
 
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
+  const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
 
 
@@ -21,7 +22,7 @@ const Login = () => {
 
   const handleChange = (e) => {
     setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
-  }
+  };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -41,20 +42,22 @@ const Login = () => {
         {/* api request */}
 
         const userAgent = navigator.userAgent;
+        const deviceType = getDeviceType(userAgent); // Detect device type
+        const browser = getBrowserName(userAgent); // Detect browser
+        const os = getOS(userAgent); 
 
-        const deviceType = getDeviceType(userAgent); // Captures user agent
-        const browser = getBrowserName(userAgent); // Function to get browser info (see below)
+        const requestBody = {
+        email: formData.email,
+        password: formData.password,
+        deviceType: deviceType || "Unknown Device",
+        browser: browser || "Unknown Browser",
+        os: os || "Unknown OS"
+        };
 
-        const requestbody = {
-          name : formData.name,
-          email : formData.email,
-          password : formData.password,
-          deviceType: deviceType || "Unknown Device",
-          browser: browser || "Unknown Browser"
-        }
-
-        const response = await axios.post('/auth/signin', requestbody)
+        const response = await axios.post('/auth/signin', requestBody)
         const data = response.data
+        console.log(data.data.deviceType)
+        setDeviceType(data.data.deviceType); 
 
         window.localStorage.setItem("blogData", JSON.stringify(data.data))
         toast.success(data.message)
@@ -71,17 +74,19 @@ const Login = () => {
         toast.error(data.message)
       }
     }
-  }
+  };
+  
+  console.log(deviceType)
 
   const getBrowserName = (userAgent) => {
     if (userAgent.includes("Chrome")) {
-      return "Chrome";
+      return "Google Chrome";
     } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
       return "Safari";
     } else if (userAgent.includes("Firefox")) {
       return "Firefox";
     } else if (userAgent.includes("Edge")) {
-      return "Edge";
+      return "Microsoft Edge";
     } else {
       return "Unknown Browser";
     }
@@ -96,6 +101,16 @@ const Login = () => {
       return 'Laptop'; // Assuming all other cases are laptops
     }
   };
+
+  const getOS = (userAgent) => {
+    if (userAgent.includes("Windows")) return "Windows";
+    if (userAgent.includes("Mac")) return "macOS";
+    if (userAgent.includes("X11")) return "UNIX";
+    if (userAgent.includes("Linux")) return "Linux";
+    if (/android/i.test(userAgent)) return "Android";
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
+    return "Unknown OS";
+};
 
 
 
