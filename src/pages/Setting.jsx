@@ -9,6 +9,7 @@ import axios from "../utils/axiosInstance.js"
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
+import { RiCloseLargeFill } from "react-icons/ri";
 
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
@@ -143,7 +144,7 @@ const Setting = () => {
               className="text-3xl focus:outline-none"
               onClick={() => setSidebarOpen(false)}
             >
-              <FaTimes className="w-5 h-5 transition-colors duration-200" />
+              <RiCloseLargeFill className="w-5 h-5 transition-colors duration-200" />
             </button>
           </div>
 
