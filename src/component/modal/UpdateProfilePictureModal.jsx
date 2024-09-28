@@ -46,7 +46,10 @@ function UpdateProfilePictureModal() {
 
     return (
         <div>
-            <Button variant='info' onClick={() => setShowModal(true)}>Update Profile Picture</Button>
+            <div className='space-x-4'>
+            <Button variant='error' >Remove</Button>
+            <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
+            </div>
 
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
