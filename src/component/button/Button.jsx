@@ -10,7 +10,8 @@ const Button = ({ children, variant = "primary", className, to, onClick, ...prop
     error: "bg-red-600 text-white hover:bg-red-500",
     success: "bg-green-600 text-white hover:bg-green-500",
     info: "bg-blue-600 text-white hover:bg-blue-500",
-    back : "bg-gray-300 rounded-full"
+    back : "bg-gray-300 rounded-full",
+    outline : "border border-gray-200 hover:bg-gray-50 text-gray-800"
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${className || ""}`;

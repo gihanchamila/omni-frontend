@@ -6,6 +6,10 @@ import { useSwipeable } from 'react-swipeable';
 import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import axios from "../utils/axiosInstance.js"
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
+
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "" }
@@ -13,6 +17,7 @@ const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "
 const Setting = () => {
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
+  const [fileId, setFileId] = useState(null);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
@@ -22,6 +27,8 @@ const Setting = () => {
   const [loading, setLoading] = useState(false)
   const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
   const [currentUser, setCurrentUser] = useState()
+
+
 
 
   const handlers = useSwipeable({
@@ -51,7 +58,6 @@ const Setting = () => {
         const response = await axios.get("/user/devices")
         const data = response.data.data.devices
         console.log(data)
-        toast.success(data.message)
         setDevices(data)
       }catch(error){
         const response = error.response
@@ -77,7 +83,6 @@ const Setting = () => {
             interests : user.interests
           })
 
-          toast.success(`Your name is ${user.name}`); 
       } else {
           toast.error('User data is incomplete');
       }
@@ -87,21 +92,6 @@ const Setting = () => {
     };
     getCurrentUser();
   },[]);
-
-  const handleRemovePic = () => {
-    setProfilePic("https://via.placeholder.com/150");
-  };
-
-  const handleUpdatePic = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
@@ -205,7 +195,6 @@ const Setting = () => {
                           type="file"
                           accept="image/*"
                           className="hidden"
-                          onChange={handleUpdatePic}
                         />
                       </div>
                     </div>
@@ -217,12 +206,7 @@ const Setting = () => {
 
                   {/* Buttons */}
                   <div className="mt-4 md:mt-0 space-x-4">
-                    <Button variant="error" onClick={handleRemovePic}>
-                      Remove
-                    </Button>
-                    <Button variant="info">
-                      <label htmlFor="profile-pic">Update</label>
-                    </Button>
+                    <UpdateProfilePictureModal />
                   </div>
                 </div>
               </div>
