@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { RiCloseLargeFill } from "react-icons/ri";
 
 function UpdateProfilePictureModal() {
     const [showModal, setShowModal] = useState(false);
@@ -53,7 +54,7 @@ function UpdateProfilePictureModal() {
                     <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
                         {/* Close Button with FaTimes Icon positioned at the top right */}
                         <button onClick={handleCloseModal} className="absolute top-5 right-5 text-gray-500 hover:text-gray-700">
-                            <FaTimes className="w-4 h-4 transition-colors duration-200" />
+                            <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
 
                         <p className="text-2xl font-bold m-0">Update Profile Picture</p>
