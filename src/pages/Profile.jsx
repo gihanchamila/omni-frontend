@@ -235,7 +235,7 @@ const handleLike = async (postId) => {
       <hr className="mt-10 border-t border-gray-200" />
       <div className="h4 my-5 font-semibold">Your posts</div>
       <div className='grid lg:grid-cols-2 sm:grid-cols-1 gap-4'>
-      {loading ? (
+      {loading && userPosts ? (
         <p>Loading...</p>
       ) : (
         userPosts.length > 0 ? (

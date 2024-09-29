@@ -34,12 +34,10 @@ function UpdateProfilePictureModal() {
         }
     };
 
-
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
         onDrop, 
         accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] } 
-      });
-      
+    });
 
     // Close the modal and reset the states
     const handleCloseModal = () => {
@@ -64,7 +62,6 @@ function UpdateProfilePictureModal() {
             try {
                 const response = await axios.post("/file/upload", {
                     base64Image: croppedImage, 
-                    
                 });
                 setFileId(response.data.data.id); 
                 toast.success(response.data.message);
@@ -76,7 +73,7 @@ function UpdateProfilePictureModal() {
         if (fileId) {
             try {
                 const response = await axios.post("/user/add-profilePic", { profilePic: fileId });
-                console.log(response.data.message)
+                console.log(response.data.message);
                 toast.success(response.data.message);
             } catch (error) {
                 toast.error(error.response?.data?.message || "Update failed");
@@ -87,7 +84,6 @@ function UpdateProfilePictureModal() {
     
         handleCloseModal();
     };
-    
 
     return (
         <div>
@@ -101,7 +97,10 @@ function UpdateProfilePictureModal() {
                     {/* Modal with updated size */}
                     <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
                         {/* Close Button */}
-                        <button onClick={handleCloseModal} className="absolute top-5 right-5 text-gray-500 hover:text-gray-700">
+                        <button 
+                            onClick={handleCloseModal} 
+                            className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
+                        >
                             <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
 
@@ -157,7 +156,7 @@ function UpdateProfilePictureModal() {
                             {croppedImage && <Button onClick={handleRecrop}>Recrop</Button>}
 
                             {/* Update Profile Pic */}
-                            {croppedImage &&<Button variant='info' onClick={handleSaveProfile}>Save Profile</Button>}
+                            {croppedImage && <Button variant='info' onClick={handleSaveProfile}>Save Profile</Button>}
                         </div>
                     </div>
                 </div>
