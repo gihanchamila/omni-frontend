@@ -21,25 +21,53 @@ const Profile = () => {
 
   const [likedPosts, setLikedPosts] = useState({});
 
+  const [profileKey, setProfileKey] = useState(null)
+  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
+
   const socket = useSocket()
 
-useEffect(() => {
+  useEffect(() => {
     const getCurrentUser = async () => {
-    try {
-      const response = await axios.get(`/auth/current-user`);
-      const user = response.data.data.user;  
-      if (user && user._id) {
-          setCurrentUser(user); 
-          toast.success(`Your name is ${user.name}`); 
-      } else {
+      try {
+        const response = await axios.get(`/auth/current-user`); // Removed formData from GET request
+        const user = response.data.data.user;
+  
+        if (user && user._id) {
+          setCurrentUser(user);
+  
+          // Check if profilePic and key exist before setting
+          if (user.profilePic && user.profilePic.key) {
+            setProfileKey(user.profilePic.key);
+          }
+        } else {
           toast.error('User data is incomplete');
+        }
+      } catch (error) {
+        toast.error('Error getting user');
       }
-    }catch(error){
-      toast.error('Error getting user');
-    }
     };
+  
     getCurrentUser();
-},[]);
+  }, []);
+
+  useEffect(() => {
+    const getprofilePic = async () => {
+       try{
+         const response = await axios.get(`/file/signed-url?key=${profileKey}`)
+         const data = response.data.data
+         setProfilePic(data.url)
+         console.log(data)
+         toast.success(response.data.message)
+       }catch(error){
+         const response = error.response;
+         const data = response.data
+         toast.error(data.message)
+       }
+    }
+    if (profileKey) {
+     getprofilePic();
+   }
+   },[profileKey])
 
 useEffect(() => {
   const getUserPosts = async () => {

@@ -6,24 +6,40 @@ import 'cropperjs/dist/cropper.css';
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
 import { toast } from 'sonner';
+import { profile } from '../../assets/index.js';
 
 function UpdateProfilePictureModal() {
     const [showModal, setShowModal] = useState(false);
     const [file, setFile] = useState(null);
-    const [fileId, setFileId] = useState(null);
+    const [fileId, setFileId] = useState(profile);
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
     const cropperRef = useRef(null);
 
     // Handle file drop
     const onDrop = (acceptedFiles) => {
-        const reader = new FileReader();
-        reader.onload = () => setImage(reader.result);
-        reader.readAsDataURL(acceptedFiles[0]);
-        setFile(acceptedFiles[0]);
+        if (!acceptedFiles || acceptedFiles.length === 0) {
+            toast.error('No file selected');
+            return;
+        }
+    
+        const file = acceptedFiles[0];
+        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+            const reader = new FileReader();
+            reader.onload = () => setImage(reader.result);
+            reader.readAsDataURL(file);
+            setFile(file);
+        } else {
+            toast.error('Invalid file type');
+        }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'image/*' });
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
+        onDrop, 
+        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] } 
+      });
+      
 
     // Close the modal and reset the states
     const handleCloseModal = () => {
@@ -33,7 +49,6 @@ function UpdateProfilePictureModal() {
         setShowModal(false);
     };
 
-    // Crop the image
     const handleCrop = () => {
         const cropper = cropperRef.current?.cropper;
         if (cropper) {
@@ -42,18 +57,15 @@ function UpdateProfilePictureModal() {
         }
     };
 
-    // Reset the cropping process
     const handleRecrop = () => setCroppedImage(null);
    
     const handleSaveProfile = async () => {
-        // First, handle the image upload
         if (croppedImage) {
             try {
                 const response = await axios.post("/file/upload", {
-                    base64Image: croppedImage,  // Send base64 data
+                    base64Image: croppedImage, 
                     
                 });
-                console.log(croppedImage)
                 setFileId(response.data.data.id); 
                 toast.success(response.data.message);
             } catch (error) {
@@ -61,11 +73,10 @@ function UpdateProfilePictureModal() {
             }
         }
     
-        // Proceed to update the profile if fileId is available
         if (fileId) {
             try {
-                console.log(fileId);
-                const response = await axios.post("/user/update-profilePic", { profilePic: fileId });
+                const response = await axios.post("/user/add-profilePic", { profilePic: fileId });
+                console.log(response.data.message)
                 toast.success(response.data.message);
             } catch (error) {
                 toast.error(error.response?.data?.message || "Update failed");
@@ -74,7 +85,6 @@ function UpdateProfilePictureModal() {
             toast.error("No file uploaded");
         }
     
-        // Close the modal after the operation
         handleCloseModal();
     };
     
@@ -83,7 +93,7 @@ function UpdateProfilePictureModal() {
         <div>
             <div className='space-x-4'>
                 <Button variant='error'>Remove</Button>
-                <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
+                <Button variant='info' onClick={() => setShowModal(true)}>Add Profile Picture</Button>
             </div>
 
             {showModal && (

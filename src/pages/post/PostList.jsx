@@ -88,6 +88,7 @@ const PostList = () => {
             try {
               const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
               const data = response.data.data
+              console.log(data)
               files[post._id] = data.url;
               //toast.success(response.data.message)
             } catch (error) {

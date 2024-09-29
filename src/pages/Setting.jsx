@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FiCamera } from "react-icons/fi";
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars} from 'react-icons/fa';
 import { toast } from 'sonner';
 import { useSwipeable } from 'react-swipeable';
 import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import axios from "../utils/axiosInstance.js"
-import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
 import { RiCloseLargeFill } from "react-icons/ri";
@@ -18,6 +17,7 @@ const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "
 const Setting = () => {
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
+  const [profileKey, setProfileKey] = useState(null)
   const [fileId, setFileId] = useState(null);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -28,9 +28,6 @@ const Setting = () => {
   const [loading, setLoading] = useState(false)
   const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
   const [currentUser, setCurrentUser] = useState()
-
-
-
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -58,7 +55,6 @@ const Setting = () => {
         setLoading(true)
         const response = await axios.get("/user/devices")
         const data = response.data.data.devices
-        console.log(data)
         setDevices(data)
       }catch(error){
         const response = error.response
@@ -72,27 +68,53 @@ const Setting = () => {
 
   useEffect(() => {
     const getCurrentUser = async () => {
-    try {
-      const response = await axios.get(`/auth/current-user`, formData);
-      const user = response.data.data.user;  
-      if (user && user._id) {
-          setCurrentUser(user); 
+      try {
+        const response = await axios.get(`/auth/current-user`); // Removed formData from GET request
+        const user = response.data.data.user;
+  
+        if (user && user._id) {
+          setCurrentUser(user);
+  
+          // Check if profilePic and key exist before setting
+          if (user.profilePic && user.profilePic.key) {
+            setProfileKey(user.profilePic.key);
+          }
+  
           setFormData({
-            name : user.name,
-            email : user.email,
-            dateOfBirth : user.dateOfBirth,
-            interests : user.interests
-          })
-
-      } else {
+            name: user.name || '',
+            email: user.email || '',
+            dateOfBirth: user.dateOfBirth || '',
+            interests: user.interests || []
+          });
+        } else {
           toast.error('User data is incomplete');
+        }
+      } catch (error) {
+        toast.error('Error getting user');
       }
-    }catch(error){
-      toast.error('Error getting user');
-    }
     };
+  
     getCurrentUser();
-  },[]);
+  }, []);
+
+  useEffect(() => {
+   const getprofilePic = async () => {
+      try{
+        const response = await axios.get(`/file/signed-url?key=${profileKey}`)
+        const data = response.data.data
+        setProfilePic(data.url)
+        console.log(data)
+        toast.success(response.data.message)
+      }catch(error){
+        const response = error.response;
+        const data = response.data
+        toast.error(data.message)
+      }
+   }
+   if (profileKey) {
+    getprofilePic();
+  }
+  },[profileKey])
 
   const handleChange = (e) => {
     setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
@@ -140,10 +162,7 @@ const Setting = () => {
         >
           {/* Close button */}
           <div className="flex justify-end">
-            <button
-              className="text-3xl focus:outline-none"
-              onClick={() => setSidebarOpen(false)}
-            >
+            <button className="text-3xl focus:outline-none" onClick={() => setSidebarOpen(false)}>
               <RiCloseLargeFill className="w-5 h-5 transition-colors duration-200" />
             </button>
           </div>
@@ -183,7 +202,7 @@ const Setting = () => {
                   <div className="relative flex flex-col items-center md:flex-row bg-white p-4 rounded-lg">
                     <div>
                       <img
-                        src={currentUser.profilePic}
+                        src={profilePic}
                         alt="Profile"
                         className="w-20 h-20 md:w-28 md:h-28 group rounded-full object-cover border-2 border-gray-300"
                       />
