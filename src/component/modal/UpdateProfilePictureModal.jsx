@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { profile } from '../../assets/index.js';
 
 function UpdateProfilePictureModal() {
+    const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [file, setFile] = useState(null);
     const [fileId, setFileId] = useState(profile);
@@ -59,6 +60,8 @@ function UpdateProfilePictureModal() {
    
     const handleSaveProfile = async () => {
         if (croppedImage) {
+            setIsLoading(true); // Start loading
+
             try {
                 const response = await axios.post("/file/upload", {
                     base64Image: croppedImage, 
@@ -66,7 +69,9 @@ function UpdateProfilePictureModal() {
                 setFileId(response.data.data.id); 
                 toast.success(response.data.message);
             } catch (error) {
-                return toast.error(error.response?.data?.message || "Upload failed");
+                toast.error(error.response?.data?.message || "Upload failed");
+                setIsLoading(false); // Stop loading on error
+                return;
             }
         }
     
@@ -80,8 +85,12 @@ function UpdateProfilePictureModal() {
             }
         } else {
             toast.error("No file uploaded");
+            setIsLoading(false); // Stop loading if no file uploaded
+            return;
         }
-    
+
+        // Stop loading and close modal after all operations
+        setIsLoading(false);
         handleCloseModal();
     };
 
@@ -156,7 +165,10 @@ function UpdateProfilePictureModal() {
                             {croppedImage && <Button onClick={handleRecrop}>Recrop</Button>}
 
                             {/* Update Profile Pic */}
-                            {croppedImage && <Button variant='info' onClick={handleSaveProfile}>Save Profile</Button>}
+                            {croppedImage && (
+                            <Button variant='info' onClick={handleSaveProfile} disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}
+                            </Button>
+                            )}
                         </div>
                     </div>
                 </div>
