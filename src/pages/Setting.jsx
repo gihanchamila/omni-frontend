@@ -183,7 +183,7 @@ const Setting = () => {
                   <div className="relative flex flex-col items-center md:flex-row bg-white p-4 rounded-lg">
                     <div>
                       <img
-                        src={profilePic}
+                        src={currentUser.profilePic}
                         alt="Profile"
                         className="w-20 h-20 md:w-28 md:h-28 group rounded-full object-cover border-2 border-gray-300"
                       />

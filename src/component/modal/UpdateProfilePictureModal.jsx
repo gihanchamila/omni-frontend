@@ -1,15 +1,16 @@
 import React, { useState, useRef } from 'react';
 import Button from '../button/Button.jsx';
-import ScrollLock from 'react-scroll-lock';
 import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { FaBars, FaTimes } from 'react-icons/fa';
 import { RiCloseLargeFill } from "react-icons/ri";
+import axios from "../../utils/axiosInstance.js";
+import { toast } from 'sonner';
 
 function UpdateProfilePictureModal() {
     const [showModal, setShowModal] = useState(false);
     const [file, setFile] = useState(null);
+    const [fileId, setFileId] = useState(null);
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
     const cropperRef = useRef(null);
@@ -43,19 +44,53 @@ function UpdateProfilePictureModal() {
 
     // Reset the cropping process
     const handleRecrop = () => setCroppedImage(null);
+   
+    const handleSaveProfile = async () => {
+        // First, handle the image upload
+        if (croppedImage) {
+            try {
+                const response = await axios.post("/file/upload", {
+                    base64Image: croppedImage,  // Send base64 data
+                    
+                });
+                console.log(croppedImage)
+                setFileId(response.data.data.id); 
+                toast.success(response.data.message);
+            } catch (error) {
+                return toast.error(error.response?.data?.message || "Upload failed");
+            }
+        }
+    
+        // Proceed to update the profile if fileId is available
+        if (fileId) {
+            try {
+                console.log(fileId);
+                const response = await axios.post("/user/update-profilePic", { profilePic: fileId });
+                toast.success(response.data.message);
+            } catch (error) {
+                toast.error(error.response?.data?.message || "Update failed");
+            }
+        } else {
+            toast.error("No file uploaded");
+        }
+    
+        // Close the modal after the operation
+        handleCloseModal();
+    };
+    
 
     return (
         <div>
             <div className='space-x-4'>
-            <Button variant='error' >Remove</Button>
-            <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
+                <Button variant='error'>Remove</Button>
+                <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
             </div>
 
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
                     {/* Modal with updated size */}
                     <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
-                        {/* Close Button with FaTimes Icon positioned at the top right */}
+                        {/* Close Button */}
                         <button onClick={handleCloseModal} className="absolute top-5 right-5 text-gray-500 hover:text-gray-700">
                             <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
@@ -70,7 +105,7 @@ function UpdateProfilePictureModal() {
                                     {...getRootProps()}
                                     className={`flex items-center justify-center border-2 w-full h-[20rem] border-dashed p-6 text-center ${isDragActive ? 'bg-gray-100' : 'bg-gray-50'} rounded-lg`}
                                 >
-                                    <input {...getInputProps()} className='object-cover' />
+                                    <input {...getInputProps()} />
                                     <p className="text-gray-500">
                                         {isDragActive ? 'Drop the files here ...' : 'Drag & drop a picture here, or click to select a file'}
                                     </p>
@@ -82,7 +117,7 @@ function UpdateProfilePictureModal() {
                                 <div>
                                     <Cropper
                                         src={image}
-                                        style={{ height: '300px', width: '100%' }} // Adjusted height for the cropper
+                                        style={{ height: '300px', width: '100%' }}
                                         aspectRatio={1}
                                         guides={false}
                                         ref={cropperRef}
@@ -106,13 +141,13 @@ function UpdateProfilePictureModal() {
                             <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
 
                             {/* Crop button, visible only if image is uploaded */}
-                            {!croppedImage && image && <Button variant='info' onClick={handleCrop}>Crop</Button>}
+                            {!croppedImage && image && <Button variant='info' onClick={handleCrop}>Next</Button>}
 
                             {/* Recrop button, visible only if an image is cropped */}
                             {croppedImage && <Button onClick={handleRecrop}>Recrop</Button>}
 
-                            {/* Save Changes, enabled only after cropping */}
-                            {croppedImage && <Button variant='info'>Save Changes</Button>}
+                            {/* Update Profile Pic */}
+                            {croppedImage &&<Button variant='info' onClick={handleSaveProfile}>Save Profile</Button>}
                         </div>
                     </div>
                 </div>
