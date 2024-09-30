@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Button from '../button/Button.jsx';
 import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-cropper';
@@ -6,24 +6,57 @@ import 'cropperjs/dist/cropper.css';
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
 import { toast } from 'sonner';
-import { profile } from '../../assets/index.js';
 
 function UpdateProfilePictureModal() {
+    // State management
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [removeModal, setRemoveModal] = useState(false);
     const [file, setFile] = useState(null);
-    const [fileId, setFileId] = useState(profile);
+    const [fileId, setFileId] = useState(null);
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
+    const [deleteProfileKey, setDeleteProfileKey] = useState(null);
     const cropperRef = useRef(null);
+    const [currentUser, setCurrentUser] = useState();
+
+    // Fetch current user data
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            try {
+                const response = await axios.get('/auth/current-user');
+                const user = response.data.data.user;
+
+                if (user && user._id) {
+                    setCurrentUser(user);
+                    if (user.profilePic?.key) {
+                        setDeleteProfileKey(user.profilePic.key);
+                    }
+                } else {
+                    toast.error('User data is incomplete');
+                }
+            } catch (error) {
+                toast.error('Error getting user');
+            }
+        };
+
+        getCurrentUser();
+
+        return () => setCurrentUser(null); // Clean up
+    }, []);
+
+    // useMemo to cache the profile picture key
+    const memoizedProfilePicKey = useMemo(() => {
+        return currentUser?.profilePic?.key || null;
+    }, [currentUser]);
 
     // Handle file drop
     const onDrop = (acceptedFiles) => {
-        if (!acceptedFiles || acceptedFiles.length === 0) {
+        if (acceptedFiles.length === 0) {
             toast.error('No file selected');
             return;
         }
-    
+
         const file = acceptedFiles[0];
         if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
             const reader = new FileReader();
@@ -35,17 +68,21 @@ function UpdateProfilePictureModal() {
         }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
-        onDrop, 
-        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] } 
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
     });
 
-    // Close the modal and reset the states
+    // Modal handling functions
     const handleCloseModal = () => {
         setImage(null);
         setFile(null);
         setCroppedImage(null);
         setShowModal(false);
+    };
+
+    const handleCloseRemoveModal = () => {
+        setRemoveModal(false);
     };
 
     const handleCrop = () => {
@@ -57,67 +94,77 @@ function UpdateProfilePictureModal() {
     };
 
     const handleRecrop = () => setCroppedImage(null);
-   
-    const handleSaveProfile = async () => {
+
+    const handleSaveProfilePicture = async () => {
         if (croppedImage) {
-            setIsLoading(true); // Start loading
-
+            setIsLoading(true);
             try {
-                const response = await axios.post("/file/upload", {
-                    base64Image: croppedImage, 
-                });
-                setFileId(response.data.data.id); 
-                toast.success(response.data.message);
+                const uploadResponse = await axios.post("/file/upload", { base64Image: croppedImage });
+                if (uploadResponse.data?.data?.id) {
+                    const fileId = uploadResponse.data.data.id;
+                    const profileResponse = await axios.post("/user/add-profilePic", { profilePic: fileId });
+                    toast.success(profileResponse.data.message);
+                    handleCloseModal();
+                } else {
+                    throw new Error("File ID missing");
+                }
             } catch (error) {
-                toast.error(error.response?.data?.message || "Upload failed");
-                setIsLoading(false); // Stop loading on error
-                return;
+                toast.error(error.response?.data?.message || "An error occurred");
+            } finally {
+                setIsLoading(false);
             }
         }
-    
-        if (fileId) {
-            try {
-                const response = await axios.post("/user/add-profilePic", { profilePic: fileId });
-                console.log(response.data.message);
-                toast.success(response.data.message);
-            } catch (error) {
-                toast.error(error.response?.data?.message || "Update failed");
-            }
-        } else {
-            toast.error("No file uploaded");
-            setIsLoading(false); // Stop loading if no file uploaded
-            return;
-        }
+    };
 
-        // Stop loading and close modal after all operations
-        setIsLoading(false);
-        handleCloseModal();
+    const handleDeleteFile = async () => {
+        try {
+            const response = await axios.delete(`file/delete-file?key=${memoizedProfilePicKey}`);
+            toast.success(response.data.message);
+            setRemoveModal(false);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Error deleting file");
+        }
     };
 
     return (
         <div>
             <div className='space-x-4'>
-                <Button variant='error'>Remove</Button>
+                <Button variant='error' onClick={() => setRemoveModal(true)}>Remove</Button>
                 <Button variant='info' onClick={() => setShowModal(true)}>Add Profile Picture</Button>
             </div>
 
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
-                    {/* Modal with updated size */}
-                    <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
-                        {/* Close Button */}
-                        <button 
-                            onClick={handleCloseModal} 
+            {/* Remove Modal */}
+            {removeModal && (
+                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm'>
+                    <div className="relative bg-white rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
+                        <button
+                            onClick={handleCloseRemoveModal}
                             className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
                         >
                             <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
+                        <p>Are you sure to remove profile picture?</p>
+                        <div className='flex justify-end space-x-4'>
+                            <Button variant='error' onClick={handleDeleteFile}>Yes</Button>
+                            <Button variant='info' onClick={handleCloseRemoveModal}>No</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
+            {/* Add/Edit Profile Picture Modal */}
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
+                    <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
+                        <button
+                            onClick={handleCloseModal}
+                            className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
+                        >
+                            <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
+                        </button>
                         <p className="text-2xl font-bold m-0">Update Profile Picture</p>
 
-                        {/* Drag and Drop or Cropper Area */}
                         <div className="flex flex-col items-center justify-center flex-grow">
-                            {/* Drag-and-Drop Section (hidden during cropping) */}
                             {!image && !croppedImage && (
                                 <div
                                     {...getRootProps()}
@@ -130,7 +177,6 @@ function UpdateProfilePictureModal() {
                                 </div>
                             )}
 
-                            {/* Cropper Section */}
                             {image && !croppedImage && (
                                 <div>
                                     <Cropper
@@ -143,31 +189,21 @@ function UpdateProfilePictureModal() {
                                 </div>
                             )}
 
-                            {/* Cropped Image Preview */}
                             {croppedImage && (
-                                <div className="flex flex-col items-center justify-center m-0">
-                                    <div className="w-[300px] h-[300px] rounded-full overflow-hidden bg-gray-200">
-                                        <img src={croppedImage} alt="Cropped" className="w-full h-full object-cover" />
-                                    </div>
+                                <div className="w-[300px] h-[300px] rounded-full overflow-hidden bg-gray-200">
+                                    <img src={croppedImage} alt="Cropped" className="w-full h-full object-cover" />
                                 </div>
                             )}
                         </div>
 
-                        {/* Action Buttons */}
                         <div className="flex justify-end space-x-4">
-                            {/* Close the modal */}
                             <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
-
-                            {/* Crop button, visible only if image is uploaded */}
                             {!croppedImage && image && <Button variant='info' onClick={handleCrop}>Next</Button>}
-
-                            {/* Recrop button, visible only if an image is cropped */}
                             {croppedImage && <Button onClick={handleRecrop}>Recrop</Button>}
-
-                            {/* Update Profile Pic */}
                             {croppedImage && (
-                            <Button variant='info' onClick={handleSaveProfile} disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}
-                            </Button>
+                                <Button variant='info' onClick={handleSaveProfilePicture} disabled={isLoading}>
+                                    {isLoading ? 'Saving changes...' : 'Save Changes'}
+                                </Button>
                             )}
                         </div>
                     </div>

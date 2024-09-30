@@ -21,7 +21,7 @@ const Setting = () => {
   const [fileId, setFileId] = useState(null);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
+  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); 
   const [activeTab, setActiveTab] = useState("general");
 
   const [devices, setDevices] = useState([])
