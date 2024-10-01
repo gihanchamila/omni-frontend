@@ -6,21 +6,24 @@ import 'cropperjs/dist/cropper.css';
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
 import { toast } from 'sonner';
+import { useSocket } from '../../hooks/useSocket.jsx';
 
 function UpdateProfilePictureModal() {
     // State management
+    const socket = useSocket();
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [removeModal, setRemoveModal] = useState(false);
     const [file, setFile] = useState(null);
     const [fileId, setFileId] = useState(null);
+    const [profileKey, setProfileKey] = useState(null)
+    const [tempProfileKey, setTempProfileKey] = useState(null)
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
     const [deleteProfileKey, setDeleteProfileKey] = useState(null);
     const cropperRef = useRef(null);
     const [currentUser, setCurrentUser] = useState();
 
-    // Fetch current user data
     useEffect(() => {
         const getCurrentUser = async () => {
             try {
@@ -48,9 +51,8 @@ function UpdateProfilePictureModal() {
     // useMemo to cache the profile picture key
     const memoizedProfilePicKey = useMemo(() => {
         return currentUser?.profilePic?.key || null;
-    }, [currentUser]);
+    }, [currentUser])
 
-    // Handle file drop
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
             toast.error('No file selected');
@@ -66,14 +68,13 @@ function UpdateProfilePictureModal() {
         } else {
             toast.error('Invalid file type');
         }
-    };
+    }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
-    });
+    })
 
-    // Modal handling functions
     const handleCloseModal = () => {
         setImage(null);
         setFile(null);
@@ -81,9 +82,11 @@ function UpdateProfilePictureModal() {
         setShowModal(false);
     };
 
+    const handleRecrop = () => setCroppedImage(null);
+
     const handleCloseRemoveModal = () => {
         setRemoveModal(false);
-    };
+    }
 
     const handleCrop = () => {
         const cropper = cropperRef.current?.cropper;
@@ -91,9 +94,7 @@ function UpdateProfilePictureModal() {
             const croppedCanvas = cropper.getCroppedCanvas({ width: 500, height: 500, fillColor: '#fff' });
             setCroppedImage(croppedCanvas.toDataURL());
         }
-    };
-
-    const handleRecrop = () => setCroppedImage(null);
+    }
 
     const handleSaveProfilePicture = async () => {
         if (croppedImage) {
@@ -102,7 +103,19 @@ function UpdateProfilePictureModal() {
                 const uploadResponse = await axios.post("/file/upload", { base64Image: croppedImage });
                 if (uploadResponse.data?.data?.id) {
                     const fileId = uploadResponse.data.data.id;
+                    console.log(uploadResponse.data.data.key)
+                    const profileKey = uploadResponse.data.data.key
                     const profileResponse = await axios.post("/user/add-profilePic", { profilePic: fileId });
+
+                    const response = await axios.get(`/file/signed-url?key=${profileKey}`) 
+                    const data = response.data.data
+                    console.log(data)
+                    setTempProfileKey(data.url)
+                    console.log(tempProfileKey)
+                    
+                    // Emit an event after successfully saving the profile picture
+                    socket.emit('profilePicUpdated', { userId: currentUser._id, signedUrl: tempProfileKey});
+    
                     toast.success(profileResponse.data.message);
                     handleCloseModal();
                 } else {
@@ -114,7 +127,7 @@ function UpdateProfilePictureModal() {
                 setIsLoading(false);
             }
         }
-    };
+    }
 
     const handleDeleteFile = async () => {
         try {
@@ -124,7 +137,7 @@ function UpdateProfilePictureModal() {
         } catch (error) {
             toast.error(error.response?.data?.message || "Error deleting file");
         }
-    };
+    }
 
     return (
         <div>

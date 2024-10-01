@@ -9,12 +9,14 @@ import axios from "../utils/axiosInstance.js"
 import 'react-image-crop/dist/ReactCrop.css';
 import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
 import { RiCloseLargeFill } from "react-icons/ri";
+import { useSocket } from '../hooks/useSocket.jsx';
 
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "" }
 
 const Setting = () => {
+  const socket = useSocket();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [profileKey, setProfileKey] = useState(null)
@@ -48,24 +50,6 @@ const Setting = () => {
     { icon: <FaUserCircle />, label: 'General' },
     { icon: <FaShieldAlt />, label: 'Security' },
   ];
-
-  useEffect(() => {
-    const getDevices = async() => {
-      try{
-        setLoading(true)
-        const response = await axios.get("/user/devices")
-        const data = response.data.data.devices
-        setDevices(data)
-      }catch(error){
-        const response = error.response
-        const data = response.data.data
-        toast.error(data.message)
-      }
-    }
-
-    getDevices()
-  }, []);
-
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
@@ -98,12 +82,40 @@ const Setting = () => {
   }, []);
 
   useEffect(() => {
+    socket.on('profilePicUpdated', ({ userId, profilePic }) => {
+        if (userId === currentUser?._id) {
+            setProfilePic(profilePic); 
+        }
+    });
+
+    return () => {
+        socket.off('profilePicUpdated');
+    };
+}, [socket, currentUser]); 
+
+  useEffect(() => {
+    const getDevices = async() => {
+      try{
+        setLoading(true)
+        const response = await axios.get("/user/devices")
+        const data = response.data.data.devices
+        setDevices(data)
+      }catch(error){
+        const response = error.response
+        const data = response.data.data
+        toast.error(data.message)
+      }
+    }
+
+    getDevices()
+  }, []);
+
+  useEffect(() => {
    const getprofilePic = async () => {
       try{
         const response = await axios.get(`/file/signed-url?key=${profileKey}`)
         const data = response.data.data
         setProfilePic(data.url)
-        console.log(data)
         toast.success(response.data.message)
       }catch(error){
         const response = error.response;
@@ -203,7 +215,7 @@ const Setting = () => {
                     <div>
                       <img
                         src={profilePic}
-                        alt="Profile"
+                        alt="Profile pic"
                         className="w-20 h-20 md:w-28 md:h-28 group rounded-full object-cover border-2 border-gray-300"
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
