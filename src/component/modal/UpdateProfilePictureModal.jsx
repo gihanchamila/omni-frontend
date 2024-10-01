@@ -9,14 +9,12 @@ import { toast } from 'sonner';
 import { useSocket } from '../../hooks/useSocket.jsx';
 
 function UpdateProfilePictureModal() {
-    // State management
+
     const socket = useSocket();
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [removeModal, setRemoveModal] = useState(false);
     const [file, setFile] = useState(null);
-    const [fileId, setFileId] = useState(null);
-    const [profileKey, setProfileKey] = useState(null)
     const [tempProfileKey, setTempProfileKey] = useState(null)
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
@@ -53,6 +51,11 @@ function UpdateProfilePictureModal() {
         return currentUser?.profilePic?.key || null;
     }, [currentUser])
 
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
+    })
+
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
             toast.error('No file selected');
@@ -70,11 +73,6 @@ function UpdateProfilePictureModal() {
         }
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
-    })
-
     const handleCloseModal = () => {
         setImage(null);
         setFile(null);
@@ -82,7 +80,9 @@ function UpdateProfilePictureModal() {
         setShowModal(false);
     };
 
-    const handleRecrop = () => setCroppedImage(null);
+    const handleRecrop = () => {
+        setCroppedImage(null)
+    };
 
     const handleCloseRemoveModal = () => {
         setRemoveModal(false);
