@@ -1,5 +1,4 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { profile } from "../assets/index.js";
 import axios from '../utils/axiosInstance.js'
 import { useState, useEffect } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -7,23 +6,13 @@ import { toast } from "sonner";
 import { useSocket } from "../hooks/useSocket.jsx";
 
 const PrivateNavBar = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null)
-  const [profilePic, setProfilePic] = useState(null)
-  const [profileKey, setProfileKey] = useState(null)
-  const socket = useSocket()
+  const socket = useSocket();
   const location = useLocation();
-  const navigate = useNavigate()
-
-  const toggleDropdown = () => {
-    setDropdownOpen(prev => !prev);
-  };
-
-  const handleLogOut = () => {
-    window.localStorage.removeItem('blogData');
-    toast.success("Logout successfull")
-    navigate('/login')
-  }
+  const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
+  const [profileKey, setProfileKey] = useState(null);
 
   useEffect(() => {
     setDropdownOpen(false);
@@ -48,9 +37,21 @@ const PrivateNavBar = () => {
     }
     };
     getCurrentUser();
-},[]);
+  },[]);
 
-useEffect(() => {
+  useEffect(() => {
+  socket.on('profilePicUpdated', ({ userId, profilePic }) => {
+      if (userId === currentUser?._id) {
+          setProfilePic(profilePic); 
+      }
+  });
+
+  return () => {
+      socket.off('profilePicUpdated');
+  };
+  }, [socket, currentUser]); 
+
+  useEffect(() => {
   const getprofilePic = async () => {
      try{
        const response = await axios.get(`/file/signed-url?key=${profileKey}`)
@@ -66,20 +67,17 @@ useEffect(() => {
   if (profileKey) {
    getprofilePic();
  }
- },[profileKey])
+  },[profileKey])
 
- useEffect(() => {
-  socket.on('profilePicUpdated', ({ userId, profilePic }) => {
-      if (userId === currentUser?._id) {
-          setProfilePic(profilePic); 
-      }
-  });
-
-  return () => {
-      socket.off('profilePicUpdated');
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
   };
-}, [socket, currentUser]); 
 
+  const handleLogOut = () => {
+    window.localStorage.removeItem('blogData');
+    toast.success("Logout successfull")
+    navigate('/login')
+  };
 
   return (
     <div className="">
@@ -90,7 +88,7 @@ useEffect(() => {
         </div>
         
         {/* Navigation Links */}
-        <div className="flex items-center space-x-4 px-5 rounded-full">
+        <div className="flex items-center space-x-4 px-5 rounded-full pr-0">
           <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/categories">Categories</NavLink>
           <NavLink className="navlink" to="/posts">Posts</NavLink>
