@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import Button from '../button/Button.jsx';
 import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-cropper';
@@ -15,6 +15,8 @@ function UpdateProfilePictureModal() {
     const [showModal, setShowModal] = useState(false);
     const [removeModal, setRemoveModal] = useState(false);
     const [file, setFile] = useState(null);
+    const [profilePicId, setProfilePicId] = useState()
+
     const [tempProfileKey, setTempProfileKey] = useState(null)
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
@@ -32,6 +34,7 @@ function UpdateProfilePictureModal() {
                     setCurrentUser(user);
                     if (user.profilePic?.key) {
                         setDeleteProfileKey(user.profilePic.key);
+                        setProfilePicId(user.profilePic._id)
                     }
                 } else {
                     toast.error('User data is incomplete');
@@ -43,13 +46,22 @@ function UpdateProfilePictureModal() {
 
         getCurrentUser();
 
-        return () => setCurrentUser(null); // Clean up
+        return () => setCurrentUser(null); 
     }, []);
 
-    // useMemo to cache the profile picture key
-    const memoizedProfilePicKey = useMemo(() => {
-        return currentUser?.profilePic?.key || null;
-    }, [currentUser]);
+    useEffect(() => {
+        socket.on('profilePicRemoved', ({ userId }) => {
+            if (currentUser && currentUser._id === userId) {
+                setProfilePicId(null);  
+                setTempProfileKey(null); 
+            }
+        });
+    
+        // Cleanup event listener on component unmount
+        return () => socket.off('profilePicRemoved');
+    }, [socket, currentUser]);
+
+    console.log(profilePicId)
 
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
@@ -104,6 +116,7 @@ function UpdateProfilePictureModal() {
                 if (uploadResponse.data?.data?.id) {
 
                     const fileId = uploadResponse.data.data.id;
+
                     console.log(uploadResponse.data.data.key)
                     const profileKey = uploadResponse.data.data.key
                     const profileResponse = await axios.post("/user/add-profilePic", { profilePic: fileId });
@@ -112,7 +125,7 @@ function UpdateProfilePictureModal() {
                     const data = response.data.data
                     const url = data.url
                     console.log(url)
-                    
+                    setProfilePicId(fileId);
                     setTempProfileKey(url)
                     console.log(tempProfileKey)
 
@@ -132,12 +145,21 @@ function UpdateProfilePictureModal() {
     };
 
     const handleDeleteFile = async () => {
-        try {
-            const response = await axios.delete(`file/delete-file?key=${memoizedProfilePicKey}`);
-            toast.success(response.data.message);
-            setRemoveModal(false);
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Error deleting file");
+        if(profilePicId){
+            try {
+                const response = await axios.delete(`/user/remove-profilePic?id=${profilePicId}`);
+                const data = response.data
+                setProfilePicId(null);
+                setDeleteProfileKey(null);
+                setTempProfileKey(null);
+                toast.success(data.message)
+                setRemoveModal(false);
+                socket.emit('profilePicRemoved', { userId: currentUser._id });
+            } catch (error) {
+                const response = error.response;
+                const data = response.data
+                toast.error(data.message);
+            }
         }
     };
 
@@ -160,8 +182,8 @@ function UpdateProfilePictureModal() {
                         </button>
                         <p>Are you sure to remove profile picture?</p>
                         <div className='flex justify-end space-x-4'>
-                            <Button variant='error' onClick={handleDeleteFile}>Yes</Button>
                             <Button variant='info' onClick={handleCloseRemoveModal}>No</Button>
+                            <Button variant='error' onClick={handleDeleteFile}>Yes</Button>  
                         </div>
                     </div>
                 </div>
