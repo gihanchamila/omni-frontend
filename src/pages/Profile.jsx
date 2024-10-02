@@ -193,43 +193,32 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col pb-[50rem]">
-      <div className="flex flex-col ">
-        <div className="flex relative flex-col items-center">
+      <div className="flex flex-col pb-36">
+        <div className="flex relative flex-col items-center p">
           <img src={coverPhoto} className=" object-cover h-[15rem] w-full rounded-lg flex   justify-center" />
-          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] transform left-5 -bottom-[6rem] border-4 border-white" />  
+          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] transform left-5 -bottom-[7rem] border-4 border-white" />  
         </div>
       </div>
-      <div className="relative flex flex-col justify-center items-center mt-[5rem] space-y-2">
-        <div className="flex items-center justify-center space-y-2">
-          <div>
+      <div className="absolute left-[16rem] top-[22rem] w-[calc(100%-18.5rem)]">
+        <div className="static flex justify-between items-center">
           {currentUser ? (
-              <div className="flex items-center justify-center space-y-2">
-                <div>
-                  <span className="text-4xl font-bold align-middle mb-0 relative">{currentUser.name}</span>
-                </div>
+            <>
+              <div className="flex flex-col">
+                <span className="text-4xl font-bold mb-0">{currentUser.name}</span>
+                <p className="text-base">algihanchamila@gmail.com</p>
               </div>
-            ) : (
-              <p>Loading user data...</p>
+              <div className="flex left-0 space-x-4 items-center">
+                <p className="profile-details">Followers: {followers}</p>
+                <p className="profile-details">Following: {following}</p>
+              </div>
+            </>
+          ) : (
+            <p>Loading user data...</p>
           )}
-            {/*<GoVerified className="absolute lg:right-[31.5rem] lg:top-1 sm:right-[7.2rem] sm:top-[0.08rem] ml-2 mt-1 w-5 h-5 text-blue-500" /> */}
-          </div>
         </div>
-         {/*<div className="absolute lg:top-[2.5rem] sm:top-[2.2rem] flex space-x-3">
-          <FaLinkedin className="social " />
-          <FaFacebookSquare className="social " />
-          <FaInstagramSquare className="social "/>
-          <FaSquareXTwitter className="social "/>
-         </div> */}
-           
       </div>
-      {/*<p className="lg:mt-9 sm:mt-10 text-md text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>*/}
-      <div className="flex justify-center items-center space-y-2">
-        <p>algihanchamila@gmail.com</p>
-      </div>
-      <div className="flex lg:space-x-2 mt-2 justify-between lg:px-[27.1rem]  sm:mx-[8.8rem]">
-        <p className="profile-details">followers : {followers}</p>
-        <p className="profile-details">following : {following}</p>
-      </div>
+
+
       <hr className="mt-10 border-t border-gray-200" />
       <div className="h4 my-5 font-semibold">Your posts</div>
       <div className='grid lg:grid-cols-2 sm:grid-cols-1 gap-4'>
