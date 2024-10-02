@@ -9,19 +9,18 @@ import axios from "../utils/axiosInstance.js"
 import 'react-image-crop/dist/ReactCrop.css';
 import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
 import { RiCloseLargeFill } from "react-icons/ri";
-import { useSocket } from '../hooks/useSocket.jsx';
+import { useProfile } from '../component/context/useProfilePic.jsx';
 
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "" }
 
 const Setting = () => {
-  const socket = useSocket();
+  const { profilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [profileKey, setProfileKey] = useState(null)
-  const [fileId, setFileId] = useState(null);
-
+  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); 
   const [activeTab, setActiveTab] = useState("general");
@@ -30,6 +29,7 @@ const Setting = () => {
   const [loading, setLoading] = useState(false)
   const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
   const [currentUser, setCurrentUser] = useState()
+
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -50,6 +50,7 @@ const Setting = () => {
     { icon: <FaUserCircle />, label: 'General' },
     { icon: <FaShieldAlt />, label: 'Security' },
   ];
+
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
@@ -60,9 +61,11 @@ const Setting = () => {
           setCurrentUser(user);
   
           // Check if profilePic and key exist before setting
+          /*
           if (user.profilePic && user.profilePic.key) {
             setProfileKey(user.profilePic.key);
           }
+            */
   
           setFormData({
             name: user.name || '',
@@ -82,18 +85,6 @@ const Setting = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('profilePicUpdated', ({ userId, profilePic }) => {
-        if (userId === currentUser?._id) {
-            setProfilePic(profilePic); 
-        }
-    });
-
-    return () => {
-        socket.off('profilePicUpdated');
-    };
-}, [socket, currentUser]); 
-
-  useEffect(() => {
     const getDevices = async() => {
       try{
         setLoading(true)
@@ -110,6 +101,7 @@ const Setting = () => {
     getDevices()
   }, []);
 
+  /*
   useEffect(() => {
    const getprofilePic = async () => {
       try{
@@ -127,6 +119,7 @@ const Setting = () => {
     getprofilePic();
   }
   },[profileKey])
+*/
 
   const handleChange = (e) => {
     setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
@@ -214,7 +207,7 @@ const Setting = () => {
                   <div className="relative flex flex-col items-center md:flex-row bg-white p-4 rounded-lg">
                     <div>
                       <img
-                        src={profilePic}
+                        src={profilePicUrl}
                         alt="Profile pic"
                         className="w-20 h-20 md:w-28 md:h-28 group rounded-full object-cover border-2 border-gray-300"
                       />

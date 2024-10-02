@@ -49,12 +49,7 @@ function UpdateProfilePictureModal() {
     // useMemo to cache the profile picture key
     const memoizedProfilePicKey = useMemo(() => {
         return currentUser?.profilePic?.key || null;
-    }, [currentUser])
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
-    })
+    }, [currentUser]);
 
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
@@ -71,7 +66,12 @@ function UpdateProfilePictureModal() {
         } else {
             toast.error('Invalid file type');
         }
-    }
+    };
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
+    });
 
     const handleCloseModal = () => {
         setImage(null);
@@ -86,7 +86,7 @@ function UpdateProfilePictureModal() {
 
     const handleCloseRemoveModal = () => {
         setRemoveModal(false);
-    }
+    };
 
     const handleCrop = () => {
         const cropper = cropperRef.current?.cropper;
@@ -94,7 +94,7 @@ function UpdateProfilePictureModal() {
             const croppedCanvas = cropper.getCroppedCanvas({ width: 500, height: 500, fillColor: '#fff' });
             setCroppedImage(croppedCanvas.toDataURL());
         }
-    }
+    };
 
     const handleSaveProfilePicture = async () => {
         if (croppedImage) {
@@ -102,6 +102,7 @@ function UpdateProfilePictureModal() {
             try {
                 const uploadResponse = await axios.post("/file/upload", { base64Image: croppedImage });
                 if (uploadResponse.data?.data?.id) {
+
                     const fileId = uploadResponse.data.data.id;
                     console.log(uploadResponse.data.data.key)
                     const profileKey = uploadResponse.data.data.key
@@ -109,11 +110,12 @@ function UpdateProfilePictureModal() {
 
                     const response = await axios.get(`/file/signed-url?key=${profileKey}`) 
                     const data = response.data.data
-                    console.log(data)
-                    setTempProfileKey(data.url)
-                    console.log(tempProfileKey)
+                    const url = data.url
+                    console.log(url)
                     
-                    // Emit an event after successfully saving the profile picture
+                    setTempProfileKey(url)
+                    console.log(tempProfileKey)
+
                     socket.emit('profilePicUpdated', { userId: currentUser._id, signedUrl: tempProfileKey});
     
                     toast.success(profileResponse.data.message);
@@ -127,7 +129,7 @@ function UpdateProfilePictureModal() {
                 setIsLoading(false);
             }
         }
-    }
+    };
 
     const handleDeleteFile = async () => {
         try {
@@ -137,7 +139,7 @@ function UpdateProfilePictureModal() {
         } catch (error) {
             toast.error(error.response?.data?.message || "Error deleting file");
         }
-    }
+    };
 
     return (
         <div>

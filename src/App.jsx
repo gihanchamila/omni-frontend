@@ -35,29 +35,30 @@ import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
 
 
+
 function App() {
   
   return (
     <>
       <div className="relative container">
         <Routes>
-          <Route element={<PrivateLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="categories" element={<CategoryList />} />
-            <Route path="categories/new-category" element={<NewCategory />} />
-            <Route path="categories/update-category/:id" element={<UpdateCategory />} />
-            <Route path="posts" element={<PostList />} />
-            <Route path="posts/:id" element={<SinglePost />} />
-            <Route path="posts/new-post" element={<NewPost />} />
-            <Route path="posts/update-post/:id" element={<UpdatePost/>} />
-            <Route path="/:id" element={<Profile />} />
-            <Route path="settings" element={<Setting />} />
-          </Route>
-          <Route element={<PublicLayout />}>
-            <Route path="signup" element={<Signup />} />
-            <Route path="login" element={<Login />} />
-            <Route path="forgot-password" element={<ForgotPassword />}/>
-          </Route>
+            <Route element={<PrivateLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="categories" element={<CategoryList />} />
+              <Route path="categories/new-category" element={<NewCategory />} />
+              <Route path="categories/update-category/:id" element={<UpdateCategory />} />
+              <Route path="posts" element={<PostList />} />
+              <Route path="posts/:id" element={<SinglePost />} />
+              <Route path="posts/new-post" element={<NewPost />} />
+              <Route path="posts/update-post/:id" element={<UpdatePost/>} />
+              <Route path="/:id" element={<Profile />} />
+              <Route path="settings" element={<Setting />} />
+            </Route>
+            <Route element={<PublicLayout />}>
+              <Route path="signup" element={<Signup />} />
+              <Route path="login" element={<Login />} />
+              <Route path="forgot-password" element={<ForgotPassword />}/>
+            </Route>
         </Routes>
         <Toaster  closeButton={<HiOutlineXMark />} description
         toastOptions={{

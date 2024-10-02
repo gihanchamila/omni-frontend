@@ -3,15 +3,14 @@ import axios from '../utils/axiosInstance.js'
 import { useState, useEffect } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { toast } from "sonner";
-import { useSocket } from "../hooks/useSocket.jsx";
+import { useProfile } from "./context/useProfilePic.jsx";
 
 const PrivateNavBar = () => {
-  const socket = useSocket();
   const location = useLocation();
   const navigate = useNavigate();
+  const { profilePicUrl} = useProfile();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [profilePic, setProfilePic] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
 
   useEffect(() => {
@@ -39,18 +38,7 @@ const PrivateNavBar = () => {
     getCurrentUser();
   },[]);
 
-  useEffect(() => {
-  socket.on('profilePicUpdated', ({ userId, profilePic }) => {
-      if (userId === currentUser?._id) {
-          setProfilePic(profilePic); 
-      }
-  });
-
-  return () => {
-      socket.off('profilePicUpdated');
-  };
-  }, [socket, currentUser]); 
-
+  /*
   useEffect(() => {
   const getprofilePic = async () => {
      try{
@@ -68,6 +56,8 @@ const PrivateNavBar = () => {
    getprofilePic();
  }
   },[profileKey])
+
+  */
 
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
@@ -96,7 +86,7 @@ const PrivateNavBar = () => {
           <NavLink className="navlink " to=""><IoMdNotificationsOutline className="w-5 h-5" /></NavLink>
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center">
-              <img src={profilePic} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+              <img src={profilePicUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
