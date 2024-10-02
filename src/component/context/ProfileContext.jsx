@@ -10,7 +10,7 @@ export const ProfileProvider = ({ children }) => {
     const socket = useSocket()
     const [profilePicUrl, setProfilePicUrl] = useState(null);
     const [currentUser, setCurrentUser] = useState();
-    const [profileKey, setProfileKey] = useState()
+    const [profileKey, setProfileKey] = useState();
 
     useEffect(() => {
         const getCurrentUser = async () => {
@@ -48,9 +48,16 @@ export const ProfileProvider = ({ children }) => {
                 }
             });
 
+            socket.on('profilePicRemoved', ({ userId }) => {
+                if (currentUser && currentUser._id === userId) {
+                    setProfilePicUrl(null);
+                }
+            });
+
             // Cleanup the socket listener
             return () => {
                 socket.off('profilePicUpdated');
+                socket.off('profilePicRemoved');
             };
         }
     }, [currentUser, socket]);

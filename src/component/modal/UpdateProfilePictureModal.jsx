@@ -49,20 +49,6 @@ function UpdateProfilePictureModal() {
         return () => setCurrentUser(null); 
     }, []);
 
-    useEffect(() => {
-        socket.on('profilePicRemoved', ({ userId }) => {
-            if (currentUser && currentUser._id === userId) {
-                setProfilePicId(null);  
-                setTempProfileKey(null); 
-            }
-        });
-    
-        // Cleanup event listener on component unmount
-        return () => socket.off('profilePicRemoved');
-    }, [socket, currentUser]);
-
-    console.log(profilePicId)
-
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
             toast.error('No file selected');
@@ -117,17 +103,14 @@ function UpdateProfilePictureModal() {
 
                     const fileId = uploadResponse.data.data.id;
 
-                    console.log(uploadResponse.data.data.key)
                     const profileKey = uploadResponse.data.data.key
                     const profileResponse = await axios.post("/user/add-profilePic", { profilePic: fileId });
 
                     const response = await axios.get(`/file/signed-url?key=${profileKey}`) 
                     const data = response.data.data
                     const url = data.url
-                    console.log(url)
                     setProfilePicId(fileId);
                     setTempProfileKey(url)
-                    console.log(tempProfileKey)
 
                     socket.emit('profilePicUpdated', { userId: currentUser._id, signedUrl: tempProfileKey});
     
@@ -167,7 +150,7 @@ function UpdateProfilePictureModal() {
         <div>
             <div className='space-x-4'>
                 <Button variant='error' onClick={() => setRemoveModal(true)}>Remove</Button>
-                <Button variant='info' onClick={() => setShowModal(true)}>Add Profile Picture</Button>
+                <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
             </div>
 
             {/* Remove Modal */}
@@ -182,7 +165,7 @@ function UpdateProfilePictureModal() {
                         </button>
                         <p>Are you sure to remove profile picture?</p>
                         <div className='flex justify-end space-x-4'>
-                            <Button variant='info' onClick={handleCloseRemoveModal}>No</Button>
+                            <Button variant='outline' onClick={handleCloseRemoveModal}>No</Button>
                             <Button variant='error' onClick={handleDeleteFile}>Yes</Button>  
                         </div>
                     </div>
