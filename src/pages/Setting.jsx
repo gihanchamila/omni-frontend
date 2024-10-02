@@ -19,10 +19,8 @@ const Setting = () => {
   const { profilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
-  const [profileKey, setProfileKey] = useState(null)
   
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); 
   const [activeTab, setActiveTab] = useState("general");
 
   const [devices, setDevices] = useState([])
