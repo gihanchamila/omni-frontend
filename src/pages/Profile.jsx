@@ -3,9 +3,7 @@ import axios from '../utils/axiosInstance.js';
 import { useSocket } from "../hooks/useSocket.jsx";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { coverPhoto, profilePic } from "../assets/index.js";
-import { FaLinkedin, FaFacebookSquare, FaInstagramSquare} from "react-icons/fa";
-import { FaSquareXTwitter } from "react-icons/fa6";
+import { coverPhoto} from "../assets/index.js";
 import Post from "../component/post/Post.jsx";
 
 const Profile = () => {
@@ -69,7 +67,7 @@ const Profile = () => {
    }
    },[profileKey])
 
-useEffect(() => {
+  useEffect(() => {
   const getUserPosts = async () => {
     try {
       setLoading(true);
@@ -85,9 +83,9 @@ useEffect(() => {
   };
 
   getUserPosts();
-}, [id]);
+  }, [id]);
 
-useEffect(() => {
+  useEffect(() => {
   const getFollowers = async () => {
     try{
       const response = await axios.get(`/user/followers/${id}`)
@@ -100,9 +98,9 @@ useEffect(() => {
     }
   }
   getFollowers()
-}, [id])
+  }, [id])
 
-useEffect(() => {
+  useEffect(() => {
   const getFollowing = async () => {
     try{
       const response = await axios.get(`/user/following/${id}`)
@@ -115,9 +113,9 @@ useEffect(() => {
     }
   }
   getFollowing()
-}, [id])
+  }, [id])
 
-useEffect(() => {
+  useEffect(() => {
   const getPostFiles = async () => {
     const files = {};
     await Promise.all(
@@ -142,9 +140,9 @@ useEffect(() => {
   if (userPosts.length > 0) {
     getPostFiles();
   }
-}, [userPosts]);
+  }, [userPosts]);
 
-useEffect(() => {
+  useEffect(() => {
   const getLikedPosts = async () => {
     const response = await axios.get('/likes/posts/liked');
     const likedPostsData = response.data.data.reduce((acc, post) => {
@@ -154,9 +152,9 @@ useEffect(() => {
     setLikedPosts(likedPostsData);
   }
   getLikedPosts();
-}, []);
+  }, []);
 
-const handleLike = async (postId) => {
+  const handleLike = async (postId) => {
   try {
     const isLiked = likedPosts[postId];
     let response;
@@ -191,7 +189,7 @@ const handleLike = async (postId) => {
     const data = response.data;
     toast.error(data.message);
   }
-};
+  };
 
   return (
     <div className="flex flex-col pb-[50rem]">
