@@ -195,8 +195,8 @@ const Profile = () => {
     <div className="flex flex-col pb-[50rem]">
       <div className="flex flex-col ">
         <div className="flex relative flex-col items-center">
-          <img src={coverPhoto} className=" object-cover h-[27rem] w-full rounded-lg flex   justify-center" />
-          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] left-1/2 transform -translate-x-1/2 bottom-[-4.5rem] border-4 border-white" />  
+          <img src={coverPhoto} className=" object-cover h-[15rem] w-full rounded-lg flex   justify-center" />
+          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] transform left-5 -bottom-[6rem] border-4 border-white" />  
         </div>
       </div>
       <div className="relative flex flex-col justify-center items-center mt-[5rem] space-y-2">
