@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import axios from '../utils/axiosInstance.js';
 import { useSocket } from "../hooks/useSocket.jsx";
 import { useParams } from "react-router-dom";
+import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
 import { coverPhoto} from "../assets/index.js";
 import Post from "../component/post/Post.jsx";
 
 const Profile = () => {
   const { id } = useParams();
+  const { profilePicUrl } = useProfile();
   const [loading, setLoading] = useState(false);
   const [postFiles, setPostFiles] = useState([]);
 
@@ -189,61 +191,66 @@ const Profile = () => {
     const data = response.data;
     toast.error(data.message);
   }
-  };
+  }
 
   return (
-    <div className="flex flex-col pb-[50rem]">
-      <div className="flex flex-col pb-36">
-        <div className="flex relative flex-col items-center p">
-          <img src={coverPhoto} className=" object-cover h-[15rem] w-full rounded-lg flex   justify-center" />
-          <img src={profilePic} className="absolute  object-cover rounded-full h-[10rem] w-[10rem] transform left-5 -bottom-[7rem] border-4 border-white" />  
+    <div className="min-h-screen">
+  <div className="relative bg-white rounded-b-lg">
+    <img
+      src={coverPhoto}
+      alt="Cover"
+      className="w-full h-60 object-cover rounded-lg"
+    />
+    <img
+      src={profilePicUrl}
+      alt="Profile"
+      className="absolute left-[10rem] bottom-[11rem] transform translate-y-1/2 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
+    />
+    <div className="static text-center mb-8 ">
+      <div className=" flex flex-col mt-24 ">
+        <h1 className="text-3xl font-bold text-gray-800">{currentUser?.name}</h1>
+        <p className="text-sm text-gray-500">{currentUser?.email}</p>
+        <div className="flex justify-center space-x-6 mt-4">
+          <div className="followers">
+            <span className="text-gray-600 font-semibold">{followers}</span>
+            <p className="text-gray-400 text-xs">Followers</p>
+          </div>
+          <div className="following">
+            <span className="text-gray-600 font-semibold">{following}</span>
+            <p className="text-gray-400 text-xs">Following</p>
+          </div>
         </div>
       </div>
-      <div className="absolute left-[16rem] top-[22rem] w-[calc(100%-18.5rem)]">
-        <div className="static flex justify-between items-center">
-          {currentUser ? (
-            <>
-              <div className="flex flex-col">
-                <span className="text-4xl font-bold mb-0">{currentUser.name}</span>
-                <p className="text-base">algihanchamila@gmail.com</p>
-              </div>
-              <div className="flex left-0 space-x-4 items-center">
-                <p className="profile-details">Followers: {followers}</p>
-                <p className="profile-details">Following: {following}</p>
-              </div>
-            </>
-          ) : (
-            <p>Loading user data...</p>
-          )}
-        </div>
-      </div>
-
-
-      <hr className="mt-10 border-t border-gray-200" />
-      <div className="h4 my-5 font-semibold">Your posts</div>
-      <div className='grid lg:grid-cols-2 sm:grid-cols-1 gap-4'>
-      {loading && userPosts ? (
-        <p>Loading...</p>
-      ) : (
-        userPosts.length > 0 ? (
-          userPosts.map(post => (
-            <Post
-              key={post._id}
-              post={post}
-              postFile={postFiles[post._id]}
-              currentUser={currentUser}
-              liked={likedPosts[post._id]}
-              handleLike={handleLike}
-            />
-          ))
-        ) : (
-          <p>No posts found for this user.</p>
-        )
-      )}
-      </div>
+      
     </div>
-    
+  </div>
+  <hr className="border-t border-gray-300 my-4" />
+  <div>
+    <div>
+      <h2 className="text-xl font-bold text-gray-700 mb-4">About me</h2>
+      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+
+      <span className="py-2 px-4 bg-blue-200 text-blue-500 rounded-full text-xs">coding</span>
+    </div>
+  </div>
+  <hr className="border-t border-gray-300 my-4" />
+  <div className="mt-8  mb-[5rem]">
+    <h2 className="text-xl font-bold text-gray-700 mb-4">Your Posts</h2>
+    {loading ? (
+      <p>Loading posts...</p>
+    ) : userPosts.length > 0 ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {userPosts.map((post) => (
+          <Post key={post._id} post={post} postFile={postFiles[post._id]} />
+        ))}
+      </div>
+    ) : (
+      <p>No posts available</p>
+    )}
+  </div>
+</div>
+
   );
-}
+};
 
 export default Profile;

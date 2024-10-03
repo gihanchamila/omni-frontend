@@ -35,6 +35,18 @@ export default {
         // Complex site-specific column configuration
         'footer': '200px minmax(900px, 1fr) 100px',
       },
+
+      backdropBlur: {
+        // Add custom blur settings if needed
+        'none': '0',
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '40px',
+        '3xl': '64px',
+      },
       
       colors : {
         color : {
@@ -51,6 +63,11 @@ export default {
       },
     },
   },
+  
+  variants: {
+    backdropBlur: ['responsive', 'hover', 'focus'],
+  },
+
   plugins: [plugin(function({ addUtilities, addComponents, addBase}) {
     addBase({});
     addComponents({

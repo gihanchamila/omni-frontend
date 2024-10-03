@@ -1,106 +1,139 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import axios from '../utils/axiosInstance.js'
+import axios from '../utils/axiosInstance.js';
 import { useState, useEffect } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
+import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import ScrollLock from "react-scrolllock";
 
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { profilePicUrl} = useProfile();
+
+  const { profilePicUrl } = useProfile();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
 
   useEffect(() => {
     setDropdownOpen(false);
+    setMobileMenuOpen(false);
+    document.body.classList.remove('backdrop-blur'); // Remove blur on location change
   }, [location]);
 
   useEffect(() => {
     const getCurrentUser = async () => {
-    try {
-      const response = await axios.get(`/auth/current-user`);
-      const user = response.data.data.user;  
-      if (user && user._id) {
-          setCurrentUser(user); 
+      try {
+        const response = await axios.get(`/auth/current-user`);
+        const user = response.data.data.user;
+        if (user && user._id) {
+          setCurrentUser(user);
           if (user.profilePic && user.profilePic.key) {
             setProfileKey(user.profilePic.key);
           }
-      } else {
+        } else {
           toast.error('User data is incomplete');
+        }
+      } catch (error) {
+        toast.error('Error getting user');
+        console.log(error);
       }
-    }catch(error){
-      toast.error('Error getting user');
-      console.log(error)
-    }
     };
     getCurrentUser();
-  },[]);
-
-  /*
-  useEffect(() => {
-  const getprofilePic = async () => {
-     try{
-       const response = await axios.get(`/file/signed-url?key=${profileKey}`)
-       const data = response.data.data
-       setProfilePic(data.url)
-       toast.success(response.data.message)
-     }catch(error){
-       const response = error.response;
-       const data = response.data
-       toast.error(data.message)
-     }
-  }
-  if (profileKey) {
-   getprofilePic();
- }
-  },[profileKey])
-
-  */
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(prev => !prev);
+  };
+
   const handleLogOut = () => {
     window.localStorage.removeItem('blogData');
-    toast.success("Logout successfull")
-    navigate('/login')
+    toast.success("Logout successful");
+    navigate('/login');
   };
 
   return (
-    <div className="">
-      <nav className="relative flex items-center justify-between w-full py-4">
+    <div>
+      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
           <span>Omni</span>
         </div>
         
-        {/* Navigation Links */}
-        <div className="flex items-center space-x-4 px-5 rounded-full pr-0">
+        {/* Hamburger icon for mobile */}
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="focus:outline-none">
+            {mobileMenuOpen ? (
+              <AiOutlineClose className="w-5 h-5" />
+            ) : (
+              <AiOutlineMenu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
+        {/* Desktop navigation */}
+        <div className="hidden md:flex items-center space-x-4">
           <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/categories">Categories</NavLink>
           <NavLink className="navlink" to="/posts">Posts</NavLink>
           <NavLink className="navlink" to="/posts/new-post">Write</NavLink>
-          <NavLink className="navlink " to=""><IoMdNotificationsOutline className="w-5 h-5" /></NavLink>
+          <NavLink className="navlink" to=""><IoMdNotificationsOutline className="w-5 h-5" /></NavLink>
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center">
               <img src={profilePicUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white p-5 border-2 border-color-s rounded-lg z-50">
+              <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[15rem] h-[10rem] rounded-lg border border-slate-200 z-50">
                 <NavLink className="dropdown" to={`${currentUser._id}`}>Profile</NavLink>
                 <NavLink className="dropdown" to={`/settings`}>Settings</NavLink>
-                <div className="my-2 border-t border-color-s opacity-20 "></div>
-                <NavLink className="dropdown" to="/login" onClick={handleLogOut}>Logout</NavLink>
+                <NavLink className="dropdown mt-10" to="/login" onClick={handleLogOut}>Logout</NavLink>
               </div>
             )}
           </div>
         </div>
+
+        {/* Mobile dropdown with ScrollLock */}
+        {mobileMenuOpen && (
+          <ScrollLock>
+            <div className={`md:hidden fixed inset-0 z-50 bg-white flex flex-col px-5 text-black transition-transform duration-300 ease-in-out transform ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+              <div className="absolute flex justify-between top-4 left-5 right-5">
+                <div className="flex items-center">
+                  {/* Profile picture on the left */}
+                  <img 
+                    src={profilePicUrl} 
+                    alt="Profile" 
+                    className="w-10 h-10 rounded-full object-cover ml-3" 
+                  />
+                  <span className="text-md pl-3 font-semibold">Hey, {currentUser?.name}</span> {/* Optionally show the user's name */}
+                </div>
+                <button onClick={toggleMobileMenu} className="text-slate-400">
+                  <AiOutlineClose className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="pt-[5rem] mt-[2rem]">
+                <NavLink className="mobile-nav-link" to="/" onClick={toggleMobileMenu}>Home</NavLink>
+                <NavLink className="mobile-nav-link" to="/categories" onClick={toggleMobileMenu}>Categories</NavLink>
+                <NavLink className="mobile-nav-link" to="/posts" onClick={toggleMobileMenu}>Posts</NavLink>
+                <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Write</NavLink>
+                <NavLink className="mobile-nav-link" to="" onClick={toggleMobileMenu}>Notifications</NavLink>
+                <div className="border-t mt-4 pt-4">
+                  <NavLink className="mobile-nav-link" to={`${currentUser?._id}`} onClick={toggleMobileMenu}>Profile</NavLink>
+                  <NavLink className="mobile-nav-link" to={`/settings`} onClick={toggleMobileMenu}>Settings</NavLink>
+                  <NavLink className="mobile-nav-link" to="/login" onClick={handleLogOut}>Logout</NavLink>
+                </div>
+              </div>
+            </div>
+          </ScrollLock>
+        )}
       </nav>
     </div>
-  )
+  );
 };
 
 export default PrivateNavBar;
