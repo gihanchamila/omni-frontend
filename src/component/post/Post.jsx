@@ -8,14 +8,17 @@ import moment from 'moment';
 import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
 import PropTypes from 'prop-types';
+import ProfilePicSkeleton from './ProfilePicSkeleton'; // Import your skeleton loader component
 
-const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow }) => {
+const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState();
+  const [loading, setLoading] = useState(true); // Loading state for profile picture
   const { profilePicUrl } = useProfile();
 
   useEffect(() => {
     const getProfilePic = async () => {
+      setLoading(true);
       try {
         const authorId = post.author._id;
         const key = post.author.profilePic.key;
@@ -24,7 +27,9 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         setProfilePic(response.data.data.url);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
-        setProfilePic(profile); 
+        setProfilePic(profile);
+      } finally {
+        setLoading(false);
       }
     };
     getProfilePic();
@@ -58,14 +63,15 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
               <span className="px-2 text-xs">{post.author.name}</span>
               {currentUser && post.author._id !== currentUser._id && (
-              <span
-                className={`text-blue-500 hover:underline hover:cursor-pointer ${
-                  followStatuses[post?.author?._id] ? 'text-red-500' : ''
-                }`}
-                onClick={() => handleFollow(post.author._id)}
-              >
-                {followStatuses[post.author._id] ? 'Unfollow' : 'Follow'}
-              </span>)}
+                <span
+                  className={`text-blue-500 hover:underline hover:cursor-pointer ${
+                    followStatuses[post?.author?._id] ? 'text-red-500' : ''
+                  }`}
+                  onClick={() => handleFollow(post.author._id)}
+                >
+                  {followStatuses[post.author._id] ? 'Unfollow' : 'Follow'}
+                </span>
+              )}
             </div>
             <span className="text-right text-xs text-gray-500">{formatDate(post.createdAt)}</span>
           </div>
@@ -122,11 +128,8 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   liked: PropTypes.bool.isRequired,
   handleLike: PropTypes.func.isRequired,
   followStatuses: PropTypes.object.isRequired,
-  currentUser: PropTypes.object({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  currentUser: PropTypes.object,
   handleFollow: PropTypes.func.isRequired,
-};
- */
+}; */
+
 export default Post;

@@ -86,6 +86,7 @@ const PostList = () => {
         posts.map(async (post) => {
           if (post.file && !files[post._id]) {
             try {
+
               const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
               const data = response.data.data
               files[post._id] = data.url;
@@ -98,13 +99,14 @@ const PostList = () => {
           }
         })
       );
-      setPostFiles(prevFiles => ({ ...prevFiles, ...files })); // Merge new files with existing ones
+      setPostFiles(prevFiles => ({ ...prevFiles, ...files }));
     };
   
     if (posts.length > 0) {
       getPostFiles();
     }
   }, [posts]);
+
 
   useEffect(() => {
     const getLikedPosts = async () => {
