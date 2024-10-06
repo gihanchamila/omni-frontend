@@ -22,7 +22,6 @@ const Profile = () => {
   const [likedPosts, setLikedPosts] = useState({});
 
   const [profileKey, setProfileKey] = useState(null)
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150"); // Placeholder image
 
   const socket = useSocket()
 
@@ -47,8 +46,6 @@ const Profile = () => {
   
     getCurrentUser();
   }, []);
-
-  console.log(currentUser)
 
   useEffect(() => {
     const getprofilePic = async () => {
@@ -116,7 +113,6 @@ const Profile = () => {
   }
   getFollowing()
   }, [id])
-  
 
   useEffect(() => {
   const getPostFiles = async () => {
@@ -200,17 +196,38 @@ const Profile = () => {
     <img
       src={coverPhoto}
       alt="Cover"
-      className="w-full h-60 object-cover rounded-lg"
+      className="w-full h-[21rem] object-cover rounded-lg"
     />
     <img
       src={profilePicUrl}
       alt="Profile"
-      className="absolute left-[10rem] bottom-[11rem] transform translate-y-1/2 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
+      className="absolute left-[11rem] bottom-[17rem] top-[8.5rem] transform translate-y-1/2 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
     />
     <div className="static text-center mb-8 ">
       <div className=" flex flex-col mt-24 ">
         <h1 className="text-3xl font-bold text-gray-800">{currentUser?.name}</h1>
         <p className="text-sm text-gray-500">{currentUser?.email}</p>
+        <div className="mt-6">
+       
+        <div className="">
+          {currentUser?.interests?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {currentUser.interests.map((interest, index) => (
+                <span key={index} className="py-2 px-4 bg-blue-200 text-blue-500 rounded-full text-xs">
+                  {interest}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2 justify-center items-center">
+              
+              <span className=" px-2 py-1 inline-block bg-indigo-500 text-white text-sm rounded-full font-medium">Coding</span>
+              <span className=" px-2 py-1 inline-block bg-indigo-500 text-white text-sm rounded-full font-medium">Coding</span>
+              
+            </div>
+          )}
+        </div>
+      </div>
         <div className="flex justify-center space-x-6 mt-4">
           <div className="followers">
             <span className="text-gray-600 font-semibold">{followers}</span>
@@ -240,9 +257,9 @@ const Profile = () => {
     {loading ? (
       <p>Loading posts...</p>
     ) : userPosts.length > 0 ? (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {userPosts.map((post) => (
-          <Post key={post._id} post={post} postFile={postFiles[post._id]} />
+          <Post key={post._id} post={post} currentUser={currentUser} postFile={postFiles[post._id]} />
         ))}
       </div>
     ) : (

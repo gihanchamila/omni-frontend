@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
@@ -9,12 +9,14 @@ import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
 import PropTypes from 'prop-types';
 import ProfilePicSkeleton from './ProfilePicSkeleton'; // Import your skeleton loader component
+import AuthorProfilePic from './AuthorProfilePic.jsx';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState();
   const [loading, setLoading] = useState(true); // Loading state for profile picture
   const { profilePicUrl } = useProfile();
+  const profilePicCache = useRef({});
 
   useEffect(() => {
     const getProfilePic = async () => {
@@ -22,9 +24,18 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       try {
         const authorId = post.author._id;
         const key = post.author.profilePic.key;
-        if (!post.author || !post.author._id) return;
+        if (!authorId) return;
+        
+        // Check if the profile picture is already cached
+        if (profilePicCache.current[authorId]) {
+          setProfilePic(profilePicCache.current[authorId]);
+          return;
+        }
+        
         const response = await axios.get(`/file/signed-url?key=${key}`);
-        setProfilePic(response.data.data.url);
+        const url = response.data.data.url;
+        profilePicCache.current[authorId] = url; // Cache the URL
+        setProfilePic(url);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
         setProfilePic(profile);
@@ -36,7 +47,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   }, [post.author]);
 
   const authorProfilePic = post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
-
+  
   const formatDate = (date) => {
     const updatedDate = moment(date);
     const now = moment();
@@ -55,12 +66,15 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
             className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
             src={postFile || post.file}
             alt={post.title}
+            loading="lazy"
           />
         </div>
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
+
+             {/*  <AuthorProfilePic author={post?.author} /> */}
               <span className="px-2 text-xs">{post.author.name}</span>
               {currentUser && post.author._id !== currentUser._id && (
                 <span
@@ -105,6 +119,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       </div>
     </div>
   );
+
 };
 
 /* Post.propTypes = {
@@ -131,5 +146,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   currentUser: PropTypes.object,
   handleFollow: PropTypes.func.isRequired,
 }; */
+
 
 export default Post;

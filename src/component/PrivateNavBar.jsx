@@ -97,24 +97,73 @@ const PrivateNavBar = () => {
 
         {/* Desktop navigation */}
         <div className="hidden md:flex items-center space-x-4">
-          <NavLink className="navlink" to="/">Home</NavLink>
-          <NavLink className="navlink" to="/categories">Categories</NavLink>
-          <NavLink className="navlink" to="/posts">Posts</NavLink>
-          <NavLink className="navlink" to="/posts/new-post">Write</NavLink>
-          <NavLink className="navlink" to=""><IoMdNotificationsOutline className="w-5 h-5" /></NavLink>
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/"
+          >
+            Home
+          </NavLink>
+          
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/categories"
+          >
+            Categories
+          </NavLink>
+          
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/posts"
+          >
+            Posts
+          </NavLink>
+          
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/posts/new-post"
+          >
+            Write
+          </NavLink>
+          
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to=""
+          >
+            <IoMdNotificationsOutline className="w-5 h-5" />
+          </NavLink>
+  
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center">
               <img src={profilePicUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[15rem] h-[10rem] rounded-lg border border-slate-200 z-50">
-                <NavLink className="dropdown" to={`${currentUser._id}`}>Profile</NavLink>
-                <NavLink className="dropdown" to={`/settings`}>Settings</NavLink>
-                <NavLink className="dropdown mt-10" to="/login" onClick={handleLogOut}>Logout</NavLink>
+                <NavLink 
+                  className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
+                  to={`${currentUser._id}`}
+                >
+                  Profile
+                </NavLink>
+                
+                <NavLink 
+                  className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
+                  to="/settings"
+                >
+                  Settings
+                </NavLink>
+                
+                <NavLink 
+                  className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
+                  to="/login" 
+                  onClick={handleLogOut}
+                >
+                  Logout
+                </NavLink>
               </div>
             )}
           </div>
         </div>
+
 
         {/* Mobile dropdown with ScrollLock */}
         {mobileMenuOpen && (
