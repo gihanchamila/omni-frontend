@@ -47,7 +47,6 @@ const PostList = () => {
         setLoading(true);
         const response = await axios.get(`/posts?page=${currentPage}&q=${searchValue}`);
         const data = response.data.data;
-
         setPosts(data.posts);
         setTotalPage(data.pages);
         setLoading(false);
@@ -65,7 +64,8 @@ const PostList = () => {
     const getCurrentUser = async () => {
     try {
       const response = await axios.get(`/auth/current-user`);
-      const user = response.data.data.user;  
+      const user = response.data.data.user; 
+      
       if (user && user._id) {
           setCurrentUser(user); 
       } else {
@@ -88,7 +88,6 @@ const PostList = () => {
             try {
               const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
               const data = response.data.data
-              console.log(data)
               files[post._id] = data.url;
               //toast.success(response.data.message)
             } catch (error) {
@@ -167,8 +166,6 @@ const PostList = () => {
     }
   }, [totalPage]);
 
-  {/* Follow */}
-
   useEffect(() => {
 
     const handleFollowStatusUpdated = ({ followerId, followingId }) => {
@@ -187,22 +184,21 @@ const PostList = () => {
 
   useEffect(() => {
     const fetchFollowStatuses = async () => {
+      if (authorIds.length === 0) return; // Skip if there are no authors
+
       try {
-        const statuses = { ...followStatuses }; 
-        await Promise.all(
-          authorIds.map(async (authorId) => {
-            if (statuses[authorId] !== undefined) return; // Skip fetching if already cached
-            try {
-              const response = await axios.get(`/user/follow-status/${authorId}`);
-              statuses[authorId] = response.data.data.isFollowing;
-            } catch (error) {
-              console.error(`Error fetching follow status for author ${authorId}:`, error);
-            }
-          })
+        const responses = await Promise.all(
+          authorIds.map(authorId => axios.get(`/user/follow-status/${authorId}`))
         );
+
+        const statuses = {};
+        responses.forEach((response, index) => {
+          statuses[authorIds[index]] = response.data.data.isFollowing;
+        });
+
         setFollowStatuses(statuses);
       } catch (error) {
-        console.error('Error fetching follow statuses:', error);
+        toast.error('Error fetching follow statuses');
       }
     };
 
@@ -247,8 +243,6 @@ const PostList = () => {
       toast.error(data.message);
     }
   };
-
-  {/* Like */}
 
   const handleLike = async (postId) => {
     try {

@@ -1,69 +1,86 @@
-// ProfileContext.js
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { useSocket } from '../../hooks/useSocket.jsx';
 import { toast } from 'sonner';
-import axios from "../../utils/axiosInstance.js"
+import axios from "../../utils/axiosInstance.js";
 
 export const ProfileContext = createContext();
 
 export const ProfileProvider = ({ children }) => {
-    const socket = useSocket()
+    const socket = useSocket();
+    const [currentUser, setCurrentUser] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState(null);
-    const [currentUser, setCurrentUser] = useState();
-    const [profileKey, setProfileKey] = useState();
+
+    // Fetch the current user and their profile picture
+    const getCurrentUser = async () => {
+        try {
+            resetProfileState(); // Reset state before fetching
+
+            const response = await axios.get(`/auth/current-user`);
+            const user = response.data.data.user;
+
+            if (user && user._id) {
+                setCurrentUser(user);
+                await fetchProfilePic(user.profilePic?.key);
+            } else {
+                toast.error('User data is incomplete');
+            }
+        } catch (error) {
+            toast.error('Error getting user');
+        }
+    };
+
+    const resetProfileState = () => {
+        setProfilePicUrl(null);
+        setCurrentUser(null);
+    };
+
+    const fetchProfilePic = async (key) => {
+        if (!key) return; // Exit if no key is provided
+        try {
+            const response = await axios.get(`/file/signed-url?key=${key}`);
+            setProfilePicUrl(response.data.data.url);
+        } catch (error) {
+            toast.error('Error fetching profile picture');
+        }
+    };
 
     useEffect(() => {
-        const getCurrentUser = async () => {
-            try {
-                const response = await axios.get(`/auth/current-user`); 
-                const user = response.data.data.user;
+        getCurrentUser();
+    }, []);
 
-                if (user && user._id) {
-                    setCurrentUser(user);
+    // Handle socket events for profile picture updates
+    useEffect(() => {
+        if (!currentUser) return;
 
-                    if (!profilePicUrl && user.profilePic) {
-                        setProfileKey(user.profilePic.key);
-                        const response = await axios.get(`/file/signed-url?key=${profileKey}`) 
-                        const data = response.data.data
-                        setProfilePicUrl(data.url)
-                    }
-                } else {
-                    toast.error('User data is incomplete');
-                }
-            } catch (error) {
-                toast.error('Error getting user');
+        const handleProfilePicUpdated = ({ userId, signedUrl }) => {
+            if (userId === currentUser._id) {
+                setProfilePicUrl(signedUrl);
             }
         };
 
-        getCurrentUser();
-    }, [profileKey, profilePicUrl]);
+        const handleProfilePicRemoved = ({ userId }) => {
+            if (userId === currentUser._id) {
+                setProfilePicUrl(null);
+            }
+        };
 
-    useEffect(() => {
-        if (currentUser && currentUser._id) {
-            socket.on('profilePicUpdated', ({ userId, signedUrl }) => {
-                console.log("Socket event received:", { userId, signedUrl });
-                if (userId === currentUser._id) {
-                    console.log("Updating profile picture URL to:", signedUrl); 
-                    setProfilePicUrl(signedUrl);
-                }
-            });
+        socket.on('profilePicUpdated', handleProfilePicUpdated);
+        socket.on('profilePicRemoved', handleProfilePicRemoved);
 
-            socket.on('profilePicRemoved', ({ userId }) => {
-                if (currentUser && currentUser._id === userId) {
-                    setProfilePicUrl(null);
-                }
-            });
-
-            // Cleanup the socket listener
-            return () => {
-                socket.off('profilePicUpdated');
-                socket.off('profilePicRemoved');
-            };
-        }
+        return () => {
+            socket.off('profilePicUpdated', handleProfilePicUpdated);
+            socket.off('profilePicRemoved', handleProfilePicRemoved);
+        };
     }, [currentUser, socket]);
 
+    const value = useMemo(() => ({
+        profilePicUrl,
+        setProfilePicUrl,
+        getCurrentUser,
+    }), [profilePicUrl]);
+
     return (
-        <ProfileContext.Provider value={{ profilePicUrl, setProfilePicUrl }}>
+        <ProfileContext.Provider value={value}>
             {children}
         </ProfileContext.Provider>
     );

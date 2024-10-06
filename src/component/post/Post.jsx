@@ -1,23 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import { profile } from '../../assets/index.js';
 import moment from 'moment';
+import axios from '../../utils/axiosInstance.js';
+import { useProfile } from "../context/useProfilePic.jsx";
+import PropTypes from 'prop-types';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow }) => {
   const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState();
+  const { profilePicUrl } = useProfile();
+
+  useEffect(() => {
+    const getProfilePic = async () => {
+      try {
+        const authorId = post.author._id;
+        const key = post.author.profilePic.key;
+        if (!post.author || !post.author._id) return;
+        const response = await axios.get(`/file/signed-url?key=${key}`);
+        setProfilePic(response.data.data.url);
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+        setProfilePic(profile); 
+      }
+    };
+    getProfilePic();
+  }, [post.author]);
+
+  const authorProfilePic = post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
 
   const formatDate = (date) => {
     const updatedDate = moment(date);
     const now = moment();
     const diffDays = now.diff(updatedDate, 'days');
     return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
-  };
-
-  const handleAuthorClick = () => {
-    navigate(`/profile/${post.author._id}`);
   };
 
   return (
@@ -36,8 +55,8 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
-              <img className="rounded-full w-5 h-5 object-cover" src={profile} alt="" />
-              <span className="px-2 text-xs" onClick={handleAuthorClick}>{post.author.name}</span>
+              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
+              <span className="px-2 text-xs">{post.author.name}</span>
               {currentUser && post.author._id !== currentUser._id && (
               <span
                 className={`text-blue-500 hover:underline hover:cursor-pointer ${
@@ -45,9 +64,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
                 }`}
                 onClick={() => handleFollow(post.author._id)}
               >
-                {followStatuses[post.author._id]
-                  ? post.author._id !== currentUser._id && 'Unfollow'
-                  : post.author._id !== currentUser._id && 'Follow'}
+                {followStatuses[post.author._id] ? 'Unfollow' : 'Follow'}
               </span>)}
             </div>
             <span className="text-right text-xs text-gray-500">{formatDate(post.createdAt)}</span>
@@ -84,4 +101,32 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   );
 };
 
+/* Post.propTypes = {
+  post: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    author: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      profilePic: PropTypes.shape({
+        key: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+    likesCount: PropTypes.number.isRequired,
+    commentCount: PropTypes.number.isRequired,
+    file: PropTypes.string,
+  }).isRequired,
+  postFile: PropTypes.string,
+  liked: PropTypes.bool.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  followStatuses: PropTypes.object.isRequired,
+  currentUser: PropTypes.object({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  handleFollow: PropTypes.func.isRequired,
+};
+ */
 export default Post;

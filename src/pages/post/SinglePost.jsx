@@ -14,6 +14,8 @@ import CommentForm from '../../component/comment/CommentForm.jsx';
 import CommentFooter from '../../component/comment/CommentFooter.jsx';
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 
+import { useProfile } from '../../component/context/useProfilePic.jsx';
+
 // Assets & Icons
 import { profile } from '../../assets/index.js';
 import { IoChatbubblesOutline } from 'react-icons/io5';
@@ -30,6 +32,7 @@ const SinglePost = () => {
   const navigate = useNavigate()
   const params = useParams()
   const socket = useSocket()
+  const { profilePicUrl } = useProfile();
   const postId = params.id
 
   const [post, setPost] = useState([]);
@@ -63,6 +66,9 @@ const SinglePost = () => {
   // Loading State
   const [loading, setLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [profileUrl, setProfileUrl] = useState()
+  const [profilePic, setProfilePic] = useState();
+  const [authorId, setAuthorId] = useState()
 
   const actionHandlers = {
     edit: (commentId) => {
@@ -117,12 +123,13 @@ const SinglePost = () => {
     if (postId) {
         const getPost = async () => {
             try {
-                setLoading(true)
                 const response = await axios.get(`/posts/${postId}`);
                 const data = response.data.data;
                 setPost(data.post);
+                const url = data.post.author.profilePic.key;
+                setAuthorId(data.post.author._id);
+                setProfileUrl(url);  // This updates profileUrl
             } catch (error) {
-              setLoading(false)
                 const response = error.response;
                 const data = response?.data?.data || {};
                 toast.error(data.message || 'Failed to fetch post');
@@ -130,45 +137,68 @@ const SinglePost = () => {
         };
 
         const getCurrentUser = async () => {
-          try {
-              setLoading(true)
-              const response = await axios.get(`/auth/current-user`);
-              const user = response.data.data.user;  
-              if (user && user._id) {
-                  setCurrentUser(user._id); 
-              } else {
-                  toast.error('User data is incomplete');
+            try {
+                const response = await axios.get(`/auth/current-user`);
+                const user = response.data.data.user;
+                if (user && user._id) {
+                    setCurrentUser(user._id);
+                } else {
+                    toast.error('User data is incomplete');
+                }
+            } catch (error) {
+                toast.error('Error getting user');
+            }
+        };
+
+        const getProfilePic = async () => {
+          if (profileUrl) {  
+              try {
+                  const response = await axios.get(`/file/signed-url?key=${profileUrl}`);
+                  const data = response.data.data;
+                  console.log(response.data.data.url)
+                  setProfilePic(response.data.data.url)
+                  toast.success(data.message);
+              } catch (error) {
+                  console.log("Failed to get profile picture");
               }
-          } catch (error) {
-              setLoading(false)
-              toast.error('Error getting user');
           }
-      };
-      if (postId) {
-        Promise.all([getPost(), getCurrentUser()]);
-      }
+        };
+
+        const fetchData = async () => {
+            setLoading(true); 
+            try {
+                await Promise.all([getPost(), getCurrentUser(), getProfilePic()]);  
+            } finally {
+                setLoading(false); 
+            }
+        };
+
+        fetchData();
     }
-  }, [postId]);
+  }, [postId, profileUrl]); 
+
+  const authorProfilePic = post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
 
   useEffect(() => {
     const getPostFiles = async () => {
-      if (post.file) {
-        try {
-          setLoading(true)
-          const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-          const data = response.data.data
-          setFileUrl(data.url);
-          setLoading(false)
-        } catch (error) {
-          setLoading(false)
-          const response = error.response;
-          const data = response.data;
-          toast.error(data.message);
+        if (post?.file) { 
+            try {
+                setLoading(true);
+                const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
+                const data = response.data.data;
+                setFileUrl(data.url);
+            } catch (error) {
+                const response = error.response;
+                const data = response.data;
+                toast.error(data.message || "Failed to fetch file");
+            } finally {
+                setLoading(false);  // Always stop loading
+            }
         }
-      }
-    }
+    };
+
     if (post) {
-      getPostFiles();
+        getPostFiles();
     }
   }, [post]);
 
@@ -497,7 +527,7 @@ const SinglePost = () => {
               {!isLoaded ? (
                 <Skeleton circle={true} height="3rem" width="3rem" />
               ) : (
-                <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={profile} alt="Image" />
+                <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={authorProfilePic} alt="Image" />
               )}
               </div>
 
@@ -623,8 +653,6 @@ const SinglePost = () => {
             <Modal className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal} />
           </div>
       </div>
-
-  
   )
 }
 

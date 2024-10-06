@@ -29,13 +29,11 @@ const Profile = () => {
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
-        const response = await axios.get(`/auth/current-user`); // Removed formData from GET request
+        const response = await axios.get(`/auth/current-user`); 
         const user = response.data.data.user;
   
         if (user && user._id) {
           setCurrentUser(user);
-  
-          // Check if profilePic and key exist before setting
           if (user.profilePic && user.profilePic.key) {
             setProfileKey(user.profilePic.key);
           }
@@ -49,6 +47,8 @@ const Profile = () => {
   
     getCurrentUser();
   }, []);
+
+  console.log(currentUser)
 
   useEffect(() => {
     const getprofilePic = async () => {
@@ -116,6 +116,7 @@ const Profile = () => {
   }
   getFollowing()
   }, [id])
+  
 
   useEffect(() => {
   const getPostFiles = async () => {

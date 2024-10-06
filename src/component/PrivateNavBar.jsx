@@ -11,7 +11,8 @@ const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { profilePicUrl } = useProfile();
+  const { profilePicUrl, setProfilePicUrl } = useProfile();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -44,6 +45,21 @@ const PrivateNavBar = () => {
     getCurrentUser();
   }, []);
 
+/*   useEffect(() => {
+    const getProfilePic = async () => {
+      if(profileKey){
+        try{
+          const response = await axios.get(`/file/signed-url?key=${profileKey}`)
+          const data = response.data.data.url
+          setProfileUrl(data)
+        }catch(error){
+          console.log("Failed to get profile picture");
+        }
+      }
+    }
+    getProfilePic()
+  }) */
+
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
   };
@@ -54,6 +70,8 @@ const PrivateNavBar = () => {
 
   const handleLogOut = () => {
     window.localStorage.removeItem('blogData');
+    setCurrentUser(null)
+    setProfilePicUrl(null)
     toast.success("Logout successful");
     navigate('/login');
   };
