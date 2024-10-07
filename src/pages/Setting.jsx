@@ -12,8 +12,8 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 
 
-const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : "" }
-const initialFormError = {name : "", email : "", dateOfBirth : "", interests : "" }
+const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [] }
+const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [] }
 
 const Setting = () => {
   const { profilePicUrl } = useProfile();
@@ -119,10 +119,22 @@ const Setting = () => {
   },[profileKey])
 */
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
-  };
+const handleChange = (event) => {
+  const { name, value } = event.target;
 
+  // If the name is 'interests', split the value into an array
+  if (name === "interests") {
+      setFormData((prevData) => ({
+          ...prevData,
+          [name]: value.split(",").map((interest) => interest.trim()), // Split and trim
+      }));
+  } else {
+      setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+      }));
+  }
+};
   const handleSubmit = async (e) => {
     e.preventDefault()
         try{
@@ -269,23 +281,23 @@ const Setting = () => {
                       </div>
                       <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
                         {[
-                          { id: "email", name : "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value : formData.email || "" },
-                          { id: "interests", name : "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value : formData.interests || ""}
+                            { id: "email", name: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value: formData.email || "" },
+                            { id: "interests", name: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value: formData.interests.join(", ") || "" } // Join array for display
                         ].map(({ id, label, type, placeholder, value, name }) => (
-                          <div className="groupBox" key={id}>
-                            <label htmlFor={id} className="label">{label}</label>
-                            <input
-                              id={id}
-                              name={name}
-                              type={type}
-                              placeholder={placeholder}
-                              value={value}
-                              onChange={handleChange}
-                              className="input-box"
-                            />
-                          </div>
+                            <div className="groupBox" key={id}>
+                                <label htmlFor={id} className="label">{label}</label>
+                                <input
+                                    id={id}
+                                    name={name}
+                                    type={type}
+                                    placeholder={placeholder}
+                                    value={value}
+                                    onChange={handleChange}
+                                    className="input-box"
+                                />
+                            </div>
                         ))}
-                      </div>
+                    </div>
                     </div>
                     <div className='flex justify-end pt-6'>
                       <Button variant='info'>Update Details</Button>
