@@ -6,6 +6,8 @@ import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
 import { coverPhoto} from "../assets/index.js";
 import Post from "../component/post/Post.jsx";
+import Skeleton from "react-loading-skeleton";
+import PostSkeleton from "../component/post/PostSkeleton.jsx";
 
 const Profile = () => {
   const { id } = useParams();
@@ -52,7 +54,6 @@ const Profile = () => {
        try{
          const response = await axios.get(`/file/signed-url?key=${profileKey}`)
          const data = response.data.data
-         setProfilePic(data.url)
          console.log(data)
          toast.success(response.data.message)
        }catch(error){
@@ -87,10 +88,13 @@ const Profile = () => {
   useEffect(() => {
   const getFollowers = async () => {
     try{
+      setLoading(true)
       const response = await axios.get(`/user/followers/${id}`)
       const followersCount = response.data.data.followersCount;
       setFollowers(followersCount);
+      setLoading(false)
     }catch(error){
+      setLoading(false)
       const response = error.response;
       const data = response.data;
       toast.error(data.message);
@@ -102,10 +106,13 @@ const Profile = () => {
   useEffect(() => {
   const getFollowing = async () => {
     try{
+      setLoading(true)
       const response = await axios.get(`/user/following/${id}`)
       const followingCount = response.data.data.followingCount;
       setFollowing(followingCount);
+      setLoading(false)
     }catch(error){
+      setLoading(false)
       const response = error.response;
       const data = response.data;
       toast.error(data.message);
@@ -117,15 +124,19 @@ const Profile = () => {
   useEffect(() => {
   const getPostFiles = async () => {
     const files = {};
+    
     await Promise.all(
       userPosts.map(async (post) => {
         if (post.file && !files[post._id]) {
           try {
+            setLoading(false)
             const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
             const data = response.data.data
             files[post._id] = data.url;
             toast.success(response.data.message)
+            setLoading(false)
           } catch (error) {
+            setLoading(false)
             const response = error.response;
             const data = response.data;
             toast.error(data.message || "Failed to fetch file URL");
@@ -138,17 +149,21 @@ const Profile = () => {
 
   if (userPosts.length > 0) {
     getPostFiles();
+    setLoading(false)
   }
   }, [userPosts]);
 
   useEffect(() => {
   const getLikedPosts = async () => {
+    setLoading(true)
     const response = await axios.get('/likes/posts/liked');
     const likedPostsData = response.data.data.reduce((acc, post) => {
       acc[post?._id] = true;
       return acc;
+      
     }, {});
     setLikedPosts(likedPostsData);
+    setLoading(false)
   }
   getLikedPosts();
   }, []);
@@ -157,7 +172,7 @@ const Profile = () => {
   try {
     const isLiked = likedPosts[postId];
     let response;
-    
+    setLoading(true)
     if (isLiked) {
       response = await axios.delete(`/likes/posts/${postId}`);
     } else {
@@ -182,8 +197,10 @@ const Profile = () => {
           : post
       )
     );
+    setLoading(false)
 
   } catch (error) {
+    setLoading(false)
     const response = error.response;
     const data = response.data;
     toast.error(data.message);
@@ -192,85 +209,156 @@ const Profile = () => {
 
   return (
     <div className="">
-      <div className="relative bg-white rounded-b-lg ">
+      <div className="relative bg-white rounded-b-lg mt-10">
        {/*  <img
           src={coverPhoto}
           alt="Cover"
           className="w-full h-[21rem] object-cover rounded-lg"
         /> */}
-        <img
-          src={profilePicUrl}
-          alt="Profile"
-          className="absolute top-4 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
-        />
+
+        {loading ? (
+          <Skeleton className="absolute top-4 md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]" circle={true} height={192} width={192} />
+        ) : (
+          <img
+            src={profilePicUrl}
+            alt="Profile"
+            className="absolute top-4 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
+          />
+        )}
+        
         <div className="text-center">
           <div className=" flex flex-col items-center space-y-2">
+          {loading ? (
+            <div className="mt-5">
+              <Skeleton width={150} height={28} className="mb-2" />
+              <Skeleton width={200} height={20} /> 
+            </div>
+          ) : (
             <div>
               <h1 className="text-3xl font-bold text-gray-800 mt-56">{currentUser?.name}</h1>
               <p className="text-sm text-gray-500 mt-0">{currentUser?.email}</p>
             </div>
+          )}
+                      
             
             <div className="">
           
             <div className="">
-              {currentUser?.interests?.length > 0 ? (
+            {loading ? (
+              <div className="flex flex-wrap gap-2">
+                {/* Display multiple skeletons to represent the interests */}
+                <Skeleton width={80} height={20} className="rounded-full" />
+                <Skeleton width={60} height={20} className="rounded-full" />
+                <Skeleton width={100} height={20} className="rounded-full" />
+                <Skeleton width={70} height={20} className="rounded-full" />
+                <Skeleton width={90} height={20} className="rounded-full" />
+              </div>
+            ) : (
+              currentUser?.interests?.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {currentUser.interests.map((interest, index) => (
-                    <span key={index} className=" bg-blue-200 text-blue-500 rounded-full text-xs">
+                    <span key={index} className="bg-blue-200 text-blue-500 rounded-full text-xs p-2">
                       {interest}
                     </span>
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2 justify-center items-center">
-                  
-                  <span className=" spanLabel">Coding</span>
-                  <span className=" spanLabel">Dance</span>
-                  <span className=" spanLabel">writing</span>
-                  <span className=" spanLabel">Walking</span>
-                  <span className=" spanLabel">Reading</span>
-                  
+                  <span className="spanLabel">Coding</span>
+                  <span className="spanLabel">Dance</span>
+                  <span className="spanLabel">Writing</span>
+                  <span className="spanLabel">Walking</span>
+                  <span className="spanLabel">Reading</span>
                 </div>
-              )}
+              )
+            )}
             </div>
+
             </div>
             <div className="flex justify-center space-x-6">
               <div className="followers">
-                <span className="text-gray-600 font-semibold">{followers}</span>
-                <p className="text-gray-400 text-xs">Followers</p>
+                {loading ? (
+                  <>
+                    <Skeleton circle={true} width={25} height={25} />
+                    <Skeleton width={70} height={10} className="mt-1" /> {/* Skeleton for "Followers" text */}
+                  </>
+                ) : (
+                  <>
+                    <span className="text-gray-600 font-semibold">{followers}</span>
+                    <p className="text-gray-400 text-xs">Followers</p>
+                  </>
+                )}
               </div>
               <div className="following">
-                <span className="text-gray-600 font-semibold">{following}</span>
-                <p className="text-gray-400 text-xs">Following</p>
+                {loading ? (
+                  <>
+                    <Skeleton circle={true} width={25} height={25} />
+                    <Skeleton width={70} height={10} className="mt-1" /> {/* Skeleton for "Following" text */}
+                  </>
+                ) : (
+                  <>
+                    <span className="text-gray-600 font-semibold">{following}</span>
+                    <p className="text-gray-400 text-xs">Following</p>
+                  </>
+                )}
               </div>
             </div>
-          </div>
-          
+          </div>  
         </div>
       </div>
       <hr className="border-t border-gray-300 my-4" />
-      <div>
+      <div>   
         <div>
-          <h2 className="text-xl font-bold text-gray-700 mb-4">About me</h2>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-
+          {loading ? (
+            <>
+              <Skeleton width="30%" height={28} className="mb-4" /> {/* Skeleton for the "About me" title */}
+              <div>
+                <Skeleton width="100%" height={20} className="mb-1" />
+                <Skeleton width="100%" height={20} className="mb-1" />
+                <Skeleton width="100%" height={20} className="mb-1" />
+                <Skeleton width="100%" height={20} className="mb-1" />
+                <Skeleton width="100%" height={20} />
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold text-gray-700 mb-4">About me</h2>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+              </p>
+            </>
+          )}
         </div>
       </div>
       <hr className="border-t border-gray-300 my-4" />
-      <div className="mt-8  mb-[5rem]">
-        <h2 className="text-xl font-bold text-gray-700 mb-4">Your Posts</h2>
+      <div className="mt-8 mb-[5rem]">
         {loading ? (
-          <p>Loading posts...</p>
-        ) : userPosts.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {userPosts.map((post) => (
-              <Post key={post._id} post={post} currentUser={currentUser} postFile={postFiles[post._id]} />
-            ))}
-          </div>
+          <>
+            <Skeleton width="30%" height={28} className="mb-4" /> {/* Skeleton for the "Your Posts" title */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Display skeletons to simulate loading posts */}
+              {Array(2)
+                .fill()
+                .map((_, index) => (
+                  <PostSkeleton key={index} />
+                ))}
+            </div>
+          </>
         ) : (
-          <p>No posts available</p>
+          <>
+            <h2 className="text-xl font-bold text-gray-700 mb-4">Your Posts</h2>
+            {userPosts.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {userPosts.map((post) => (
+                  <Post key={post._id} post={post} currentUser={currentUser} postFile={postFiles[post._id]} />
+                ))}
+              </div>
+            ) : (
+              <p>No posts available</p>
+            )}
+          </>
         )}
-      </div>  
+      </div>
    </div>
   );
 };
