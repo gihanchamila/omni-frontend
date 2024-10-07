@@ -192,21 +192,21 @@ const Profile = () => {
 
   return (
     <div className="">
-      <div className="relative bg-white rounded-b-lg">
-        <img
+      <div className="relative bg-white rounded-b-lg ">
+       {/*  <img
           src={coverPhoto}
           alt="Cover"
           className="w-full h-[21rem] object-cover rounded-lg"
-        />
+        /> */}
         <img
           src={profilePicUrl}
           alt="Profile"
-          className="absolute left-[11rem] bottom-[17rem] top-[8.5rem] transform translate-y-1/2 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
+          className="absolute top-4 w-48 h-48 rounded-full border-4 border-white md:left-[35rem] md:bottom-[14rem] sm:left-[8.2rem] sm:bottom-[14rem]"
         />
-        <div className="static text-center mb-8 ">
-          <div className=" flex flex-col mt-24 items-center space-y-2">
+        <div className="text-center">
+          <div className=" flex flex-col items-center space-y-2">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">{currentUser?.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-800 mt-56">{currentUser?.name}</h1>
               <p className="text-sm text-gray-500 mt-0">{currentUser?.email}</p>
             </div>
             
