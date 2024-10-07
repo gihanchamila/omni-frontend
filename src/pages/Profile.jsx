@@ -257,7 +257,7 @@ const Profile = () => {
               currentUser?.interests?.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {currentUser.interests.map((interest, index) => (
-                    <span key={index} className="bg-blue-200 text-blue-500 rounded-full text-xs p-2">
+                    <span key={index} className="spanLabel">
                       {interest}
                     </span>
                   ))}

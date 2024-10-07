@@ -12,8 +12,8 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 
 
-const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [] }
-const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [] }
+const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "" }
+const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : ""  }
 
 const Setting = () => {
   const { profilePicUrl } = useProfile();
@@ -69,7 +69,8 @@ const Setting = () => {
             name: user.name || '',
             email: user.email || '',
             dateOfBirth: user.dateOfBirth || '',
-            interests: user.interests || []
+            interests: user.interests || [],
+            about: user.about || ''
           });
         } else {
           toast.error('User data is incomplete');
@@ -154,7 +155,6 @@ const handleChange = (event) => {
         }
   };
 
-
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
       {/* Sidebar and Toggle Button */}
@@ -232,6 +232,7 @@ const handleChange = (event) => {
                           className="hidden"
                         />
                       </div>
+                      
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
                       <h2 className="text-lg font-semibold">{currentUser.name}</h2>
@@ -252,103 +253,148 @@ const handleChange = (event) => {
                 <div className="bg-white p-6 rounded-lg">
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-                      <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
-                          <div className="groupBox" >
-                            <label className="label">Full Name</label>
-                            <input
-                              id="name"
-                              name="name"
-                              type="text"
-                              placeholder="John Doe"
-                              value={formData.name}
-                              onChange={handleChange}
-                              className="input-box"
-                            />
-                          </div>
-                          <div className="groupBox" >
-                            <label className="label">Birth Day</label>
-                            <input
-                              id="dateOfBirth"
-                              name="dateOfBirth"
-                              type="date"
-                              placeholder="2001-05-15"
-                              value={formData.dateOfBirth}
-                              onChange={handleChange}
-                              className="input-box"
-                            />
-                          </div>
+                  <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
+                    {/* First Name and Last Name Section */}
+                    <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
+                      <div className="groupBox">
+                        <label className="label">First Name</label>
+                        <input
+                          id="firstName"
+                          name="firstName"
+                          type="text"
+                          placeholder="John"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          className="input-box"
+                        />
                       </div>
-                      <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
-                        {[
-                            { id: "email", name: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value: formData.email || "" },
-                            { id: "interests", name: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value: formData.interests.join(", ") || "" } // Join array for display
-                        ].map(({ id, label, type, placeholder, value, name }) => (
-                            <div className="groupBox" key={id}>
-                                <label htmlFor={id} className="label">{label}</label>
-                                <input
-                                    id={id}
-                                    name={name}
-                                    type={type}
-                                    placeholder={placeholder}
-                                    value={value}
-                                    onChange={handleChange}
-                                    className="input-box"
-                                />
-                            </div>
-                        ))}
                     </div>
+                    <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
+                      <div className="groupBox">
+                        <label className="label">Last Name</label>
+                        <input
+                          id="lastName"
+                          name="lastName"
+                          type="text"
+                          placeholder="Doe"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          className="input-box"
+                        />
+                      </div>
                     </div>
-                    <div className='flex justify-end pt-6'>
-                      <Button variant='info'>Update Details</Button>
+
+                    {/* About Section (Full Width) */}
+                    <div className="col-span-full space-y-4">
+                      <div className="groupBox">
+                        <label className="label" htmlFor="about">About</label>
+                        <textarea
+                          id="about"
+                          name="about"
+                          placeholder="Tell us something about yourself"
+                          value={formData.about}
+                          onChange={handleChange}
+                          className="input-box h-24 resize-none"
+                        />
+                      </div>
                     </div>
-                  </form>       
-                </div>
 
-                {/* User Login Section */}
-                {/* User Device Information Section */}
-                {/* Display the active device information */}
+                    {/* Birth Day, Gender, Email, and Interests Section */}
+                    <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
+                      <div className="groupBox">
+                        <label className="label">Birth Day</label>
+                        <input
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          type="date"
+                          placeholder="2001-05-15"
+                          value={formData.dateOfBirth}
+                          onChange={handleChange}
+                          className="input-box"
+                        />
+                      </div>
+                      <div className="groupBox">
+                        <label className="label">Gender</label>
+                        <select
+                          id="gender"
+                          name="gender"
+                          value={formData.gender || ""}
+                          onChange={handleChange}
+                          className="input-box"
+                        >
+                          <option value="" disabled>Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                      </div>
+                    </div>
 
-                <div className="bg-white p-6 rounded-lg">
-                  <h2 className="subTitle">Devices Logged In</h2>
-                  <div {...handlers} className="overflow-hidden">
-                    <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${activeDeviceIndex * 100}%)` }}>
-                      {devices.map((device, index) => {
-                        let imageUrl = '';
-
-                        switch (device.deviceType.toLowerCase()) {
-                          case 'mobile':
-                            imageUrl = '/images/mobile.png';  // Path to mobile image
-                            break;
-                          case 'tablet':
-                            imageUrl = '/images/tablet.png';  // Path to tablet image
-                            break;
-                          case 'laptop':
-                          default:
-                            imageUrl = 'public/windows.png';  // Default to laptop image
-                            break;
-                        }
-
-                        return (
-                          <div key={index} className="min-w-full p-4 border rounded-lg">
-                            <div className="grid grid-cols-2 gap-4 items-center">
-                              <div>
-                                {/* Display the image based on deviceType */}
-                                <img src={imageUrl} alt={device.deviceType} className="w-42 h-auto object-cover" />
-                              </div>
-                              <div >
-                                <div className='flex py-1'><p className="text-sm">Device Type : </p><p className="text-sm pl-1"> {device.deviceType}</p></div>
-                                <div className='flex py-1'><p className="text-sm">Browser : </p> <p className="text-sm pl-1"> {device.browser}</p></div>
-                                <div className='flex py-1'><p className="text-sm">OS  :</p> <p className="text-sm pl-1"> {device.os}</p></div>
-                                <div className='flex py-1'><p className="text-sm">Login Time : </p> <p className="text-sm pl-1"> {new Date(device.loggedInAt).toLocaleString()}</p></div>  
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                    <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
+              {[
+                { id: "email", name: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value: formData.email || "" },
+                { id: "interests", name: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value: formData.interests.join(", ") || "" }
+                    ].map(({ id, label, type, placeholder, value, name }) => (
+                      <div className="groupBox" key={id}>
+                        <label htmlFor={id} className="label">{label}</label>
+                        <input
+                          id={id}
+                          name={name}
+                          type={type}
+                          placeholder={placeholder}
+                          value={value}
+                          onChange={handleChange}
+                          className="input-box"
+                        />
+                      </div>
+                      ))}
                     </div>
                   </div>
+                  <div className='flex justify-end pt-6'>
+                    <Button variant='info'>Update Details</Button>
+                  </div>
+                  </form>
                 </div>
+
+              {/* User Device Information Section */}
+              {/* <div className="bg-white p-6 rounded-lg">
+                <h2 className="subTitle">Devices Logged In</h2>
+                <div {...handlers} className="overflow-hidden">
+                  <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${activeDeviceIndex * 100}%)` }}>
+                    {devices.map((device, index) => {
+                      let imageUrl = '';
+
+                      switch (device.deviceType.toLowerCase()) {
+                        case 'mobile':
+                          imageUrl = '/images/mobile.png';  // Path to mobile image
+                          break;
+                        case 'tablet':
+                          imageUrl = '/images/tablet.png';  // Path to tablet image
+                          break;
+                        case 'laptop':
+                        default:
+                          imageUrl = 'public/windows.png';  // Default to laptop image
+                          break;
+                      }
+
+                      return (
+                        <div key={index} className="min-w-full p-4 border rounded-lg">
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <div>
+                              <img src={imageUrl} alt={device.deviceType} className="w-42 h-auto object-cover" />
+                            </div>
+                            <div>
+                              <div className='flex py-1'><p className="text-sm">Device Type: </p><p className="text-sm pl-1"> {device.deviceType}</p></div>
+                              <div className='flex py-1'><p className="text-sm">Browser: </p> <p className="text-sm pl-1"> {device.browser}</p></div>
+                              <div className='flex py-1'><p className="text-sm">OS: </p><p className="text-sm pl-1"> {device.os}</p></div>
+                              <div className='flex py-1'><p className="text-sm">Login Time: </p> <p className="text-sm pl-1"> {new Date(device.loggedInAt).toLocaleString()}</p></div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div> */}
               </div>
             </div>
           </div>
