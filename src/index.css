@@ -194,7 +194,7 @@
 
     .spanLabel {
 
-      @apply  px-2 py-1 text-xs inset-1 ring-offset-4 inline-block  bg-gray-200 text-gray-600 rounded-full font-medium
+      @apply  px-2 py-1 text-xs inset-1 ring-offset-4 inline-block  bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full font-medium
 
     }
 
