@@ -478,7 +478,7 @@ const SinglePost = () => {
 
   return (
 
-      <div className='container mx-auto px-4 md:px-[10rem]'>
+      <div className=' mx-auto md:px-[10rem]'>
           <div className=' py-8 max-w-5xl z-auto space-y-3 m-0'>
             <div className='flex justify-between items-center'>
 

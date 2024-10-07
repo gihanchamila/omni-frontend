@@ -192,6 +192,12 @@
       @apply py-2 px-4 font-semibold border text-sm border-gray-200 hover:bg-blue-500 hover:text-white hover:border-blue-500 rounded-full text-gray-500
     }
 
+    .spanLabel {
+
+      @apply  px-2 py-1 text-xs inset-1 ring-offset-4 inline-block  bg-gray-200 text-gray-600 rounded-full font-medium
+
+    }
+
   }
   
   

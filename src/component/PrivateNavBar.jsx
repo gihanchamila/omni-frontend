@@ -125,15 +125,15 @@ const PrivateNavBar = () => {
             Write
           </NavLink>
           
-          <NavLink 
+         {/*  <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to=""
           >
             <IoMdNotificationsOutline className="w-5 h-5" />
-          </NavLink>
+          </NavLink> */}
   
           <div className="relative">
-            <button onClick={toggleDropdown} className="flex items-center">
+            <button onClick={toggleDropdown} className="flex items-center ">
               <img src={profilePicUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
             </button>
             {dropdownOpen && (

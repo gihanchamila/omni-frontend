@@ -233,7 +233,7 @@ const Setting = () => {
                   </div>
                 </div>
               </div>
-
+              
               {/* Bento Box Layout for User Info and Login Sections */}
               <div className="grid gap-6 md:grid-cols-2">
                 {/* User Information Section */}
