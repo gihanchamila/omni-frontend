@@ -4,10 +4,11 @@ const isEmail = (email) => {
     .match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) !== null;
 }
 
-const signUpValidator = ({name, email, password, confirmPassword}) => {
+const signUpValidator = ({name, email, confirmEmail, password, confirmPassword}) => {
     const errors = {
         name : "",
         email : "",
+        confirmEmail : "",
         password : "",
         confirmPassword : ""
     }
@@ -34,6 +35,12 @@ const signUpValidator = ({name, email, password, confirmPassword}) => {
         errors.password = "Password must contain at least one number";
     } else if (!/[^A-Za-z0-9]/.test(password)) {
         errors.password = "Password must contain at least one symbol";
+    }
+
+    if (!confirmEmail) {
+        errors.confirmEmail = "Confirm Email is required";
+    } else if (confirmEmail !== email) {
+        errors.confirmEmail = "Emails do not match";
     }
 
     if (!confirmPassword) {

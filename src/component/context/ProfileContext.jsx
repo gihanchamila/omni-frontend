@@ -10,11 +10,10 @@ export const ProfileProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState(null);
 
-    // Fetch the current user and their profile picture
+
     const getCurrentUser = async () => {
         try {
-            resetProfileState(); // Reset state before fetching
-
+            resetProfileState(); 
             const response = await axios.get(`/auth/current-user`);
             const user = response.data.data.user;
 
@@ -35,7 +34,7 @@ export const ProfileProvider = ({ children }) => {
     };
 
     const fetchProfilePic = async (key) => {
-        if (!key) return; // Exit if no key is provided
+        if (!key) return; 
         try {
             const response = await axios.get(`/file/signed-url?key=${key}`);
             setProfilePicUrl(response.data.data.url);

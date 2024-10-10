@@ -66,7 +66,8 @@ const Setting = () => {
             */
   
           setFormData({
-            name: user.name || '',
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
             email: user.email || '',
             dateOfBirth: user.dateOfBirth || '',
             interests: user.interests || [],

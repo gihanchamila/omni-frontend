@@ -30,57 +30,63 @@ const Login = () => {
     setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = loginValidator(
-      {
-        email : formData.email,
-        password : formData.password
-      }
-    )
-
-    if(errors.email || errors.password){
-      setFormError(errors)
-    }else{
-      try{
-        setLoading(true)
-
+    const errors = loginValidator({
+      email: formData.email,
+      password: formData.password,
+    });
+  
+    if (errors.email || errors.password) {
+      setFormError(errors);
+    } else {
+      try {
+        setLoading(true);
+  
         const userAgent = navigator.userAgent;
-        const deviceType = getDeviceType(userAgent); 
-        const browser = getBrowserName(userAgent); 
-        const os = getOS(userAgent); 
-
+        const deviceType = getDeviceType(userAgent);
+        const browser = getBrowserName(userAgent);
+        const os = getOS(userAgent);
+  
         const requestBody = {
-        email: formData.email,
-        password: formData.password,
-        deviceType: deviceType || "Unknown Device",
-        browser: browser || "Unknown Browser",
-        os: os || "Unknown OS"
+          email: formData.email,
+          password: formData.password,
+          deviceType: deviceType || "Unknown Device",
+          browser: browser || "Unknown Browser",
+          os: os || "Unknown OS",
         };
+  
+        const response = await axios.post('/auth/signin', requestBody);
+        const data = response.data;
+        setDeviceType(data.data.deviceType);
 
-        const response = await axios.post('/auth/signin', requestBody)
-        const data = response.data
-        setDeviceType(data.data.deviceType); 
-
-        const profilePicKey = data.data.user.profilePic.key;
-        window.localStorage.setItem('profilePicKey', profilePicKey);
-
-        setProfilePicUrl(profilePicKey); 
-
-        window.localStorage.setItem("blogData", JSON.stringify(data.data))
-        toast.success(data.message)
-        getCurrentUser();  
-
-        setFormData(initialFormData)
-        setFormError(initialFormError)
-        setLoading(false)
-        navigate('/')
-      }catch(error){
-        setLoading(false)
-        setFormError(initialFormError)
-        const response = error.response
-        const data = response.data
-        toast.error(data.message)
+        if(data.data.user.profilePic?.key){
+          const profilePicKey = data.data.user.profilePic.key;
+          window.localStorage.setItem('profilePicKey', profilePicKey);
+          setProfilePicUrl(profilePicKey);
+        }
+        
+        window.localStorage.setItem("blogData", JSON.stringify(data.data));
+        toast.success(data.message);
+        getCurrentUser();
+  
+        setFormData(initialFormData);
+        setFormError(initialFormError);
+        setLoading(false);
+        navigate('/');
+      } catch (error) {
+        console.error("Error occurred:", error);
+        setLoading(false);
+        setFormError(initialFormError);
+  
+        let errorMessage = "An error occurred. Please try again.";
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data.message || errorMessage;
+        } else {
+          errorMessage = "Network error. Please check your connection and try again.";
+        }
+  
+        toast.error(errorMessage);
       }
     }
   };
@@ -120,7 +126,7 @@ const Login = () => {
 };
 
   return (
-    <div className='container border-2 border-slate-800 w-[25rem] bg-white px-12 py-12 my-4 mt-[5rem] rounded-2xl'>
+    <div className='container border-2 border-slate-800 w-[25rem] bg-white px-12 py-12 my-4 mt-[3rem] rounded-2xl'>
       <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
       </div>
