@@ -12,8 +12,8 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 
 
-const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "" }
-const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : ""  }
+const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
+const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
 
 const Setting = () => {
   const { profilePicUrl } = useProfile();
@@ -71,7 +71,8 @@ const Setting = () => {
             email: user.email || '',
             dateOfBirth: user.dateOfBirth || '',
             interests: user.interests || [],
-            about: user.about || ''
+            about: user.about || '',
+            gender : user.gender
           });
         } else {
           toast.error('User data is incomplete');
@@ -236,7 +237,7 @@ const handleChange = (event) => {
                       
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
-                      <h2 className="text-lg font-semibold">{currentUser.name}</h2>
+                      <h2 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h2>
                       <p className="text-gray-600">{currentUser.email}</p>
                     </div>
                   </div>
