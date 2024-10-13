@@ -4,6 +4,7 @@ import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js';
 import { toast } from 'sonner';
+import UserIcon from '../component/icons/UserIcon.jsx';
 
 const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
@@ -82,6 +83,7 @@ const Signup = () => {
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="firstName" className="label">First Name</label>
               <input
+                
                 id="firstName"
                 name="firstName"
                 type="text"
@@ -176,13 +178,13 @@ const Signup = () => {
           </div>
 
           {/* Align Sign Up button to the right and "Already have an account?" to the left */}
-          <div className="flex flex-col-reverse items-center justify-between lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0">
-            <div className="flex-grow text-center lg:text-left">
+          <div className="flex flex-col-reverse items-center justify-between lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
+            <div className="flex-grow sm:text-center lg:text-left">
               <span className='font-base text-sm text-color-s'>
                 Already have an account? <Link className='hover:underline text-blue-600' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button className="w-full lg:w-auto" primary={true} disabled={loading}>
+            <Button className="" variant='info' primary={false} disabled={loading}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </div>

@@ -532,11 +532,11 @@ const SinglePost = () => {
               </div>
 
               <span className='m-0 px-4'>
-              {!isLoaded ? (
-                <Skeleton height="1.5rem" width="8rem" />
-              ) : (
-                post?.updatedBy?.name
-              )}
+                {!isLoaded ? (
+                  <Skeleton height="1.5rem" width="8rem" />
+                ) : (
+                  `${post?.updatedBy?.firstName} ${post?.updatedBy?.lastName}`
+                )}
               </span>
 
               {post?.author?._id !== currentUser && (

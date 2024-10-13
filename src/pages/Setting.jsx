@@ -296,7 +296,7 @@ const handleChange = (event) => {
                           placeholder="Tell us something about yourself"
                           value={formData.about}
                           onChange={handleChange}
-                          className="input-box h-24 resize-none"
+                          className="input-box h-[7.5rem] resize-none"
                         />
                       </div>
                     </div>
@@ -397,6 +397,50 @@ const handleChange = (event) => {
                   </div>
                 </div>
               </div> */}
+
+                {/* Account Deactivation/Deletion Section */}
+                <div className="bg-white p-6 rounded-lg">
+                  <h2 className="subTitle">Account Deactivation / Deletion</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                    
+                    {/* Deactivation Option */}
+                    <div className="p-4 border border-gray-300 rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Deactivate Account</h3>
+                      <p className="text-gray-600 mb-4">
+                        Temporarily deactivate your account. This action will hide your profile and information, but your data will be preserved.
+                      </p>
+                      <Button variant="error">Deactivate Account</Button>
+                    </div>
+
+                    {/* Deletion Option */}
+                    <div className="p-4 border border-gray-300 rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Delete Account</h3>
+                      <p className="text-gray-600 mb-10">
+                        Permanently delete your account and all related data. This action is irreversible.
+                      </p>
+                      <Button variant="error">Delete Account</Button>
+                    </div>
+
+                    {/* Data Export/Download Option */}
+                    <div className="p-4 border border-gray-300 rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Download Your Data</h3>
+                      <p className="text-gray-600 mb-4">
+                        Download a copy of your account data before proceeding with deactivation or deletion. This file will include your profile, posts, and activity.
+                      </p>
+                      <Button variant="primary">Export Data</Button>
+                    </div>
+
+                    {/* Account Recovery Information */}
+                    <div className="p-4 border border-gray-300 rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Account Recovery</h3>
+                      <p className="text-gray-600 mb-10">
+                        If you deactivate your account, you can easily recover it at any time by logging back in. All your data will be restored.
+                      </p>
+                      <Button variant="info">Learn More</Button>
+                    </div>
+
+                  </div>
+                </div>
               </div>
             </div>
           </div>
