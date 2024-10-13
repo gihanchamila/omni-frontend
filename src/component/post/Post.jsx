@@ -75,7 +75,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
 
              {/*  <AuthorProfilePic author={post?.author} /> */}
-              <span className="px-2 text-xs">{post.author.name}</span>
+              <span className="px-2 text-xs">{`${post.author.firstName} ${post.author.lastName}`}</span>
               {currentUser && post.author._id !== currentUser._id && (
                 <span
                   className={`text-blue-500 hover:underline hover:cursor-pointer ${
