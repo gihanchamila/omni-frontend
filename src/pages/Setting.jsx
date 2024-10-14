@@ -10,11 +10,13 @@ import 'react-image-crop/dist/ReactCrop.css';
 import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureModal.jsx';
 import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
+import TwoFactorAuthentication from '../component/settings/TwoFactorAuthentication.jsx';
 
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
 const initialPasswordData = {oldPassword : "", newPassword : "", confirmNewPassword : ""}
+const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 
 const Setting = () => {
   const { profilePicUrl } = useProfile();
@@ -22,6 +24,7 @@ const Setting = () => {
   const [formError, setFormError] = useState(initialFormError)
 
   const [passwordData, setPasswordData] = useState(initialPasswordData)
+  const [securityQuestionData, setSecurityQuestionData] = useState(initialQuestionData)
 
   
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -148,6 +151,11 @@ const Setting = () => {
     setPasswordData({...passwordData, [name] : value})
   }
 
+  const handleSecurityQuestionChange = (event) => {
+    const { name, value } = event.target;
+    setSecurityQuestionData({...securityQuestionData, [name] : value})
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
         try{
@@ -178,19 +186,35 @@ const Setting = () => {
       setLoading(true);
       const response = await axios.put(`/auth/change-password`, passwordData);
       const data = response.data;
-      console.log(data)
       toast.success(data.message);
       setPasswordData(initialPasswordData);
     } catch (error) {
       setLoading(false);
       const response = error.response;
       const data = response?.data;
-      console.log(data)
       toast.error(data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSecurityQuestionSubmit = async (e) => {
+    e.preventDefault();
+    try{
+      setLoading(true)
+      const response = await axios.post('/auth/security-question', securityQuestionData)
+      const data = response.data;
+      console.log(securityQuestionData)
+      toast.success(data.message)
+      setSecurityQuestionData(initialQuestionData)
+    }catch(error){
+      setLoading(false);
+      const response = error.response;
+      const data = response?.data;
+      toast.error(data?.message || "Something went wrong");
+    }
+  }
+
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -241,7 +265,7 @@ const Setting = () => {
       </div>
   
       {/* Content Panel */}
-      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-lg transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <div>
             <h2 className="title">General Settings</h2>
@@ -539,35 +563,40 @@ const Setting = () => {
               {/* Additional Security Settings Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
-                <form>
+                <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>
                     <div className="groupBox">
-                      <label htmlFor="backup-email" className="text-gray-700 font-medium">Backup Email Address</label>
+                      <label htmlFor="securityQuestion" className="text-gray-700 font-medium">Security Question</label>
                       <input
-                        type="email"
-                        name="backup-email"
-                        id="backup-email"
+                        name="securityQuestion"
+                        id="securityQuestion"
+                        onChange={handleSecurityQuestionChange}
+                        value={securityQuestionData.securityQuestion}
                         className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                        placeholder="Enter backup email address"
+                        placeholder="Enter your security question"
                       />
                     </div>
                     <div className="groupBox">
-                      <label htmlFor="security-questions" className="text-gray-700 font-medium">Security Questions</label>
+                      <label htmlFor="securityAnswer" className="text-gray-700 font-medium">Security Answer</label>
                       <textarea
-                        name="security-questions"
-                        id="security-questions"
+                        name="securityAnswer"
+                        id="securityAnswer"
+                        onChange={handleSecurityQuestionChange}
+                        value={securityQuestionData.securityAnswer}
                         className="input-box px-4 border rounded-lg pb-[1.35rem] focus:outline-none"
-                        placeholder="Answer security questions"
+                        placeholder="Enter your answer"
                         rows="5"
                       />
                     </div>
-                    <Button variant="info">Save Security Settings</Button>
+                    <Button type='submit' variant="info">Save Security Settings</Button>
                   </div>
                 </form>
               </div>
 
               {/* Two-Factor Authentication Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+
+              {
+              /* <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
                 <p className='pb-4'>Two Factor Authentication boosts security by requiring both your password and a code sent to your email, ensuring extra protection against unauthorized access</p>
                 <form>
@@ -605,12 +634,14 @@ const Setting = () => {
                         placeholder="Enter verification mobile number"
                       />
                     </div>
-                    */
-                    }
-                    <Button variant="info">Save Verification Settings</Button>
+                    
+                    <Button variant="info">Verify Email Address</Button>
                   </div>
                 </form>
-              </div>
+              </div> */}
+
+              <TwoFactorAuthentication />
+
             </div>
           </div>
         )}
