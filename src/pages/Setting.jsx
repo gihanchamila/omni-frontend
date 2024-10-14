@@ -14,11 +14,15 @@ import { useProfile } from '../component/context/useProfilePic.jsx';
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
+const initialPasswordData = {oldPassword : "", newPassword : "", confirmNewPassword : ""}
 
 const Setting = () => {
   const { profilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
+
+  const [passwordData, setPasswordData] = useState(initialPasswordData)
+
   
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
@@ -122,22 +126,28 @@ const Setting = () => {
   },[profileKey])
 */
 
-const handleChange = (event) => {
-  const { name, value } = event.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-  // If the name is 'interests', split the value into an array
-  if (name === "interests") {
-      setFormData((prevData) => ({
-          ...prevData,
-          [name]: value.split(",").map((interest) => interest.trim()), // Split and trim
-      }));
-  } else {
-      setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-      }));
+    // If the name is 'interests', split the value into an array
+    if (name === "interests") {
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value.split(",").map((interest) => interest.trim()), // Split and trim
+        }));
+    } else {
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    }
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordData({...passwordData, [name] : value})
   }
-};
+
   const handleSubmit = async (e) => {
     e.preventDefault()
         try{
@@ -155,6 +165,31 @@ const handleChange = (event) => {
             const data = response.data
             toast.error(data.message)
         }
+  };
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+      toast.error("New password and confirm password do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.put(`/auth/change-password`, passwordData);
+      const data = response.data;
+      console.log(data)
+      toast.success(data.message);
+      setPasswordData(initialPasswordData);
+    } catch (error) {
+      setLoading(false);
+      const response = error.response;
+      const data = response?.data;
+      console.log(data)
+      toast.error(data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -453,108 +488,128 @@ const handleChange = (event) => {
               {/* Change Password Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-                <div className="flex flex-col space-y-4">
-                  <div className="groupBox">
-                    <label htmlFor="current-password" className="text-gray-700 font-medium">Current Password</label>
-                    <input
-                      type="password"
-                      name="current-password"
-                      id="current-password"
-                      className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                      placeholder="Enter current password"
-                      required
-                    />
+                <form className='' onSubmit={handleChangePasswordSubmit}>
+                  <div className="flex flex-col space-y-6">
+                    <div className="groupBox">
+                      <label htmlFor="oldPassword" className="text-gray-700 font-medium">Current Password</label>
+                      <input
+                        type="password"
+                        name="oldPassword"
+                        id="oldPassword"
+                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        placeholder="Enter current password"
+                        value={passwordData.oldPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                    <div className="groupBox">
+                      <label htmlFor="newPassword" className="text-gray-700 font-medium">New Password</label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        id="newPassword"
+                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        placeholder="Enter new password"
+                        value={passwordData.newPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                    <div className="groupBox">
+                      <label htmlFor="confirmNewPassword" className="text-gray-700 font-medium">Confirm New Password</label>
+                      <input
+                        type="password"
+                        name="confirmNewPassword"
+                        id="confirmNewPassword"
+                        className="input-box px-4 py-2 border rounded-lg focus:outline-none mb-5"
+                        placeholder="Confirm new password"
+                        value={passwordData.confirmNewPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                      <Button className="" type="submit" variant="info" >
+                        Change Password
+                      </Button>                
                   </div>
-                  <div className="groupBox">
-                    <label htmlFor="new-password" className="text-gray-700 font-medium">New Password</label>
-                    <input
-                      type="password"
-                      name="new-password"
-                      id="new-password"
-                      className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                      placeholder="Enter new password"
-                      required
-                    />
-                  </div>
-                  <div className="groupBox">
-                    <label htmlFor="confirm-new-password" className="text-gray-700 font-medium">Confirm New Password</label>
-                    <input
-                      type="password"
-                      name="confirm-new-password"
-                      id="confirm-new-password"
-                      className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                      placeholder="Confirm new password"
-                      required
-                    />
-                  </div>
-                </div>
-                <Button variant="info">Change Password</Button>
+                </form>
               </div>
 
               {/* Additional Security Settings Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
-                <div className="groupBox">
-                  <label htmlFor="backup-email" className="text-gray-700 font-medium">Backup Email Address</label>
-                  <input
-                    type="email"
-                    name="backup-email"
-                    id="backup-email"
-                    className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                    placeholder="Enter backup email address"
-                  />
-                </div>
-                <div className="groupBox">
-                  <label htmlFor="security-questions" className="text-gray-700 font-medium">Security Questions</label>
-                  <textarea
-                    name="security-questions"
-                    id="security-questions"
-                    className="input-box px-4 border rounded-lg pb-2 focus:outline-none"
-                    placeholder="Answer security questions"
-                    rows="5"
-                  />
-                </div>
-                <Button variant="info">Save Security Settings</Button>
+                <form>
+                  <div className='flex flex-col space-y-6'>
+                    <div className="groupBox">
+                      <label htmlFor="backup-email" className="text-gray-700 font-medium">Backup Email Address</label>
+                      <input
+                        type="email"
+                        name="backup-email"
+                        id="backup-email"
+                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        placeholder="Enter backup email address"
+                      />
+                    </div>
+                    <div className="groupBox">
+                      <label htmlFor="security-questions" className="text-gray-700 font-medium">Security Questions</label>
+                      <textarea
+                        name="security-questions"
+                        id="security-questions"
+                        className="input-box px-4 border rounded-lg pb-[1.35rem] focus:outline-none"
+                        placeholder="Answer security questions"
+                        rows="5"
+                      />
+                    </div>
+                    <Button variant="info">Save Security Settings</Button>
+                  </div>
+                </form>
               </div>
 
               {/* Two-Factor Authentication Section */}
               <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
-                <p className='pb-1'>Two Factor Authentication boosts security by requiring both your password and a code sent to your email, ensuring extra protection against unauthorized access</p>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="two-factor"
-                    id="two-factor"
-                    className="form-checkbox"
-                  />
-                  <label htmlFor="two-factor" className="text-gray-700">
-                    Enable Two-Factor Authentication
-                  </label>
-                </div>
-                <div className="groupBox">
-                  <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email Address</label>
-                  <input
-                    type="email"
-                    name="verify-email"
-                    id="verify-email"
-                    className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                    placeholder="Enter verification email"
-                  />
-                </div>
-                {/*
-                <div className="groupBox">
-                  <label htmlFor="verify-mobile" className="text-gray-700 font-medium">Verify Mobile</label>
-                  <input
-                    type="tel"
-                    name="verify-mobile"
-                    id="verify-mobile"
-                    className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                    placeholder="Enter verification mobile number"
-                  />
-                </div>
-                */}
-                <Button variant="info">Save Verification Settings</Button>
+                <p className='pb-4'>Two Factor Authentication boosts security by requiring both your password and a code sent to your email, ensuring extra protection against unauthorized access</p>
+                <form>
+                  <div className='flex flex-col space-y-6'>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        name="two-factor"
+                        id="two-factor"
+                        className="form-checkbox"
+                      />
+                      <label htmlFor="two-factor" className="text-gray-700">
+                        Enable Two-Factor Authentication
+                      </label>
+                    </div>
+                    <div className="groupBox">
+                      <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email Address</label>
+                      <input
+                        type="email"
+                        name="verify-email"
+                        id="verify-email"
+                        className="input-box px-4 py-2 border  rounded-lg focus:outline-none"
+                        placeholder="Enter verification email"
+                      />
+                    </div>
+                    {
+                    /*
+                    <div className="groupBox">
+                      <label htmlFor="verify-mobile" className="text-gray-700 font-medium">Verify Mobile</label>
+                      <input
+                        type="tel"
+                        name="verify-mobile"
+                        id="verify-mobile"
+                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        placeholder="Enter verification mobile number"
+                      />
+                    </div>
+                    */
+                    }
+                    <Button variant="info">Save Verification Settings</Button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
