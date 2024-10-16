@@ -1,39 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../button/Button.jsx';
+import axios from '../../utils/axiosInstance.js';
+import { toast } from 'sonner';
+import Modal from '../modal/Modal.jsx';
 
 const TwoFactorAuthentication = ({
-  onEmailSubmit, // Callback function when email is submitted
-  onCodeSubmit, // Callback function when code is submitted
-  enableTwoFactor = false, // Default value for the checkbox state
-  buttonText = 'Verify Email Address', // Default text for the button
-  codeButtonText = 'Save Verification Settings', // Button text for code submission
+  onEmailSubmit,
+  onCodeSubmit,
+  enableTwoFactor = false,
+  buttonText = 'Verify Email Address',
+  codeButtonText = 'Save Verification Settings',
 }) => {
-  const [step, setStep] = useState('email'); // 'email', 'verify', or 'success'
+  const [step, setStep] = useState('email');
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [isEnabled, setIsEnabled] = useState(enableTwoFactor);
+  const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [showModal, setShowModal] = useState(false); 
 
-  const handleEmailSubmit = (e) => {
+  useEffect(() => {
+    const getVerificationStatus = async () => {
+      try {
+        const response = await axios.get('/auth/verification-status');
+        const data = response.data
+        toast.success(data.message)
+        setIsVerified(response.data.isVerified);
+        setStep(response.data.isVerified ? 'success' : 'email');
+      } catch (error) {
+        const response = error.response
+        const data = response.data.data
+        toast.error(data.message)
+      }
+    };
+
+    getVerificationStatus();
+  }, []);
+
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (onEmailSubmit) {
-      onEmailSubmit(email); 
+      setLoading(true);
+      try {
+        await onEmailSubmit(email);
+        setStep('verify');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    setStep('verify'); 
   };
 
-  const handleVerificationSubmit = (e) => {
+  const handleVerificationSubmit = async (e) => {
     e.preventDefault();
     if (onCodeSubmit) {
-      onCodeSubmit(verificationCode); 
+      setLoading(true);
+      try {
+        await onCodeSubmit(email, verificationCode);
+        setIsVerified(true); // Mark as verified
+        setStep('success');
+        setEmail('');
+        setVerificationCode('');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    // After successful verification, reset to the initial step and show the success message
-    setStep('success');
-    setEmail('');
-    setVerificationCode('');
   };
 
-  const handleReset = () => {
-    setStep('email'); // Go back to the initial state
+  const handleReset = async () => {
+    try{
+      const response = await axios.put("/auth/update-verification-status")
+      const data = response.data
+      toast.success(data.message)
+    }catch(error){
+      const response = error.response
+      const data = response.data
+      toast.error(data.message)
+    }
+    setStep('email');
+    setIsVerified(false); 
   };
 
   return (
@@ -43,11 +91,19 @@ const TwoFactorAuthentication = ({
         {step === 'email' && (
           <>
             Two-Factor Authentication (2FA) enhances your account's security by requiring both your password and a unique code sent to your email. This extra layer of protection helps prevent unauthorized access, even if your password is compromised.
-            
           </>
         )}
         {step === 'verify' && `A code has been successfully sent to your email address (${email}). Please enter the code below to complete the verification.`}
-        {step === 'success' && 'Your email has been successfully verified! Two-Factor Authentication is now enabled.'}
+        {step === 'success' && (
+          <>
+          <div className='pb-6'>
+          <p>Your account is protected with 2-Step Verification.</p><br/>
+          <p>Prevent hackers from accessing your account with an additional layer of security.</p><br/>
+          <p>Unless you’re signing in with a passkey, you’ll be asked to complete the most secure second step available on your account.</p>
+          </div>
+            
+          </>
+        )}
       </p>
       <form onSubmit={step === 'email' ? handleEmailSubmit : handleVerificationSubmit}>
         <div className="flex flex-col space-y-6">
@@ -59,15 +115,15 @@ const TwoFactorAuthentication = ({
                   type="email"
                   name="verify-email"
                   id="verify-email"
-                  className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                  className="input-box px-4 py-2 pb-3 border rounded-lg focus:outline-none"
                   placeholder="Enter verification email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <Button type="submit" variant='info'>
-                {buttonText}
+              <Button type="submit" variant='info' disabled={loading}>
+                {loading ? 'Sending...' : buttonText}
               </Button>
             </>
           )}
@@ -78,30 +134,47 @@ const TwoFactorAuthentication = ({
                 <label htmlFor="verification-code" className="text-gray-700 font-medium">Enter 6-digit Code</label>
                 <input
                   type="text"
-                  name="verification-code"
+                  name="verificationCode"
                   id="verification-code"
-                  className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                  className="input-box px-4 py-2 pb-3 border rounded-lg focus:outline-none"
                   placeholder="Enter 6-digit code"
                   value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value) && value.length <= 6) {
+                      setVerificationCode(value);
+                    }
+                  }}
                   required
                 />
               </div>
-              <Button className="mt-7" type="submit">
-                {codeButtonText}
+              <Button variant='info' type="submit" disabled={loading}>
+                {loading ? 'Verifying...' : codeButtonText}
               </Button>
             </>
           )}
 
-          {step === 'success' && (
-            <Button className="mt-7 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" onClick={handleReset}>
-              Go Back to Two-Factor Authentication
+          {step === 'success' && isVerified && (
+            <Button variant="info" onClick={() => setShowModal(true)}>
+              Update 2-step verification email
             </Button>
           )}
         </div>
       </form>
+      <Modal 
+        showModal={showModal} 
+        title="Confirm Update" 
+        onConfirm={() => {
+          handleReset();
+          setShowModal(false);
+        }} 
+        onCancel={() => setShowModal(false)}
+      >
+        <p>Are you sure you want to update your 2-step verification email?</p>
+      </Modal>
     </div>
   );
 };
 
 export default TwoFactorAuthentication;
+

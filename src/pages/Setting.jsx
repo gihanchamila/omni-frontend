@@ -191,8 +191,8 @@ const Setting = () => {
     } catch (error) {
       setLoading(false);
       const response = error.response;
-      const data = response?.data;
-      toast.error(data?.message || "Something went wrong");
+      const data = response.data;
+      toast.error(data.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -210,11 +210,43 @@ const Setting = () => {
     }catch(error){
       setLoading(false);
       const response = error.response;
-      const data = response?.data;
+      const data = response.data;
       toast.error(data?.message || "Something went wrong");
     }
   }
 
+  const handleEmailSubmit = async (email) => {
+    try{
+      setLoading(true)
+      const response = await axios.post('/auth/send-verification-email', {email})
+      const data = response.data;
+      toast.success(data.message)
+    }catch(error){
+      setLoading(false);
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
+  }
+
+  const handleVerificationSubmit = async (email, verificationCode) => {
+    try{
+      setLoading(true)
+      const response = await axios.post(`/auth/verify-user`, {email , code : verificationCode})
+      const data = response.data;
+      toast.success(data.message)
+    }catch(error){
+      setLoading(false);
+      console.error('Verification error:', error);
+      const response = error.response;
+      const data = response.data;
+        if (data?.message) {
+          throw new Error(data.message); 
+        } else {
+          throw new Error('An unexpected error occurred');
+        }
+    } 
+  }
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -391,9 +423,9 @@ const Setting = () => {
                     </div>
 
                     <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
-              {[
-                { id: "email", name: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value: formData.email || "" },
-                { id: "interests", name: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value: formData.interests.join(", ") || "" }
+                    {[
+                      { id: "email", name: "email", label: "Email Address", type: "email", placeholder: "someone@gmail.com", value: formData.email || "" },
+                      { id: "interests", name: "interests", label: "Interests", type: "text", placeholder: "e.g. Reading, Coding", value: formData.interests.join(", ") || "" }
                     ].map(({ id, label, type, placeholder, value, name }) => (
                       <div className="groupBox" key={id}>
                         <label htmlFor={id} className="label">{label}</label>
@@ -458,47 +490,46 @@ const Setting = () => {
               </div> */}
 
                 {/* Account Deactivation/Deletion Section */}
-                <div className="bg-white p-6 rounded-lg">
-                  <h2 className="subTitle">Account Deactivation / Deletion</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                    
-                    {/* Deactivation Option */}
-                    <div className="p-4 border border-gray-300 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-2">Deactivate Account</h3>
-                      <p className="text-gray-600 mb-4">
-                        Temporarily deactivate your account. This action will hide your profile and information, but your data will be preserved.
-                      </p>
-                      <Button variant="error">Deactivate Account</Button>
-                    </div>
+                <div className="bg-white p-8 rounded-lg  space-y-8">
+                  <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Management</h2>
 
-                    {/* Deletion Option */}
-                    <div className="p-4 border border-gray-300 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-2">Delete Account</h3>
-                      <p className="text-gray-600 mb-10">
-                        Permanently delete your account and all related data. This action is irreversible.
-                      </p>
-                      <Button variant="error">Delete Account</Button>
+                  {/* Account Deletion Section */}
+                  <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                    <h3 className="text-xl font-semibold mb-3 text-red-600 pb-7">Account Deletion</h3>
+                    <div className="space-y-3">
+                      <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
+                      <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
+                      <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
+                      <Button variant="error" className="mt-4">Delete Account</Button>
                     </div>
-
-                    {/* Data Export/Download Option */}
-                    <div className="p-4 border border-gray-300 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-2">Download Your Data</h3>
-                      <p className="text-gray-600 mb-4">
-                        Download a copy of your account data before proceeding with deactivation or deletion. This file will include your profile, posts, and activity.
-                      </p>
-                      <Button variant="primary">Export Data</Button>
-                    </div>
-
-                    {/* Account Recovery Information */}
-                    <div className="p-4 border border-gray-300 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-2">Account Recovery</h3>
-                      <p className="text-gray-600 mb-10">
-                        If you deactivate your account, you can easily recover it at any time by logging back in. All your data will be restored.
-                      </p>
-                      <Button variant="info">Learn More</Button>
-                    </div>
-
                   </div>
+
+
+                 {/*  <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+                    <h3 className="text-xl font-semibold mb-3 text-yellow-600">Account Deactivation</h3>
+                    <p className="text-gray-700 mb-4">
+                      Temporarily deactivate your account to hide your profile and information. Your data will be preserved, and you can reactivate it at any time by logging back in.
+                    </p>
+                    <Button variant="warning">Deactivate Account</Button>
+                  </div> */}
+
+
+                  {/* <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h3 className="text-xl font-semibold mb-3 text-blue-600">Download Your Data</h3>
+                    <p className="text-gray-700 mb-4">
+                      It's a good idea to download a copy of your account data before proceeding with deactivation or deletion. This file will include your profile, posts, and activity.
+                    </p>
+                    <Button variant="primary">Export Data</Button>
+                  </div> */}
+
+
+                  {/* <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                    <h3 className="text-xl font-semibold mb-3 text-green-600">Account Recovery</h3>
+                    <p className="text-gray-700 mb-4">
+                      If you deactivate your account, you can easily recover it at any time by logging back in. All your data will be restored automatically.
+                    </p>
+                    <Button variant="info">Learn More</Button>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -640,7 +671,7 @@ const Setting = () => {
                 </form>
               </div> */}
 
-              <TwoFactorAuthentication />
+              <TwoFactorAuthentication onEmailSubmit={handleEmailSubmit} onCodeSubmit={handleVerificationSubmit}/>
 
             </div>
           </div>
@@ -648,7 +679,6 @@ const Setting = () => {
       </div>)}
     </div>
   );
-  
 }
 
-export default Setting;
+export default Setting
