@@ -104,7 +104,7 @@ const PrivateNavBar = () => {
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/"
           >
-            <div className="flex items-center justify-center space-x-2">
+            <div className="navGroup">
               <HiOutlineHome className="icon" /> Home
             </div>
             
@@ -114,7 +114,7 @@ const PrivateNavBar = () => {
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/categories"
           >
-            <div className="flex items-center justify-center space-x-2">
+            <div className="navGroup">
               <TbCategory2 className="icon" /> Categories
             </div>
           </NavLink>
@@ -124,7 +124,7 @@ const PrivateNavBar = () => {
             to="/posts"
             end
           >
-            <div className="flex items-center justify-center space-x-2">
+            <div className="navGroup">
               <MdPostAdd className="icon"/> Posts 
             </div>
           </NavLink>
@@ -133,7 +133,10 @@ const PrivateNavBar = () => {
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/posts/new-post"
           >
-            <HiOutlinePencilAlt className="w-6 h-6 text-blue-500" />
+            <div className="navGroup">
+              <HiOutlinePencilAlt className="icon" /> Create
+            </div>
+            
           </NavLink>
           
          {/*  <NavLink 
@@ -153,7 +156,7 @@ const PrivateNavBar = () => {
                   className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
                   to={`${currentUser._id}`}
                 >
-                  <div className="flex space-x-2">
+                  <div className="navGroup">
                     <HiOutlineUserCircle className="icon"/> Profile
                   </div>
                 </NavLink>
@@ -162,7 +165,7 @@ const PrivateNavBar = () => {
                   className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
                   to="/settings"
                 >
-                  <div className="flex space-x-2">
+                  <div className="navGroup">
                     <HiOutlineCog className="icon"/> Settings
                   </div>
                 </NavLink>
@@ -172,7 +175,7 @@ const PrivateNavBar = () => {
                   to="/login" 
                   onClick={handleLogOut}
                 >
-                   <div className="flex space-x-2">
+                   <div className="navGroup">
                     <HiOutlineLogout className="icon"/> Logout
                   </div>
                 </NavLink>

@@ -190,7 +190,6 @@ const NewPost = () => {
           </form>
         </div>
 
-        {/* Preview Section */}
         <div className="py-14 lg:w-1/2 md:w-full sm:w-full">
           <h4 className="h4 mb-10 font-bold text-slate-800">Preview</h4>
           <div className="border border-gray-200 rounded-lg">

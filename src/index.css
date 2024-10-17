@@ -60,9 +60,15 @@
 
     }
 
+    .navGroup {
+
+      @apply flex space-x-2
+
+    }
+
     .icon {
 
-      @apply w-auto h-4 mr-2 text-gray-400
+      @apply w-auto h-5 mr-2 text-slate-800 
 
     }
 

@@ -31,6 +31,7 @@
     "react-router-dom": "^6.26.0",
     "react-scroll-lock": "^1.0.0",
     "react-scrolllock": "^5.0.1",
+    "react-select": "^5.8.1",
     "react-swipeable": "^7.0.1",
     "sanitize-html": "^2.13.0",
     "scroll-lock": "^2.1.5",
