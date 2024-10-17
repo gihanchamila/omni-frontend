@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js';
+import {  HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi";
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
 
@@ -10,6 +11,12 @@ const initialFormData = { firstName: "", lastName: "", email: "", password: "", 
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 
 const Signup = () => {
+  const [isFirstNameTyping, setIsFirstNameTyping] = useState(false);
+  const [isLastNameTyping, setIsLastNameTyping] = useState(false);
+  const [isEmailTyping, setIsEmailTyping] = useState(false);
+  const [isConfirmEmailTyping, setIsConfirmEmailTyping] = useState(false);
+  const [isPasswordTyping, setIsPasswordTyping] = useState(false);
+  const [isConfirmPasswordTyping, setIsConfirmPasswordTyping] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
   const [loading, setLoading] = useState(false);
@@ -17,7 +24,23 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'firstName') {
+      setIsFirstNameTyping(value !== '');
+    } else if (name === 'lastName') {
+      setIsLastNameTyping(value!== '');
+    } else if (name === 'email') {
+      setIsEmailTyping(value!== '')
+    } else if (name === 'confirmEmail') {
+      setIsConfirmEmailTyping(value!== '')
+    } else if (name === 'password') {
+      setIsPasswordTyping(value!== '')
+    } else if (name === 'confirmPassword'){
+      setIsConfirmPasswordTyping(value!== '')
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -82,33 +105,40 @@ const Signup = () => {
           <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="firstName" className="label">First Name</label>
-              <input
-                
-                id="firstName"
-                name="firstName"
-                type="text"
-                autoComplete="given-name"
-                placeholder="John"
-                required
-                value={formData.firstName}
-                onChange={handleChange}
-                className="appearance-none input-box"
-              />
+              <div className='relative input-wrapper'>
+                <HiOutlineUserCircle className={`input-icon ${isFirstNameTyping ? 'text-blue-500' : ''}`}/>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="Enter your first name"
+                  required
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="appearance-none input-box"
+                />
+              </div>
+              
               {formError.firstName && <p className="validateError">{formError.firstName}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="lastName" className="label">Last Name</label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                autoComplete="family-name"
-                placeholder="Doe"
-                required
-                value={formData.lastName}
-                onChange={handleChange}
-                className="appearance-none input-box"
-              />
+              <div className='relative input-wrapper'>
+                <HiOutlineUserCircle className={`input-icon ${isLastNameTyping ? 'text-blue-500' : ''}`}/>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  placeholder="Enter your last name"
+                  required
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="appearance-none input-box"
+                />
+              </div>
+              
               {formError.lastName && <p className="validateError">{formError.lastName}</p>}
             </div>
           </div>
@@ -117,30 +147,38 @@ const Signup = () => {
           <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4">
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="email" className="label">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="someone@gmail.com"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="appearance-none input-box"
-              />
+              <div className='relative input-wrapper'>
+                <HiOutlineMail className={`input-icon ${isEmailTyping? 'text-blue-500' : ''}`}/>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="appearance-none input-box"
+                />
+              </div>
+              
               {formError.email && <p className="validateError">{formError.email}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="confirmEmail" className="label">Confirm Email</label>
-              <input
+              <div className='relative input-wrapper'>
+                <HiOutlineMail className={`input-icon ${isConfirmEmailTyping? 'text-blue-500' : ''}`} />
+                <input
                 id="confirmEmail"
                 name="confirmEmail"
                 type="email"
-                placeholder="someone@gmail.com"
+                placeholder="Re-enter your email"
                 required
                 value={formData.confirmEmail}
                 onChange={handleChange}
                 className="appearance-none input-box"
               />
+              </div>
+              
               {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
             </div>
           </div>
@@ -149,30 +187,36 @@ const Signup = () => {
           <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4">
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="password" className="label">Password</label>
-              <input
+              <div className='relative input-wrapper'>
+                <HiLockClosed className={`input-icon ${isPasswordTyping? 'text-blue-500' : ''}`} />
+                <input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder="Create a password"
                 required
                 value={formData.password}
                 onChange={handleChange}
                 className="appearance-none input-box"
               />
+              </div>
               {formError.password && <p className="validateError">{formError.password}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="confirmPassword" className="label">Confirm Password</label>
-              <input
+              <div className='relative input-wrapper'>
+                <HiLockClosed className={`input-icon ${isConfirmPasswordTyping? 'text-blue-500' : ''}`} />
+                <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Re-enter your password"
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="appearance-none input-box"
               />
+              </div>
               {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
             </div>
           </div>
@@ -181,7 +225,7 @@ const Signup = () => {
           <div className="flex flex-col-reverse items-center justify-between lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
             <div className="flex-grow sm:text-center lg:text-left">
               <span className='font-base text-sm text-color-s'>
-                Already have an account? <Link className='hover:underline text-blue-600' to="/login">Sign In</Link>
+                Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
             <Button className="" variant='info' primary={false} disabled={loading}>

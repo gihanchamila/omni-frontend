@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiCamera } from "react-icons/fi";
 import { FaBars} from 'react-icons/fa';
 import { toast } from 'sonner';
@@ -11,7 +12,7 @@ import UpdateProfilePictureModal from '../component/modal/UpdateProfilePictureMo
 import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 import TwoFactorAuthentication from '../component/settings/TwoFactorAuthentication.jsx';
-
+import Modal from '../component/modal/Modal.jsx';
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
@@ -19,14 +20,16 @@ const initialPasswordData = {oldPassword : "", newPassword : "", confirmNewPassw
 const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 
 const Setting = () => {
-  const { profilePicUrl } = useProfile();
+  const navigate = useNavigate()
+  const { profilePicUrl, setProfilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
+  const [showModal, setShowModal] = useState(false)
+  const [removeModal, setRemoveModal] = useState(false);
 
   const [passwordData, setPasswordData] = useState(initialPasswordData)
   const [securityQuestionData, setSecurityQuestionData] = useState(initialQuestionData)
 
-  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
 
@@ -213,7 +216,7 @@ const Setting = () => {
       const data = response.data;
       toast.error(data?.message || "Something went wrong");
     }
-  }
+  };
 
   const handleEmailSubmit = async (email) => {
     try{
@@ -227,7 +230,7 @@ const Setting = () => {
       const data = response.data;
       toast.error(data.message);
     }
-  }
+  };
 
   const handleVerificationSubmit = async (email, verificationCode) => {
     try{
@@ -246,7 +249,27 @@ const Setting = () => {
           throw new Error('An unexpected error occurred');
         }
     } 
+  };
+
+  const handleDeleteAccount = async () => {
+    try{
+      const response = await axios.delete("/auth/delete-account");
+      const data = response.data;window.localStorage.removeItem('blogData');
+      setCurrentUser(null)
+      setProfilePicUrl(null)
+      toast.success(data.message)
+      handleCloseModal()
+      navigate("/login")
+    }catch(error){
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message)
+    }
   }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+};
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -500,9 +523,13 @@ const Setting = () => {
                       <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
                       <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
                       <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
-                      <Button variant="error" className="mt-4">Delete Account</Button>
+                      <Button onClick={() => {setShowModal(true); console.log("Clicked" ); }} variant="error" className="mt-4">Delete Account</Button>
                     </div>
                   </div>
+
+                  {showModal && (
+                    <Modal showModal={showModal} title={"Are you sure want tp delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
+                  )}
 
 
                  {/*  <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">

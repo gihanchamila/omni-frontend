@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react"
 import axios from "../utils/axiosInstance.js"
 import { Link, useNavigate } from 'react-router-dom'
 import { ProfileContext } from "../component/context/ProfileContext.jsx"
+import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
 
 import { toast } from 'sonner'
 import Button from '../component/button/Button.jsx'
@@ -16,6 +17,8 @@ const initialFormError = {email : "", password : ""}
 const Login = () => {
   
   const socket = useSocket()
+  const [isEmailTyping, setIsEmailTyping] = useState(false);
+  const [isPasswordTyping, setIsPasswordTyping] = useState(false);
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
@@ -27,7 +30,14 @@ const Login = () => {
   const navigate = useNavigate()
 
   const handleChange = (e) => {
-    setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
+    const { name, value } = e.target;
+    setFormData((prev) => ({...prev, [name] : value}))
+    
+    if (name === 'email') {
+      setIsEmailTyping(value !== '');
+    } else if (name === 'password') {
+      setIsPasswordTyping(value!== '');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -126,42 +136,47 @@ const Login = () => {
 };
 
   return (
-    <div className='container border-2 border-slate-800 w-[25rem] bg-white px-12 py-12 my-4 mt-[3rem] rounded-2xl'>
+    <div className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl'>
       <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
       </div>
 
       <form action="" className="space-y-4" onSubmit={handleSubmit}>
         <div className="groupBox">
-          <label htmlFor="email" className="label">
-            Email address
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="someone@gmail.com"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="appearance-none input-box"
-          />
+          <label htmlFor="email" className="label">Email address</label>
+          <div className="relative input-wrapper">
+            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : ''}`}/>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="someone@gmail.com"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="appearance-none input-box"
+            />
+          </div>
         </div>
         <div className="groupBox">
           <label htmlFor="email" className="label">
             Password
           </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            className="appearance-none input-box"
-          />
+          <div className="relative input-wrapper">
+          <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : ''}`}/>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="appearance-none input-box"
+            />
+          </div>
+          
         </div>
         <div className='flex items-center justify-between'>
           <div className="flex items-center">
@@ -182,7 +197,7 @@ const Login = () => {
           </div>
 
         </div>
-        <Button variant="info" className={`w-full`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
+        <Button variant="info" className={`w-full py-2.5`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
         <div>
           <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link></span>
         </div>

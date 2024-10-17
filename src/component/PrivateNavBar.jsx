@@ -5,6 +5,9 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { HiOutlinePencilAlt, HiOutlineHome, HiOutlineTag, HiOutlineLogout, HiOutlineLogin, HiOutlineUserCircle, HiOutlineCog } from "react-icons/hi";
+import { MdPostAdd } from "react-icons/md";
+import { TbCategory2 } from "react-icons/tb";
 import ScrollLock from "react-scrolllock";
 
 const PrivateNavBar = () => {
@@ -101,28 +104,36 @@ const PrivateNavBar = () => {
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/"
           >
-            Home
+            <div className="flex items-center justify-center space-x-2">
+              <HiOutlineHome className="icon" /> Home
+            </div>
+            
           </NavLink>
           
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/categories"
           >
-            Categories
+            <div className="flex items-center justify-center space-x-2">
+              <TbCategory2 className="icon" /> Categories
+            </div>
           </NavLink>
           
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/posts"
+            end
           >
-            Posts
+            <div className="flex items-center justify-center space-x-2">
+              <MdPostAdd className="icon"/> Posts 
+            </div>
           </NavLink>
           
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/posts/new-post"
           >
-            Write
+            <HiOutlinePencilAlt className="w-6 h-6 text-blue-500" />
           </NavLink>
           
          {/*  <NavLink 
@@ -134,22 +145,26 @@ const PrivateNavBar = () => {
   
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center ">
-              <img src={profilePicUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+              <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[15rem] h-[10rem] rounded-lg border border-slate-200 z-50">
+              <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[12rem] h-[10rem] rounded-lg border border-slate-200 z-50">
                 <NavLink 
                   className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
                   to={`${currentUser._id}`}
                 >
-                  Profile
+                  <div className="flex space-x-2">
+                    <HiOutlineUserCircle className="icon"/> Profile
+                  </div>
                 </NavLink>
                 
                 <NavLink 
                   className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
                   to="/settings"
                 >
-                  Settings
+                  <div className="flex space-x-2">
+                    <HiOutlineCog className="icon"/> Settings
+                  </div>
                 </NavLink>
                 
                 <NavLink 
@@ -157,7 +172,9 @@ const PrivateNavBar = () => {
                   to="/login" 
                   onClick={handleLogOut}
                 >
-                  Logout
+                   <div className="flex space-x-2">
+                    <HiOutlineLogout className="icon"/> Logout
+                  </div>
                 </NavLink>
               </div>
             )}
@@ -189,6 +206,7 @@ const PrivateNavBar = () => {
                 <NavLink className="mobile-nav-link" to="/posts" onClick={toggleMobileMenu}>Posts</NavLink>
                 <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Write</NavLink>
                 <NavLink className="mobile-nav-link" to="" onClick={toggleMobileMenu}>Notifications</NavLink>
+                
                 <div className="border-t mt-4 pt-4">
                   <NavLink className="mobile-nav-link" to={`${currentUser?._id}`} onClick={toggleMobileMenu}>Profile</NavLink>
                   <NavLink className="mobile-nav-link" to={`/settings`} onClick={toggleMobileMenu}>Settings</NavLink>
