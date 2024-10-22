@@ -145,7 +145,7 @@ const Login = () => {
         <div className="groupBox">
           <label htmlFor="email" className="label">Email address</label>
           <div className="relative input-wrapper">
-            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : ''}`}/>
+            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
               id="email"
               name="email"
@@ -155,7 +155,7 @@ const Login = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="appearance-none input-box"
+              className="appearance-none input-box-2"
             />
           </div>
         </div>
@@ -164,7 +164,7 @@ const Login = () => {
             Password
           </label>
           <div className="relative input-wrapper">
-          <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : ''}`}/>
+          <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
               id="password"
               name="password"
@@ -173,7 +173,7 @@ const Login = () => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="appearance-none input-box"
+              className="appearance-none input-box-2"
             />
           </div>
           

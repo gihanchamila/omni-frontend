@@ -39,12 +39,12 @@ const PublicNavBar = () => {
         >
           <NavLink className={({isActive}) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/our-story">
             <div className="flex items-center justify-center space-x-2">
-                <FcAbout className="icon text-blue-500" /> Our Story
+                {/* <FcAbout className="icon text-blue-500" /> */} Our Story
             </div>
           </NavLink>
           <NavLink className={({isActive}) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/login">
           <div className="flex items-center justify-center space-x-2">
-                <HiOutlineLogin className="icon" /> Sign in
+                {/* <HiOutlineLogin className="icon" /> */} Sign in
             </div>
           </NavLink>
           <Button variant="primary" to="/signup" className="">

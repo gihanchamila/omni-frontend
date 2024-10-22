@@ -77,6 +77,11 @@ export default {
       },
 
       ".input-box": {
+        "@apply flex w-full border border-gray-300 rounded-md bg-white py-2  text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
+        {},
+      },
+
+      ".input-box-2": {
         "@apply flex w-full border border-gray-300 rounded-md bg-white py-2 pl-10 text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
         {},
       },
