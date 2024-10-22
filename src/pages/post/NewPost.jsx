@@ -100,8 +100,8 @@ const NewPost = () => {
   };
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
-      <div className="bg-white rounded-lg w-3/4 p-10">
+    <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
+      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
         <BackButton />
         <p className="step">{getTitle()}</p>
         {loading && <div className="text-center">Loading...</div>}

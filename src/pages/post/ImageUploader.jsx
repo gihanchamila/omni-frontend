@@ -20,7 +20,7 @@ const ImageUploader = ({ onUpload }) => {
   return (
     <div className="m-0 p-0">
       {/* Image Upload Placeholder */}
-      <div className="relative flex items-center justify-center w-auto h-[50rem] rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-all">
+      <div className="relative flex items-center justify-center w-auto lg:h-[50rem] sm:h-[25rem] rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-all">
         {selectedImage ? (
           <img
             src={selectedImage.preview}

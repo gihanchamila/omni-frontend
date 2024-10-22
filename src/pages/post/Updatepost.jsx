@@ -161,19 +161,19 @@ const UpdatePost = () => {
   
   const getTitle = () => {
     switch (step) {
-      case 1: return 'Step 1: Add Title and Image';
-      case 2: return 'Step 2: Add Description and Category';
-      case 3: return 'Step 3: Preview Your Post';
+      case 1: return 'Step 1: Update Title and Image';
+      case 2: return 'Step 2: Update  Description and Category';
+      case 3: return 'Step 3: Preview Your updated Post';
       default: return 'Update Post';
     }
   };
 
   return (
-    <section className="bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
-      <div className="container mx-auto lg:flex lg:items-center lg:justify-center lg:space-x-8">
+    <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl">
+      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
         
         {/* Form Section */}
-        <div className="bg-white rounded-lg w-3/4 p-10">
+        <div className="bg-white rounded-lg ">
           <BackButton />
           <h4 className="step">{getTitle()}</h4>
           {loading && <div className="text-center">Loading...</div>}
@@ -254,7 +254,7 @@ const UpdatePost = () => {
                     <img 
                       src={URL.createObjectURL(formData.file)} 
                       alt="Uploaded" 
-                      className="w-full h-[50rem] object-cover mb-2 rounded-lg" 
+                      className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" 
                     />
                   ) : formData.file ? (
                     <img 

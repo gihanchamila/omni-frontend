@@ -22,9 +22,9 @@ const DescriptionEditor = ({ formData, handleChange }) => {
             },
           })
         }
-        className="mt-2 mb-[04rem]"
+        className="mt-2 mb-[04rem] sm:h-[25rem]"
         placeholder="Your description here"
-        style={{ height: '47rem' }}  // Set your desired height here
+        style={{ height: '47rem' }}  
         modules={{
           toolbar: [
             [{ header: '1' }, { header: '2' }],

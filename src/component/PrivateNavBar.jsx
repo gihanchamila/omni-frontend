@@ -105,7 +105,7 @@ const PrivateNavBar = () => {
             to="/"
           >
             <div className="navGroup">
-              <HiOutlineHome className="icon" /> Home
+              {/* <HiOutlineHome className="icon" /> */} Home
             </div>
             
           </NavLink>
@@ -115,7 +115,7 @@ const PrivateNavBar = () => {
             to="/categories"
           >
             <div className="navGroup">
-              <TbCategory2 className="icon" /> Categories
+              {/* <TbCategory2 className="icon" /> */} Categories
             </div>
           </NavLink>
           
@@ -125,7 +125,7 @@ const PrivateNavBar = () => {
             end
           >
             <div className="navGroup">
-              <MdPostAdd className="icon"/> Posts 
+              {/* <MdPostAdd className="icon"/> */} Posts 
             </div>
           </NavLink>
           
@@ -134,7 +134,7 @@ const PrivateNavBar = () => {
             to="/posts/new-post"
           >
             <div className="navGroup">
-              <HiOutlinePencilAlt className="icon" /> Create
+              {/* <HiOutlinePencilAlt className="icon" /> */} Create
             </div>
             
           </NavLink>
@@ -167,7 +167,7 @@ const PrivateNavBar = () => {
                   to={`${currentUser._id}`}
                 >
                   <div className="navGroup">
-                    <HiOutlineUserCircle className="icon"/> Profile
+                    {/* <HiOutlineUserCircle className="icon"/> */} Profile
                   </div>
                 </NavLink>
                 
@@ -176,7 +176,7 @@ const PrivateNavBar = () => {
                   to="/settings"
                 >
                   <div className="navGroup">
-                    <HiOutlineCog className="icon"/> Settings
+                    {/* <HiOutlineCog className="icon"/> */} Settings
                   </div>
                 </NavLink>
                 
@@ -186,7 +186,7 @@ const PrivateNavBar = () => {
                   onClick={handleLogOut}
                 >
                    <div className="navGroup">
-                    <HiOutlineLogout className="icon"/> Logout
+                    {/* <HiOutlineLogout className="icon"/> */} Logout
                   </div>
                 </NavLink>
               </div>
