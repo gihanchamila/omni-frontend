@@ -509,7 +509,7 @@ const Setting = () => {
 
                 {/* Account Deactivation/Deletion Section */}
                 <div className="bg-white p-8 rounded-lg  space-y-8">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Management</h2>
+                  <h2 className="h6">Account Management</h2>
 
                   {/* Account Deletion Section */}
                   <div className="bg-red-50 p-6 rounded-lg border border-red-200">
