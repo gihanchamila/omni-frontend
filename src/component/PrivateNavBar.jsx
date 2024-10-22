@@ -138,6 +138,16 @@ const PrivateNavBar = () => {
             </div>
             
           </NavLink>
+
+          {/* <NavLink 
+                  className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
+                  to="/login" 
+                  onClick={handleLogOut}
+                >
+                   <div className="navGroup">
+                    <HiOutlineLogout className="icon"/> Logout
+                  </div>
+                </NavLink> */}
           
          {/*  <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 

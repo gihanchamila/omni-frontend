@@ -273,9 +273,9 @@ const Setting = () => {
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
-      {/* Sidebar and Toggle Button */}
+
       <div className="relative w-full">
-      {/* Top bar with menu button */}
+
         <div className="flex justify-start text-black">
           <button
             className="text-3xl focus:outline-none"
@@ -285,20 +285,18 @@ const Setting = () => {
           </button>
         </div>
 
-        {/* Sidebar - Works for both Mobile and Desktop */}
         <div
           className={`fixed top-0 left-0 h-full bg-gray-800 text-white z-50 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } w-64 p-6  rounded-r-2xl`}
         >
-          {/* Close button */}
+
           <div className="flex justify-end">
             <button className="text-3xl focus:outline-none" onClick={() => setSidebarOpen(false)}>
               <RiCloseLargeFill className="w-5 h-5 transition-colors duration-200" />
             </button>
           </div>
 
-          {/* Navigation Links */}
           <nav className="mt-8">
             <ul className="space-y-4">
               {tabs.map((tab) => (
@@ -318,15 +316,13 @@ const Setting = () => {
           </nav>
         </div>
       </div>
-  
-      {/* Content Panel */}
+
       { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <div>
             <h2 className="title">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
-              {/* Profile Picture Section - No Changes */}
               <div className="bg-white p-6 rounded-lg">
                 <h2 className="h6">Profile Picture</h2>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
@@ -363,14 +359,14 @@ const Setting = () => {
                 </div>
               </div>
               
-              {/* Bento Box Layout for User Info and Login Sections */}
               <div className="grid gap-6 md:grid-cols-2">
-                {/* User Information Section */}
+
                 <div className="bg-white p-6 rounded-lg">
+
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-                    {/* First Name and Last Name Section */}
+
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">First Name</label>
@@ -385,6 +381,7 @@ const Setting = () => {
                         />
                       </div>
                     </div>
+
                     <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
                       <div className="groupBox">
                         <label className="label">Last Name</label>
@@ -400,7 +397,6 @@ const Setting = () => {
                       </div>
                     </div>
 
-                    {/* About Section (Full Width) */}
                     <div className="col-span-full space-y-4">
                       <div className="groupBox">
                         <label className="label" htmlFor="about">About</label>
@@ -415,7 +411,6 @@ const Setting = () => {
                       </div>
                     </div>
 
-                    {/* Birth Day, Gender, Email, and Interests Section */}
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">Birth Day</label>

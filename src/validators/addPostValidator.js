@@ -1,22 +1,27 @@
-const addPostValidator = ({title, category, description}) => {
+const addPostValidator = ({ title, description, category, file }, step) => {
     const errors = {
         title: "",
-        category: "",
-        description: ""
+        description: "",
+        category: ""
     };
 
-    if (!title) {
-        errors.title = "Title is required";
+    if (step === 1) {
+        if (!title) {
+            errors.title = "title is required";
+        }
+
     }
 
-    if (!description || description.trim() === "") {  // Additional check for empty or whitespace-only descriptions
-        errors.description = "Description is required";
-    }
+    if (step === 2) {
 
-    if (!category) {
-        errors.category = "Category is required";
-    }
+        if (!description || description.trim() === "") {
+            errors.description = "Description is required";
+        }
 
+        if (!category) {
+            errors.category = "category is required";
+        }
+    }
 
     return errors;
 };

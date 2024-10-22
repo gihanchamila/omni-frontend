@@ -35,8 +35,9 @@ const CommentForm = ({
         )}
       </div>
       <Button
+        variant='primary'
         type="submit"
-        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 hover:bg-primary-800"
+        className="mt-2"
         disabled={isLoading}
       >
         {buttonText}

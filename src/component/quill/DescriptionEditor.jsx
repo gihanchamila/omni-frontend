@@ -4,7 +4,6 @@ import 'react-quill/dist/quill.snow.css';
 
 const DescriptionEditor = ({ formData, handleChange }) => {
   const quillRef = useRef(null);
-  
 
   return (
     <div className="sm:col-span-2">
@@ -15,30 +14,43 @@ const DescriptionEditor = ({ formData, handleChange }) => {
         ref={quillRef}
         theme="snow"
         value={formData.description}
-        onChange={(content, delta, source, editor) => handleChange({
-          target: {
-            name: 'description',
-            value: editor.getHTML(),
-          },
-        })}
-        className="mt-2"
+        onChange={(content, delta, source, editor) =>
+          handleChange({
+            target: {
+              name: 'description',
+              value: editor.getHTML(),
+            },
+          })
+        }
+        className="mt-2 mb-[04rem]"
         placeholder="Your description here"
+        style={{ height: '47rem' }}  // Set your desired height here
         modules={{
           toolbar: [
-            [{ 'header': '1'}, { 'header': '2'}, { 'font': [] }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ header: '1' }, { header: '2' }],
+            [{ list: 'ordered' }, { list: 'bullet' }],
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'align': [] }],
-            ['link', 'image'],
-            ['clean']
-          ]
+            [{ color: [] }, { background: [] }],
+            [{ align: [] }],
+            ['link'],
+            ['clean'],
+          ],
         }}
         formats={[
-          'header', 'font',
-          'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
-          'list', 'bullet', 'color', 'background', 'align', 'link', 'image'
+          'header',
+          'bold',
+          'italic',
+          'underline',
+          'strike',
+          'blockquote',
+          'code-block',
+          'list',
+          'bullet',
+          'color',
+          'background',
+          'align',
+          'link',
         ]}
       />
     </div>

@@ -1,7 +1,12 @@
 import React from 'react';
 import DropdownMenu from './DropdownMenu.jsx';
 
+
 const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl }) => {
+  const authorName = (author?.firstName || author?.lastName) 
+    ? `${author?.firstName || ''} ${author?.lastName || ''}`.trim() 
+    : 'Anonymous';
+
   return (
     <footer className="flex justify-between items-center mb-2">
       <div className="flex items-center">
@@ -9,9 +14,9 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
           <img
             className="mr-2 w-6 h-6 rounded-full"
             src={imageUrl || 'https://default-image-url.com/default-profile.jpg'}
-            alt={author?.name || 'Anonymous'}
+            alt={authorName}
           />
-          {author?.name || 'Anonymous'}
+          {authorName}
         </p>
         <p className="text-sm text-gray-600">
           <time dateTime={createdAt}>

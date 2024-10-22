@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const Button = ({type = "button", children, variant = "primary", className, to, onClick, ...props }) => {
-  const baseClasses = "button transition-colors duration-100 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none tracking-wider";
+const Button = ({type, children, variant, className, to, onClick, ...props }) => {
+  const baseClasses = "transition-colors duration-100 font-medium rounded-lg text-sm px-2 py-2 focus:outline-none tracking-wider";
 
   // Variant-based classes
   const variantClasses = {
@@ -11,10 +11,10 @@ const Button = ({type = "button", children, variant = "primary", className, to, 
     success: "bg-green-500 text-white hover:bg-green-500",
     info: "bg-blue-500 text-white hover:bg-blue-600 ",
     back : "bg-gray-300 rounded-full",
-    outline : "border border-gray-200 hover:bg-gray-50 text-gray-800"
+    outline : "border border-gray-200 hover:bg-gray-50 text-gray-800 "
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className || ""}`;
+  const classes = `${baseClasses} ${variantClasses[variant]}}`;
   const spanClasses = "relative z-10";
 
   const renderButton = () => (

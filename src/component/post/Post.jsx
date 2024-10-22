@@ -25,8 +25,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         const authorId = post.author._id;
         const key = post.author.profilePic.key;
         if (!authorId) return;
-        
-        // Check if the profile picture is already cached
+
         if (profilePicCache.current[authorId]) {
           setProfilePic(profilePicCache.current[authorId]);
           return;
@@ -34,7 +33,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         
         const response = await axios.get(`/file/signed-url?key=${key}`);
         const url = response.data.data.url;
-        profilePicCache.current[authorId] = url; // Cache the URL
+        profilePicCache.current[authorId] = url; 
         setProfilePic(url);
       } catch (error) {
         console.error("Error fetching profile picture:", error);

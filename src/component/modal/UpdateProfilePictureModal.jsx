@@ -219,7 +219,7 @@ function UpdateProfilePictureModal() {
                         <div className="flex justify-end space-x-4">
                             <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
                             {!croppedImage && image && <Button variant='info' onClick={handleCrop}>Next</Button>}
-                            {croppedImage && <Button onClick={handleRecrop}>Recrop</Button>}
+                            {croppedImage && <Button variant='primary' onClick={handleRecrop}>Recrop</Button>}
                             {croppedImage && (
                                 <Button variant='info' onClick={handleSaveProfilePicture} disabled={isLoading}>
                                     {isLoading ? 'Saving changes...' : 'Save Changes'}

@@ -16,7 +16,6 @@ export const ProfileProvider = ({ children }) => {
             resetProfileState(); 
             const response = await axios.get(`/auth/current-user`);
             const user = response.data.data.user;
-
             if (user && user._id) {
                 setCurrentUser(user);
                 await fetchProfilePic(user.profilePic?.key);
