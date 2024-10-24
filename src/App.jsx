@@ -7,10 +7,6 @@ import { HiExclamationCircle } from "react-icons/hi";
 import { HiExclamation } from "react-icons/hi";
 import { HiOutlineXMark } from "react-icons/hi2";
 
-{/*import "react-toastify/ReactToastify.css"
-import { ToastContainer } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';*/}
-
 import './index.css'
 
 import PrivateLayout from "./component/layout/PrivateLayout.jsx";
@@ -33,8 +29,6 @@ import Setting from "./pages/Setting.jsx"
 import Signup from "./pages/Signup.jsx"
 import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
-
-
 
 function App() {
   
