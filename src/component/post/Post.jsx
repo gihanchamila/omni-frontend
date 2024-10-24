@@ -71,10 +71,10 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
-              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
+              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" />
 
              {/*  <AuthorProfilePic author={post?.author} /> */}
-              <span className="px-2 text-xs">{`${post.author.firstName} ${post.author.lastName}`}</span>
+              <span className="px-2 text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
               {currentUser && post.author._id !== currentUser._id && (
                 <span
                   className={`text-blue-500 hover:underline hover:cursor-pointer ${

@@ -82,6 +82,8 @@ const Profile = () => {
     }
   };
 
+  console.log(userPosts)
+
   getUserPosts();
   }, [id]);
 
