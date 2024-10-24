@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from '../utils/axiosInstance.js';
-import { useSocket } from "../hooks/useSocket.jsx";
 import { useParams } from "react-router-dom";
 import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
-import { coverPhoto} from "../assets/index.js";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
 import PostSkeleton from "../component/post/PostSkeleton.jsx";
@@ -24,8 +22,6 @@ const Profile = () => {
   const [likedPosts, setLikedPosts] = useState({});
 
   const [profileKey, setProfileKey] = useState(null)
-
-  const socket = useSocket()
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -256,7 +252,7 @@ const Profile = () => {
                 <Skeleton width={90} height={20} className="rounded-full" />
               </div>
             ) : (
-              currentUser?.interests?.length > 0 ? (
+              currentUser?.interests?.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {currentUser.interests.map((interest, index) => (
                     <span key={index} className="spanLabel">
@@ -264,15 +260,7 @@ const Profile = () => {
                     </span>
                   ))}
                 </div>
-              ) : (
-                <div className="flex flex-wrap gap-2 justify-center items-center">
-                  <span className="spanLabel">Coding</span>
-                  <span className="spanLabel">Dance</span>
-                  <span className="spanLabel">Writing</span>
-                  <span className="spanLabel">Walking</span>
-                  <span className="spanLabel">Reading</span>
-                </div>
-              )
+              ) 
             )}
             </div>
 

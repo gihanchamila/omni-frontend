@@ -119,7 +119,6 @@ const Signup = () => {
                   className="appearance-none input-box-2"
                 />
               </div>
-              
               {formError.firstName && <p className="validateError">{formError.firstName}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">
@@ -160,7 +159,6 @@ const Signup = () => {
                   className="appearance-none input-box-2"
                 />
               </div>
-              
               {formError.email && <p className="validateError">{formError.email}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { FiCamera } from "react-icons/fi";
 import { FaBars} from 'react-icons/fa';
 import { toast } from 'sonner';
-import { useSwipeable } from 'react-swipeable';
 import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import axios from "../utils/axiosInstance.js"
@@ -25,7 +24,6 @@ const Setting = () => {
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [showModal, setShowModal] = useState(false)
-  const [removeModal, setRemoveModal] = useState(false);
 
   const [passwordData, setPasswordData] = useState(initialPasswordData)
   const [securityQuestionData, setSecurityQuestionData] = useState(initialQuestionData)
@@ -35,24 +33,7 @@ const Setting = () => {
 
   const [devices, setDevices] = useState([])
   const [loading, setLoading] = useState(false)
-  const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
   const [currentUser, setCurrentUser] = useState()
-
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (activeDeviceIndex < devices.length - 1) {
-        setActiveDeviceIndex(activeDeviceIndex + 1);
-      }
-    },
-    onSwipedRight: () => {
-      if (activeDeviceIndex > 0) {
-        setActiveDeviceIndex(activeDeviceIndex - 1);
-      }
-    },
-    preventDefaultTouchmoveEvent: true, 
-    trackMouse: true,
-  });
 
   const tabs = [
     { icon: <FaUserCircle />, label: 'General' },
