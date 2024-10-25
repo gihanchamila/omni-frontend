@@ -29,6 +29,7 @@ import Setting from "./pages/Setting.jsx"
 import Signup from "./pages/Signup.jsx"
 import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
+import UserProfile from "./pages/UserProfile.jsx";
 
 function App() {
   
@@ -47,6 +48,7 @@ function App() {
               <Route path="posts/new-post" element={<NewPost />} />
               <Route path="posts/update-post/:id" element={<UpdatePost/>} />
               <Route path="/:id" element={<Profile />} />
+              <Route path="user-profile/:id" element={<UserProfile/>} />
               <Route path="settings" element={<Setting />} />
             </Route>
             <Route element={<PublicLayout />}>

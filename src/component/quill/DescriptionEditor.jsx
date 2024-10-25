@@ -22,7 +22,7 @@ const DescriptionEditor = ({ formData, handleChange }) => {
             },
           })
         }
-        className="mt-2 mb-[04rem] sm:h-[25rem]"
+        className="mt-2 mb-[04rem] sm:h-[25rem] leading-none"
         placeholder="Your description here"
         style={{ height: '47rem' }}  
         modules={{
@@ -53,6 +53,16 @@ const DescriptionEditor = ({ formData, handleChange }) => {
           'link',
         ]}
       />
+       <style>{`
+        .ql-editor p {
+          margin-bottom: 0; /* Reduce <p> tag margin */
+        }
+
+        .ql-editor li {
+          list-style-type: disc !important; /* Ensure bullet points appear as dots */
+          margin-left: 1.5rem; /* Adjust the indentation of the bullet points */
+        }
+      `}</style>
     </div>
   );
 };

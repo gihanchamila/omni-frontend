@@ -228,6 +228,13 @@
 
     }
 
+    p {
+
+      @apply text-slate-700 font-light
+
+    }
+
+
   }
   
   
