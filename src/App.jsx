@@ -30,6 +30,7 @@ import Signup from "./pages/Signup.jsx"
 import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
 import UserProfile from "./pages/UserProfile.jsx";
+import Users from "./pages/Users.jsx";
 
 function App() {
   
@@ -43,6 +44,7 @@ function App() {
               <Route path="categories" element={<CategoryList />} />
               <Route path="categories/new-category" element={<NewCategory />} />
               <Route path="categories/update-category/:id" element={<UpdateCategory />} />
+              <Route path="users" element={<Users />} />
               <Route path="posts" element={<PostList />} />
               <Route path="posts/:id" element={<SinglePost />} />
               <Route path="posts/new-post" element={<NewPost />} />

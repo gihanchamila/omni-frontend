@@ -112,15 +112,6 @@ const PrivateNavBar = () => {
           
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
-            to="/categories"
-          >
-            <div className="navGroup">
-              {/* <TbCategory2 className="icon" /> */} Categories
-            </div>
-          </NavLink>
-          
-          <NavLink 
-            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/posts"
             end
           >
@@ -137,6 +128,24 @@ const PrivateNavBar = () => {
               {/* <HiOutlinePencilAlt className="icon" /> */} Create
             </div>
             
+          </NavLink>
+
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/categories"
+          >
+            <div className="navGroup">
+              {/* <TbCategory2 className="icon" /> */} Categories
+            </div>
+          </NavLink>
+
+          <NavLink 
+            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
+            to="/users"
+          >
+            <div className="navGroup">
+              {/* <TbCategory2 className="icon" /> */} Users
+            </div>
           </NavLink>
 
           {/* <NavLink 
