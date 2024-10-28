@@ -140,7 +140,7 @@ const CategoryList = () => {
               <input 
                 type="search" 
                 id="default-search" 
-                className="block  ps-10 text-sm border border-gray-300 opacity-80 hover:opacity-100 focus:opacity-100 rounded-full outline-none px-5 py-2 transition-opacity duration-200 ease-in-out" 
+                className="block  ps-10 text-sm border border-gray-300 opacity-80 hover:opacity-100 focus:opacity-100 rounded-lg outline-none px-5 py-2 transition-opacity duration-200 ease-in-out" 
                 placeholder="Search categories" 
                 onChange={handleSearch}
                 required 

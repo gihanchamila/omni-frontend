@@ -234,6 +234,17 @@
 
     }
 
+    .tableTh {
+
+      @apply border  text-left border-slate-300 px-2 lg:px-4 py-2 cursor-pointer hover:bg-gray-200
+
+    }
+    
+    .tableTd {
+
+      @apply border border-slate-300 px-2 lg:px-4 
+
+    }
 
   }
   
