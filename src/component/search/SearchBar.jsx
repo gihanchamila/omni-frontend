@@ -16,7 +16,7 @@ const SearchBar = ({ currentPage, sortField, sortOrder, onSearchResults, searchV
                 <input 
                     type="text" 
                     id="simple-search" 
-                    className="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2 px-2" 
+                    className="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2 pl-3 px-2.5" 
                     placeholder={placeholder}
                     value={searchValue}
                     onChange={handleSearch}

@@ -117,7 +117,7 @@ const CategoryList = () => {
       <div>
         <h2 className='title'>Categories</h2>
       </div>
-      <div className='flex justify-between items-center mt-5'>
+      <div className='flex justify-between items-center'>
         <div className='block'>
           <SearchBar handleSearch={handleSearch}/>
         </div>

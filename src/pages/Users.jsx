@@ -91,14 +91,20 @@ const Users = () => {
 
   return (
     <>
-    <div className='flex justify-between'>
-      <div className='flex  justify-start items-start mt-5'>
+    <div>
+      <div>
+        <h2 className='title'>Users</h2>
+      </div>
+      <div className='flex justify-between'>
+      <div className='flex  justify-start items-start'>
         <SearchBar placeholder={"Find user"} handleSearch={handleSearch}/>
       </div>
       <div>
         <p className='hidden'>hi</p>
       </div>
     </div>
+    </div>
+    
     
       
 
