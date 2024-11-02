@@ -119,7 +119,7 @@ const CategoryList = () => {
       </div>
       <div className='flex justify-between items-center'>
         <div className='block'>
-          <SearchBar handleSearch={handleSearch}/>
+          <SearchBar placeholder={'Find Category'} handleSearch={handleSearch}/>
         </div>
         <div>
           <Button variant='info' className='w-full' onClick={() => { navigate("new-category") }}>Add new category</Button>

@@ -9,10 +9,12 @@ import { HiOutlinePencilAlt, HiOutlineHome, HiOutlineTag, HiOutlineLogout, HiOut
 import { MdPostAdd } from "react-icons/md";
 import { TbCategory2 } from "react-icons/tb";
 import ScrollLock from "react-scrolllock";
+import {useAuth} from '../component/context/useAuth.jsx'
 
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const auth = useAuth()
 
   const { profilePicUrl, setProfilePicUrl } = useProfile();
 
@@ -130,23 +132,25 @@ const PrivateNavBar = () => {
             
           </NavLink>
 
-          <NavLink 
-            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
-            to="/categories"
-          >
-            <div className="navGroup">
-              {/* <TbCategory2 className="icon" /> */} Categories
-            </div>
-          </NavLink>
+          {(auth.role === 1 || auth.role === 2) && (
+            <>
+              <NavLink 
+                className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/categories">
+                <div className="navGroup">
+                  {/* <TbCategory2 className="icon" /> */} Categories
+                </div>
+              </NavLink>
+    
+              <NavLink 
+                className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/users">
+                <div className="navGroup">
+                  {/* <TbCategory2 className="icon" /> */} Users
+                </div>
+              </NavLink>
+            </>
+        )}
 
-          <NavLink 
-            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
-            to="/users"
-          >
-            <div className="navGroup">
-              {/* <TbCategory2 className="icon" /> */} Users
-            </div>
-          </NavLink>
+        
 
           {/* <NavLink 
                   className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
