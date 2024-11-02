@@ -39,7 +39,10 @@ const PostList = () => {
   // User Info
   const [currentUser, setCurrentUser] = useState('');
 
-  const authorIds = useMemo(() => posts.map(post => post.author._id), [posts]);
+  const authorIds = useMemo(() => posts
+  .filter(post => post && post.author && post.author._id)
+  .map(post => post.author._id), [posts]);
+  
   const socket = useSocket()
 
   useEffect(() => {

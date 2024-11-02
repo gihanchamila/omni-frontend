@@ -5,6 +5,7 @@ import Button from '../component/button/Button.jsx';
 import Modal from '../component/modal/Modal.jsx';
 import moment from 'moment';
 import { toast } from 'sonner';
+import SearchBar from '../component/search/SearchBar.jsx';
 
 const Users = () => {
   const [loading, setLoading] = useState(false);
@@ -45,9 +46,9 @@ const Users = () => {
 
   
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`/auth/delete-account/`);
+      const response = await axios.delete(`/user/delete-single-user/${id}`);
       toast.success(response.data.message);
       setShowModal(false);
     } catch (error) {
@@ -90,13 +91,16 @@ const Users = () => {
 
   return (
     <>
-      <input
-        type="text"
-        placeholder="Search by ID or First Name"
-        value={searchQuery}
-        onChange={handleSearch}
-        className="border p-2 mb-4"
-      />
+    <div className='flex justify-between'>
+      <div className='flex  justify-start items-start mt-5'>
+        <SearchBar placeholder={"Find user"} handleSearch={handleSearch}/>
+      </div>
+      <div>
+        <p className='hidden'>hi</p>
+      </div>
+    </div>
+    
+      
 
       {loading ? (
         "Loading..."
@@ -171,7 +175,7 @@ const Users = () => {
       )}
       
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      <Modal showModal={showModal} title="Are you sure you want to delete this user?" onConfirm={handleDelete} onCancel={closeModal} />
+      <Modal showModal={showModal} title="Are you sure you want to delete this user?" onConfirm={() => handleDelete(userId)} onCancel={closeModal} />
     </>
   );
 };

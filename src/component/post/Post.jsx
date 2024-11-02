@@ -75,14 +75,14 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
 
              {/*  <AuthorProfilePic author={post?.author} /> */}
               <span className="px-2 text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
-              {currentUser && post.author._id !== currentUser._id && (
+              {currentUser && post?.author?._id !== currentUser._id && (
                 <span
                   className={`text-blue-500 hover:underline hover:cursor-pointer ${
                     followStatuses[post?.author?._id] ? 'text-red-500' : ''
                   }`}
-                  onClick={() => handleFollow(post.author._id)}
+                  onClick={() => handleFollow(post?.author?._id)}
                 >
-                  {followStatuses[post.author._id] ? 'Unfollow' : 'Follow'}
+                  {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
                 </span>
               )}
             </div>
