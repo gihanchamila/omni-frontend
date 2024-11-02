@@ -87,7 +87,7 @@ const TwoFactorAuthentication = ({
   return (
     <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
       <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
-      <p className="pb-10">
+      <p className="pb-4">
         {step === 'email' && (
           <>
             Two-Factor Authentication (2FA) enhances your account's security by requiring both your password and a unique code sent to your email. This extra layer of protection helps prevent unauthorized access, even if your password is compromised.

@@ -31,6 +31,7 @@ import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
 import UserProfile from "./pages/UserProfile.jsx";
 import Users from "./pages/Users.jsx";
+import OurStory from "./pages/OurStory.jsx";
 
 function App() {
   
@@ -57,6 +58,7 @@ function App() {
               <Route path="signup" element={<Signup />} />
               <Route path="login" element={<Login />} />
               <Route path="forgot-password" element={<ForgotPassword />}/>
+              <Route path="our-story" element={<OurStory />} />
             </Route>
         </Routes>
         <Toaster  closeButton={<HiOutlineXMark />} description

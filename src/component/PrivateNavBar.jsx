@@ -215,7 +215,7 @@ const PrivateNavBar = () => {
                     alt="Profile" 
                     className="w-10 h-10 rounded-full object-cover ml-3" 
                   />
-                  <span className="text-md pl-3 font-semibold">Hey, {currentUser?.name}</span> {/* Optionally show the user's name */}
+                  <span className="text-md pl-3 font-semibold">Hey, {currentUser?.firstName} {currentUser?.lastName}</span> {/* Optionally show the user's name */}
                 </div>
                 <button onClick={toggleMobileMenu} className="text-slate-400">
                   <AiOutlineClose className="w-5 h-5" />

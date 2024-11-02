@@ -14,7 +14,7 @@ const Button = ({type, children, variant, className, to, onClick, ...props }) =>
     outline : "border border-gray-200 hover:bg-gray-50 text-gray-800 "
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]}}`;
+  const classes = `${baseClasses} ${className} ${variantClasses[variant]}}`;
   const spanClasses = "relative z-10";
 
   const renderButton = () => (
@@ -30,15 +30,6 @@ const Button = ({type, children, variant, className, to, onClick, ...props }) =>
   );
 
   return to ? renderLink() : renderButton();
-};
-
-// Define prop types for better type checking
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(["primary", "error", "success", "info"]),
-  className: PropTypes.string,
-  to: PropTypes.string,
-  onClick: PropTypes.func,
 };
 
 export default Button;
