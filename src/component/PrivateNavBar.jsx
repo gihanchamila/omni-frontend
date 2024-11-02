@@ -50,7 +50,7 @@ const PrivateNavBar = () => {
     getCurrentUser();
   }, []);
 
-/*   useEffect(() => {
+/*useEffect(() => {
     const getProfilePic = async () => {
       if(profileKey){
         try{
@@ -89,7 +89,6 @@ const PrivateNavBar = () => {
           <span>Omni</span>
         </div>
         
-        {/* Hamburger icon for mobile */}
         <div className="md:hidden">
           <button onClick={toggleMobileMenu} className="focus:outline-none">
             {mobileMenuOpen ? (
@@ -148,26 +147,22 @@ const PrivateNavBar = () => {
                 </div>
               </NavLink>
             </>
-        )}
+          )}
 
-        
-
-          {/* <NavLink 
-                  className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} 
-                  to="/login" 
-                  onClick={handleLogOut}
-                >
-                   <div className="navGroup">
+          {/* 
+              <NavLink className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} to="/login"  onClick={handleLogOut}>
+                  <div className="navGroup">
                     <HiOutlineLogout className="icon"/> Logout
                   </div>
-                </NavLink> */}
+              </NavLink> 
+          */}
           
-         {/*  <NavLink 
-            className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
-            to=""
-          >
-            <IoMdNotificationsOutline className="w-5 h-5" />
-          </NavLink> */}
+          {/*
+              <NavLink 
+                className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="">
+                <IoMdNotificationsOutline className="w-5 h-5" />
+              </NavLink>
+         */}
   
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center ">
