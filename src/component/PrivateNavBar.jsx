@@ -83,16 +83,16 @@ const PrivateNavBar = () => {
 
   return (
     <div>
-      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0 mx-4 ">
+      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
           <span>Omni</span>
         </div>
         
         <div className="md:hidden">
-          <button onClick={toggleMobileMenu} className="focus:outline-none mr-[2rem]">
+          <button onClick={toggleMobileMenu} className="focus:outline-none">
             {mobileMenuOpen ? (
-              <AiOutlineClose className="w-5 h-5 " />
+              <AiOutlineClose className="w-5 h-5 font-bold" />
             ) : (
               <AiOutlineMenu className="w-5 h-5" />
             )}
@@ -223,7 +223,13 @@ const PrivateNavBar = () => {
               </div>
               <div className="pt-[5rem] mt-[2rem]">
                 <NavLink className="mobile-nav-link" to="/" onClick={toggleMobileMenu}>Home</NavLink>
-                <NavLink className="mobile-nav-link" to="/categories" onClick={toggleMobileMenu}>Categories</NavLink>
+                {(auth.role === 1 || auth.role === 2) && (
+                  <>
+                    <NavLink className="mobile-nav-link" to="/categories" onClick={toggleMobileMenu}>Categories</NavLink>
+                    <NavLink className="mobile-nav-link" to="/users" onClick={toggleMobileMenu}>Users</NavLink>
+                  </>
+                  
+                )}
                 <NavLink className="mobile-nav-link" to="/posts" onClick={toggleMobileMenu}>Posts</NavLink>
                 <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Write</NavLink>
                 <NavLink className="mobile-nav-link" to="" onClick={toggleMobileMenu}>Notifications</NavLink>

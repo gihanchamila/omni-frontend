@@ -3,7 +3,9 @@ import Button from '../component/button/Button.jsx'
 
 const Home = () => {
   return (
-   <p>Hi</p>
+   <div className='grid-cols-12 bg-gray-50 gap-4'>
+
+   </div>
   )
 }
 

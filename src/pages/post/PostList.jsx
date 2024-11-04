@@ -303,7 +303,7 @@ const PostList = () => {
 
   return (
     <div className="container mx-auto px-4 md:px-[10rem] py-10">
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
         <div className="w-full md:w-2/3 space-y-4">

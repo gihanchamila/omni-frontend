@@ -6,7 +6,7 @@ const Button = ({type, children, variant, className, to, onClick, ...props }) =>
 
   // Variant-based classes
   const variantClasses = {
-    primary: "bg-slate-800 text-white hover:bg-slate-600",
+    primary: "bg-slate-900 text-white hover:bg-slate-600 focus:bg-slate-600",
     error: "bg-red-500 text-white hover:bg-red-600",
     success: "bg-green-500 text-white hover:bg-green-500",
     info: "bg-blue-500 text-white hover:bg-blue-600 ",
