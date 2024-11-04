@@ -50,7 +50,7 @@
 
     .navlink {
 
-      @apply tracking-wider text-slate-800 hover:bg-slate-100 hover:rounded-lg px-2  leading-6 py-2 text-sm active:rounded-lg  active:bg-slate-100 font-semibold;
+      @apply tracking-wider text-slate-800 hover:bg-slate-100 hover:rounded-lg px-2 leading-6 py-2 text-sm active:rounded-lg  active:bg-slate-100 font-semibold;
 
     }
 
