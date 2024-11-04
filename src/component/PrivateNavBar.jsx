@@ -83,16 +83,16 @@ const PrivateNavBar = () => {
 
   return (
     <div>
-      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0">
+      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0 mx-4 ">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
           <span>Omni</span>
         </div>
         
         <div className="md:hidden">
-          <button onClick={toggleMobileMenu} className="focus:outline-none">
+          <button onClick={toggleMobileMenu} className="focus:outline-none mr-[2rem]">
             {mobileMenuOpen ? (
-              <AiOutlineClose className="w-5 h-5" />
+              <AiOutlineClose className="w-5 h-5 " />
             ) : (
               <AiOutlineMenu className="w-5 h-5" />
             )}
@@ -100,7 +100,7 @@ const PrivateNavBar = () => {
         </div>
 
         {/* Desktop navigation */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-5">
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/"

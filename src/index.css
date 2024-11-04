@@ -36,6 +36,12 @@
       @apply h5 font-bold pb-4
     }
 
+    .paraText {
+
+      @apply text-lg leading-relaxed text-gray-700
+
+    }
+
     .subTitle {
 
       @apply h6 pb-4

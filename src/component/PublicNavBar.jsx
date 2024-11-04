@@ -53,7 +53,7 @@ const PublicNavBar = () => {
               {/* <HiOutlineLogin className="icon" /> */} Sign in
             </div>
           </NavLink>
-          <Button variant="primary" to="/signup" className="">
+          <Button variant="primary" to="/signup">
             Get Started
           </Button>
         </div>
@@ -62,7 +62,7 @@ const PublicNavBar = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <ScrollLock>
-          <div className="md:hidden fixed inset-0 z-50 pt-10 bg-white flex flex-col p-5 text-black transition-transform duration-300 ease-in-out transform">
+          <div className="md:hidden fixed inset-0 z-50 pt-10 mr-2 bg-white flex flex-col p-5 text-black transition-transform duration-300 ease-in-out transform">
             {/* Close Menu Button */}
             <button
               onClick={toggleMobileMenu}

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js';
-import {  HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi";
+import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi";
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
 
@@ -31,15 +31,15 @@ const Signup = () => {
     if (name === 'firstName') {
       setIsFirstNameTyping(value !== '');
     } else if (name === 'lastName') {
-      setIsLastNameTyping(value!== '');
+      setIsLastNameTyping(value !== '');
     } else if (name === 'email') {
-      setIsEmailTyping(value!== '')
+      setIsEmailTyping(value !== '');
     } else if (name === 'confirmEmail') {
-      setIsConfirmEmailTyping(value!== '')
+      setIsConfirmEmailTyping(value !== '');
     } else if (name === 'password') {
-      setIsPasswordTyping(value!== '')
-    } else if (name === 'confirmPassword'){
-      setIsConfirmPasswordTyping(value!== '')
+      setIsPasswordTyping(value !== '');
+    } else if (name === 'confirmPassword') {
+      setIsConfirmPasswordTyping(value !== '');
     }
   };
 
@@ -94,7 +94,7 @@ const Signup = () => {
 
   return (
     <div className='lg:flex lg:items-center lg:justify-center sm:block'>
-      <div className='border-2 border-slate-800 lg:w-[38rem] sm:w-6/6 bg-white px-12 py-12 mt-[3rem]  mb-[5rem] rounded-2xl'>
+      <div className='border-2 border-slate-800 lg:w-[38rem] sm:m-5 sm:w-6/6 bg-white px-12 py-12 mt-[3rem] mb-[5rem] rounded-2xl'>
         <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome</h1>
         </div>
@@ -137,7 +137,6 @@ const Signup = () => {
                   className="appearance-none input-box-2"
                 />
               </div>
-              
               {formError.lastName && <p className="validateError">{formError.lastName}</p>}
             </div>
           </div>
@@ -147,7 +146,7 @@ const Signup = () => {
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="email" className="label">Email</label>
               <div className='relative input-wrapper'>
-                <HiOutlineMail className={`input-icon ${isEmailTyping? 'text-blue-500' : 'text-gray-300'}`}/>
+                <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
                 <input
                   id="email"
                   name="email"
@@ -164,7 +163,7 @@ const Signup = () => {
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="confirmEmail" className="label">Confirm Email</label>
               <div className='relative input-wrapper'>
-                <HiOutlineMail className={`input-icon ${isConfirmEmailTyping? 'text-blue-500' : 'text-gray-300'}`} />
+                <HiOutlineMail className={`input-icon ${isConfirmEmailTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
                 id="confirmEmail"
                 name="confirmEmail"
@@ -176,7 +175,6 @@ const Signup = () => {
                 className="appearance-none input-box-2"
               />
               </div>
-              
               {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
             </div>
           </div>
@@ -186,7 +184,7 @@ const Signup = () => {
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="password" className="label">Password</label>
               <div className='relative input-wrapper'>
-                <HiLockClosed className={`input-icon ${isPasswordTyping? 'text-blue-500' : 'text-gray-300'}`} />
+                <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
                 id="password"
                 name="password"
@@ -203,7 +201,7 @@ const Signup = () => {
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="confirmPassword" className="label">Confirm Password</label>
               <div className='relative input-wrapper'>
-                <HiLockClosed className={`input-icon ${isConfirmPasswordTyping? 'text-blue-500' : 'text-gray-300'}`} />
+                <HiLockClosed className={`input-icon ${isConfirmPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -220,20 +218,19 @@ const Signup = () => {
           </div>
 
           {/* Align Sign Up button to the right and "Already have an account?" to the left */}
-          <div className="flex flex-col-reverse items-center justify-between lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
-            <div className="flex-grow sm:text-center lg:text-left">
-              <span className='font-base text-sm text-color-s'>
-                Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
-              </span>
-            </div>
-            <Button className="" variant='info' primary={false} disabled={loading}>
-              {loading ? 'Signing up...' : 'Sign Up'}
-            </Button>
-          </div>
+          <div className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
+  <div className="flex-grow sm:text-center lg:text-left">
+    <span className='font-base text-sm text-color-s'>
+      Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
+    </span>
+  </div>
+  <Button className="w-full sm:w-auto" variant='info' primary={false} disabled={loading}>
+    {loading ? 'Signing up...' : 'Sign Up'}
+  </Button>
+</div>
         </form>
       </div>
     </div>
-    
   );
 }
 

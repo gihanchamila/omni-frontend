@@ -634,137 +634,137 @@ const SinglePost = () => {
             {/* Post comment */}
 
             <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
-  <div className="max-w-5xl mx-auto">
-    <div className="flex justify-between items-center mb-4">
-      {!isLoaded ? (
-        <Skeleton width="15rem" height="2rem" />
-      ) : (
-        <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
-      )}
-    </div>
-
-    {!isLoaded ? (
-      <Skeleton width="full" height="8rem" />
-    ) : (
-      <CommentForm
-        handleSubmit={handleSubmit}
-        handleChange={handleChange}
-        formData={formData}
-        formError={formError}
-        placeholder="Write a comment..."
-        buttonText="Post comment"
-      />
-    )}
-
-    {/* Parent comments */}
-    {!isLoaded ? (
-      <div>
-        {/* Skeletons for comments */}
-        {[...Array(3)].map((_, idx) => (
-          <div key={idx} className="mb-6">
-            <Skeleton width="full" height="2rem" />
-            <Skeleton width="80%" height="1.5rem" className="mt-2" />
-            <Skeleton width="60%" height="1rem" className="mt-1" />
-          </div>
-        ))}
-      </div>
-    ) : (
-      comments.map((comment) => (
-        <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
-          <CommentFooter
-            author={comment.author}
-            createdAt={comment.createdAt}
-            dropdownId={comment._id}
-            actionHandlers={actionHandlers}
-            imageUrl={comment.author.profilePic}
-          />
-          <p className="text-gray-500">{comment.content}</p>
-          <div className="flex items-center mt-4 space-x-4">
-            <button
-              type="button"
-              className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-              onClick={() => {
-                handleClick(comment._id);
-              }}
-            >
-              <IoChatbubblesOutline className="iconSize" />
-              {getReplyText(comment.replies)}
-            </button>
-          </div>
-
-          {/* Reply Comment */}
-          {replyingTo === comment._id && (
-            <CommentForm
-              handleSubmit={(e) => handleReplySubmit(e, comment._id)}
-              handleChange={handleReplyChange}
-              formData={replyFormData}
-              formError={replyFormError}
-              placeholder="Write a reply..."
-              buttonText="Reply"
-              className="mt-4 ml-[4.5rem]"
-            />
-          )}
-          {visibleReplies[comment._id] &&
-            comment.replies &&
-            comment.replies.map((reply) => (
-              <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-                <CommentFooter
-                  author={reply.author}
-                  createdAt={reply.createdAt}
-                  dropdownId={reply._id}
-                  actionHandlers={actionHandlers}
-                  imageUrl={comment.author.profilePic}
-                />
-                <p className="text-gray-500">{reply.content}</p>
-                <div className="flex items-center mt-4 space-x-4">
-                  <button
-                    type="button"
-                    className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                    onClick={() => {
-                      toggleNestedReplies(comment._id);
-                      toggleReplyToReplyForm(reply._id);
-                    }}
-                  >
-                    <IoChatbubblesOutline className="iconSize" />
-                    {getReplyText(reply.replies)}
-                  </button>
+              <div className="max-w-5xl mx-auto">
+                <div className="flex justify-between items-center mb-4">
+                  {!isLoaded ? (
+                    <Skeleton width="15rem" height="2rem" />
+                  ) : (
+                    <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
+                  )}
                 </div>
 
-                {/* Reply to Reply */}
-                {replyToReply === reply._id && (
+                {!isLoaded ? (
+                  <Skeleton width="full" height="8rem" />
+                ) : (
                   <CommentForm
-                    handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}
-                    handleChange={handleReplyToReplyChange}
-                    formData={replyToReplyFormData}
-                    formError={replyToReplyFormError}
-                    placeholder="Write a reply..."
-                    buttonText="Reply"
-                    className="mt-4 ml-[4.5rem]"
+                    handleSubmit={handleSubmit}
+                    handleChange={handleChange}
+                    formData={formData}
+                    formError={formError}
+                    placeholder="Write a comment..."
+                    buttonText="Post comment"
                   />
                 )}
-                {/* Nested reply */}
-                {visibleNestedReplies[comment._id] &&
-                  reply.replies &&
-                  reply.replies.map((nestedReply) => (
-                    <article key={nestedReply._id} className="ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg">
+
+                {/* Parent comments */}
+                {!isLoaded ? (
+                  <div>
+                    {/* Skeletons for comments */}
+                    {[...Array(3)].map((_, idx) => (
+                      <div key={idx} className="mb-6">
+                        <Skeleton width="full" height="2rem" />
+                        <Skeleton width="80%" height="1.5rem" className="mt-2" />
+                        <Skeleton width="60%" height="1rem" className="mt-1" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  comments.map((comment) => (
+                    <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
                       <CommentFooter
-                        author={nestedReply.author}
-                        createdAt={nestedReply.createdAt}
-                        dropdownId={nestedReply._id}
+                        author={comment.author}
+                        createdAt={comment.createdAt}
+                        dropdownId={comment._id}
                         actionHandlers={actionHandlers}
-                        imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                        imageUrl={comment.author.profilePic}
                       />
-                      <p className="text-gray-500 pb-4">{nestedReply.content}</p>
+                      <p className="text-gray-500">{comment.content}</p>
+                      <div className="flex items-center mt-4 space-x-4">
+                        <button
+                          type="button"
+                          className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                          onClick={() => {
+                            handleClick(comment._id);
+                          }}
+                        >
+                          <IoChatbubblesOutline className="iconSize" />
+                          {getReplyText(comment.replies)}
+                        </button>
+                      </div>
+
+                      {/* Reply Comment */}
+                      {replyingTo === comment._id && (
+                        <CommentForm
+                          handleSubmit={(e) => handleReplySubmit(e, comment._id)}
+                          handleChange={handleReplyChange}
+                          formData={replyFormData}
+                          formError={replyFormError}
+                          placeholder="Write a reply..."
+                          buttonText="Reply"
+                          className="mt-4 ml-[4.5rem]"
+                        />
+                      )}
+                      {visibleReplies[comment._id] &&
+                        comment.replies &&
+                        comment.replies.map((reply) => (
+                          <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
+                            <CommentFooter
+                              author={reply.author}
+                              createdAt={reply.createdAt}
+                              dropdownId={reply._id}
+                              actionHandlers={actionHandlers}
+                              imageUrl={comment.author.profilePic}
+                            />
+                            <p className="text-gray-500">{reply.content}</p>
+                            <div className="flex items-center mt-4 space-x-4">
+                              <button
+                                type="button"
+                                className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                                onClick={() => {
+                                  toggleNestedReplies(comment._id);
+                                  toggleReplyToReplyForm(reply._id);
+                                }}
+                              >
+                                <IoChatbubblesOutline className="iconSize" />
+                                {getReplyText(reply.replies)}
+                              </button>
+                            </div>
+
+                            {/* Reply to Reply */}
+                            {replyToReply === reply._id && (
+                              <CommentForm
+                                handleSubmit={(e) => handleReplyToReplySubmit(e, reply._id)}
+                                handleChange={handleReplyToReplyChange}
+                                formData={replyToReplyFormData}
+                                formError={replyToReplyFormError}
+                                placeholder="Write a reply..."
+                                buttonText="Reply"
+                                className="mt-4 ml-[4.5rem]"
+                              />
+                            )}
+                            {/* Nested reply */}
+                            {visibleNestedReplies[comment._id] &&
+                              reply.replies &&
+                              reply.replies.map((nestedReply) => (
+                                <article key={nestedReply._id} className="ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg">
+                                  <CommentFooter
+                                    author={nestedReply.author}
+                                    createdAt={nestedReply.createdAt}
+                                    dropdownId={nestedReply._id}
+                                    actionHandlers={actionHandlers}
+                                    imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                  />
+                                  <p className="text-gray-500 pb-4">{nestedReply.content}</p>
+                                </article>
+                              ))}
+                          </article>
+                        ))}
+                      <hr className="mt-6 border-t border-gray-200" />
                     </article>
-                  ))}
-              </article>
-            ))}
-          <hr className="mt-6 border-t border-gray-200" />
-        </article>
-      ))
-    )}
-  </div>
-</section>
+                  ))
+                )}
+              </div>
+            </section>
 
             <Modal className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal} />
           </div>
