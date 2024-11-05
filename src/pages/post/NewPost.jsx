@@ -10,6 +10,11 @@ import addPostValidator from '../../validators/addPostValidator.js';
 import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
 
+// Skeleton component for loading placeholders
+const Skeleton = ({ className }) => (
+  <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
+);
+
 const initialFormData = { title: "", description: "", file: null, category: "" };
 const initialFormError = { title: "", description: "", category: "" };
 
@@ -82,7 +87,7 @@ const NewPost = () => {
       toast.success(response.data.message);
       setFormData(initialFormData);
       setFormError(initialFormError);
-      navigate('/posts');
+      navigate('/');
     } catch (error) {
       toast.error(error.response?.data?.message || "Unexpected Error");
     } finally {
@@ -104,97 +109,100 @@ const NewPost = () => {
       <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
         <BackButton />
         <p className="step">{getTitle()}</p>
-        {loading && <div className="text-center">Loading...</div>}
-        {step === 1 && (
-          <form onSubmit={handleNext} className="space-y-6">
-            <div className='space-y-2'>
-              <label htmlFor="title" className="label">Title</label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter the title of your post"
-                required
-              />
-              {formError.title && <p className="text-red-500 text-sm mt-2">{formError.title}</p>}
-            </div>
-
-            <div className='space-y-4'>
-              <h3 className="label">Upload an Image</h3>
-              <ImageUploader onUpload={handleImageUpload} />
-              {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
-            </div>
-
-            <div className="flex justify-end">
-            <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg ">
-                Next Step
-              </Button>
-            </div>
-          </form>
-        )}
-
-        {step === 2 && (
-          <form onSubmit={handleNext} className="space-y-6">
-            <div>
-              <DescriptionEditor 
-              formData={formData} 
-              handleChange={handleChange} 
-          />
-
-              {formError.description && <p className="text-red-500 text-sm mt-2">{formError.description}</p>}
-            </div>
-
-            {/* Add a container for the category selection */}
-            <div className="w-full mt-4"> {/* Adjust margin-top if necessary */}
-              <label htmlFor="category" className="label">Select a category</label>
-              <select
-                id="category"
-                className="mt-2 block w-full px-4 py-3 text-gray-900 rounded-lg border border-gray-200"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select category</option>
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-              {formError.category && <p className="text-red-500 text-sm mt-2">{formError.category}</p>}
-            </div>
-
-            <div className="flex justify-end">
-              <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(1)}>Back</Button>
-              <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg ">
-                Next Step
-              </Button>
-            </div>
-          </form>
-        )}
-
-
-        {step === 3 && (
+        {loading ? (
           <div className="space-y-6">
-            <div className="rounded-lg space-y-4">
-              <h4 className="h4 font-bold w-full">{formData.title}</h4>
-              {formData.file && (
-                <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full h-[50rem] object-cover mb-2 rounded-lg" />
-              )}
-              <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
-            </div>
-
-            <div className="flex justify-end">
-              <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(2)}>Back</Button>
-              <Button variant="info" className="mt-4 px-4 py-2 text-sm bg-blue-500 text-white font-medium rounded-lg" onClick={handleSubmit}>
-                Add Post
-              </Button>
-            </div>
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-[50rem] w-full" />
           </div>
+        ) : (
+          <>
+            {step === 1 && (
+              <form onSubmit={handleNext} className="space-y-6">
+                <div className='space-y-2'>
+                  <label htmlFor="title" className="label">Title</label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter the title of your post"
+                    required
+                  />
+                  {formError.title && <p className="text-red-500 text-sm mt-2">{formError.title}</p>}
+                </div>
+
+                <div className='space-y-4'>
+                  <h3 className="label">Upload an Image</h3>
+                  <ImageUploader onUpload={handleImageUpload} />
+                  {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
+                </div>
+
+                <div className="flex justify-end">
+                  <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                    Next Step
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {step === 2 && (
+              <form onSubmit={handleNext} className="space-y-6">
+                <div>
+                  <DescriptionEditor formData={formData} handleChange={handleChange} />
+                  {formError.description && <p className="text-red-500 text-sm mt-2">{formError.description}</p>}
+                </div>
+
+                <div className="w-full mt-4">
+                  <label htmlFor="category" className="label">Select a category</label>
+                  <select
+                    id="category"
+                    className="mt-2 block w-full px-4 py-3 text-gray-900 rounded-lg border border-gray-200"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </select>
+                  {formError.category && <p className="text-red-500 text-sm mt-2">{formError.category}</p>}
+                </div>
+
+                <div className="flex justify-end">
+                  <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(1)}>Back</Button>
+                  <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                    Next Step
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-6">
+                <div className="rounded-lg space-y-4">
+                  <h4 className="h4 font-bold w-full">{formData.title}</h4>
+                  {formData.file && (
+                    <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full h-[50rem] object-cover mb-2 rounded-lg" />
+                  )}
+                  <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
+                </div>
+
+                <div className="flex justify-end">
+                  <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(2)}>Back</Button>
+                  <Button variant="info" className="mt-4 px-4 py-2 text-sm bg-blue-500 text-white font-medium rounded-lg" onClick={handleSubmit}>
+                    Add Post
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
