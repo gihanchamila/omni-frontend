@@ -101,23 +101,23 @@ const PrivateNavBar = () => {
 
         {/* Desktop navigation */}
         <div className="hidden md:flex items-center space-x-5">
-          <NavLink 
+          {/* <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
             to="/"
           >
             <div className="navGroup">
-              {/* <HiOutlineHome className="icon" /> */} Home
+            Home
             </div>
             
-          </NavLink>
+          </NavLink> */}
           
           <NavLink 
             className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} 
-            to="/posts"
+            to="/"
             end
           >
             <div className="navGroup">
-              {/* <MdPostAdd className="icon"/> */} Posts 
+              {/* <MdPostAdd className="icon"/> */} Home
             </div>
           </NavLink>
           

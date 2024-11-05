@@ -42,12 +42,12 @@ function App() {
       <div className="relative container">
         <Routes>
             <Route element={<PrivateLayout />}>
-              <Route path="/" element={<Home />} />
+              {/* <Route path="/" element={<Home />} /> */}
               <Route path="categories" element={<CategoryList />} />
               <Route path="categories/new-category" element={<NewCategory />} />
               <Route path="categories/update-category/:id" element={<UpdateCategory />} />
               <Route path="users" element={<Users />} />
-              <Route path="posts" element={<PostList />} />
+              <Route path="/" element={<PostList />} />
               <Route path="posts/:id" element={<SinglePost />} />
               <Route path="posts/new-post" element={<NewPost />} />
               <Route path="posts/update-post/:id" element={<UpdatePost/>} />
