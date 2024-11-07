@@ -5,7 +5,7 @@ import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
-import { CameraIcon } from '@heroicons/react/outline'
+import { HiOutlineCamera } from "react-icons/hi";
 
 const Profile = () => {
   const { id } = useParams();
@@ -164,7 +164,7 @@ const Profile = () => {
   };
 
   const handleChangeProfile =() => {
-    navigate('/setting')
+    navigate('/settings')
   }
 
   return (
@@ -173,7 +173,7 @@ const Profile = () => {
         <div className="bg-gradient-to-b from-blue-500 to-indigo-700 h-48 w-full rounded-lg flex items-center justify-center relative">
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
             {loadingProfile ? (
-              <Skeleton circle={true} height={128} width={128} />
+              <Skeleton circle={true} height={225} width={225} />
             ) : (
               <div className="relative group w-52 h-52">
                 {/* Profile Image */}
@@ -184,8 +184,8 @@ const Profile = () => {
                 />
 
                 {/* Camera Icon on Hover */}
-                <div onClick={() =>handleChangeProfile()} className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <CameraIcon  className="h-10 w-10 text-white" />
+                <div onClick={handleChangeProfile} className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <HiOutlineCamera  className="h-10 w-10 text-white" />
                 </div>
               </div>
             )}

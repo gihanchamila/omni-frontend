@@ -146,6 +146,13 @@ const PrivateNavBar = () => {
                   {/* <TbCategory2 className="icon" /> */} Users
                 </div>
               </NavLink>
+
+              <NavLink 
+                className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/dashboard">
+                <div className="navGroup">
+                  {/* <TbCategory2 className="icon" /> */} Dashboard
+                </div>
+              </NavLink>
             </>
           )}
 

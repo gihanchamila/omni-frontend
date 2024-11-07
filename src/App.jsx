@@ -54,6 +54,7 @@ function App() {
               <Route path="/:id" element={<Profile />} />
               <Route path="user-profile/:id" element={<UserProfile/>} />
               <Route path="settings" element={<Setting />} />
+              <Route path="dashboard" element={<Home/>} />
             </Route>
             <Route element={<PublicLayout />}>
               <Route path="signup" element={<Signup />} />
