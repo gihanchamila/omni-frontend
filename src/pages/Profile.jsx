@@ -6,33 +6,39 @@ import { toast } from "sonner";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
 import PostSkeleton from "../component/post/PostSkeleton.jsx";
+import { IoCamera } from "react-icons/io5";
 
 const Profile = () => {
   const { id } = useParams();
   const { profilePicUrl } = useProfile();
+
+  // Loading states
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [loadingFollowers, setLoadingFollowers] = useState(false);
   const [loadingFollowing, setLoadingFollowing] = useState(false);
-  const [postFiles, setPostFiles] = useState([]);
+
+  // User and content data
   const [currentUser, setCurrentUser] = useState();
   const [userPosts, setUserPosts] = useState([]);
+  const [postFiles, setPostFiles] = useState([]);
   const [followers, setFollowers] = useState();
   const [following, setFollowing] = useState();
   const [likedPosts, setLikedPosts] = useState({});
   const [profileKey, setProfileKey] = useState(null);
 
+  // Fetch current user profile
   useEffect(() => {
     const fetchData = async () => {
+      setLoadingProfile(true);
       try {
-        setLoadingProfile(true);
         const response = await axios.get(`/auth/current-user`);
         const user = response.data.data.user;
         setCurrentUser(user);
-        if (user.profilePic && user.profilePic.key) {
+        if (user.profilePic?.key) {
           setProfileKey(user.profilePic.key);
         }
-      } catch (error) {
+      } catch {
         toast.error("Error getting user");
       } finally {
         setLoadingProfile(false);
@@ -41,13 +47,14 @@ const Profile = () => {
     fetchData();
   }, []);
 
+  // Fetch profile picture URL
   useEffect(() => {
     if (profileKey) {
       const fetchProfilePic = async () => {
         try {
           const response = await axios.get(`/file/signed-url?key=${profileKey}`);
           toast.success(response.data.message);
-        } catch (error) {
+        } catch {
           toast.error("Failed to fetch profile picture");
         }
       };
@@ -55,13 +62,14 @@ const Profile = () => {
     }
   }, [profileKey]);
 
+  // Fetch user's posts
   useEffect(() => {
     const fetchUserPosts = async () => {
+      setLoadingPosts(true);
       try {
-        setLoadingPosts(true);
         const response = await axios.get(`/user/user-posts/${id}`);
         setUserPosts(response.data.data);
-      } catch (error) {
+      } catch {
         toast.error("Failed to fetch user posts");
       } finally {
         setLoadingPosts(false);
@@ -70,12 +78,13 @@ const Profile = () => {
     fetchUserPosts();
   }, [id]);
 
+  // Fetch followers or following
   const fetchFollowersOrFollowing = async (endpoint, setState, setLoadingState) => {
+    setLoadingState(true);
     try {
-      setLoadingState(true);
       const response = await axios.get(`/user/${endpoint}/${id}`);
       setState(response.data.data[`${endpoint}Count`]);
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch data");
     } finally {
       setLoadingState(false);
@@ -87,6 +96,7 @@ const Profile = () => {
     fetchFollowersOrFollowing("following", setFollowing, setLoadingFollowing);
   }, [id]);
 
+  // Fetch post files
   useEffect(() => {
     const fetchPostFiles = async () => {
       const files = {};
@@ -96,7 +106,7 @@ const Profile = () => {
             try {
               const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
               files[post._id] = response.data.data.url;
-            } catch (error) {
+            } catch {
               toast.error("Failed to fetch file URL");
             }
           }
@@ -109,6 +119,7 @@ const Profile = () => {
     }
   }, [userPosts]);
 
+  // Fetch liked posts
   useEffect(() => {
     const fetchLikedPosts = async () => {
       try {
@@ -118,38 +129,40 @@ const Profile = () => {
           return acc;
         }, {});
         setLikedPosts(likedPostsData);
-      } catch (error) {
+      } catch {
         toast.error("Failed to fetch liked posts");
       }
     };
     fetchLikedPosts();
   }, []);
 
+  // Handle like/unlike action
   const handleLike = async (postId) => {
     try {
       const isLiked = likedPosts[postId];
-      let response;
-      if (isLiked) {
-        response = await axios.delete(`/likes/posts/${postId}`);
-      } else {
-        response = await axios.post(`/likes/posts/${postId}`);
-      }
+      const response = isLiked
+        ? await axios.delete(`/likes/posts/${postId}`)
+        : await axios.post(`/likes/posts/${postId}`);
+
       setLikedPosts((prevLikedPosts) => ({
         ...prevLikedPosts,
         [postId]: !isLiked,
       }));
+
       setUserPosts((prevPosts) =>
         prevPosts.map((post) =>
-          post._id === postId ? { ...post, likesCount: Math.max(0, post.likesCount + (isLiked ? -1 : 1)) } : post
+          post._id === postId
+            ? { ...post, likesCount: Math.max(0, post.likesCount + (isLiked ? -1 : 1)) }
+            : post
         )
       );
-    } catch (error) {
+    } catch {
       toast.error("Failed to update like");
     }
   };
 
   return (
-    <div className=" bg-slate-50 rounded-xl p-4">
+    <div className="bg-slate-50 rounded-xl p-4">
       <div className="relative">
         <div className="bg-gradient-to-b from-blue-500 to-indigo-700 h-48 w-full rounded-lg flex items-center justify-center relative">
           <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
@@ -166,8 +179,7 @@ const Profile = () => {
         </div>
 
         <div className="text-center mt-4">
-          <div className="flex flex-col items-center space-y-2">
-          <div className="text-center mt-16">
+          <div className="flex flex-col items-center space-y-2 mt-16">
             {loadingProfile ? (
               <Skeleton width={150} height={24} />
             ) : (
@@ -178,8 +190,7 @@ const Profile = () => {
             ) : (
               <p className="text-sm text-gray-500">{currentUser?.email}</p>
             )}
-          </div>
-            <div className="flex justify-center space-x-6">
+            <div className="flex justify-center space-x-6 mt-4">
               <div className="followers">
                 {loadingFollowers ? (
                   <Skeleton width={70} height={20} />
@@ -255,7 +266,6 @@ const Profile = () => {
           )}
         </div>
       </div>
-      
     </div>
   );
 };
