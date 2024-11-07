@@ -49,8 +49,8 @@ const NewCategory = () => {
   };
 
   return (
-    <section className="bg-white">
-      <div className="py-12 px-12 mx-auto max-w-2xl lg:py-16">
+    <section className="bg-gray-50 rounded-lg py-12">
+      <div className="py-12 px-12 mx-auto w-3/4 lg:py-16 bg-white rounded-lg">
         <BackButton/> 
         <h4 className="h4 mb-4 font-bold text-slate-800">Add a new category</h4>
         <form onSubmit={handleSubmit}>
