@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from '../utils/axiosInstance.js';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
-import PostSkeleton from "../component/post/PostSkeleton.jsx";
-import { IoCamera } from "react-icons/io5";
+import { CameraIcon } from '@heroicons/react/outline'
 
 const Profile = () => {
   const { id } = useParams();
   const { profilePicUrl } = useProfile();
+  const navigate = useNavigate();
 
   // Loading states
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -26,6 +26,7 @@ const Profile = () => {
   const [following, setFollowing] = useState();
   const [likedPosts, setLikedPosts] = useState({});
   const [profileKey, setProfileKey] = useState(null);
+
 
   // Fetch current user profile
   useEffect(() => {
@@ -78,8 +79,9 @@ const Profile = () => {
     fetchUserPosts();
   }, [id]);
 
-  // Fetch followers or following
-  const fetchFollowersOrFollowing = async (endpoint, setState, setLoadingState) => {
+
+ // Fetch followers or following
+    const fetchFollowersOrFollowing = async (endpoint, setState, setLoadingState) => {
     setLoadingState(true);
     try {
       const response = await axios.get(`/user/${endpoint}/${id}`);
@@ -161,19 +163,31 @@ const Profile = () => {
     }
   };
 
+  const handleChangeProfile =() => {
+    navigate('/setting')
+  }
+
   return (
     <div className="bg-slate-50 rounded-xl p-4">
       <div className="relative">
         <div className="bg-gradient-to-b from-blue-500 to-indigo-700 h-48 w-full rounded-lg flex items-center justify-center relative">
-          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
             {loadingProfile ? (
               <Skeleton circle={true} height={128} width={128} />
             ) : (
-              <img
-                src={profilePicUrl}
-                alt="Profile"
-                className="w-52 h-52 rounded-full border-4 border-white"
-              />
+              <div className="relative group w-52 h-52">
+                {/* Profile Image */}
+                <img
+                  src={profilePicUrl}
+                  alt="Profile"
+                  className="w-full h-full rounded-full border-4 border-white object-cover"
+                />
+
+                {/* Camera Icon on Hover */}
+                <div onClick={() =>handleChangeProfile()} className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <CameraIcon  className="h-10 w-10 text-white" />
+                </div>
+              </div>
             )}
           </div>
         </div>
