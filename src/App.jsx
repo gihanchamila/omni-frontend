@@ -33,6 +33,7 @@ import UserProfile from "./pages/UserProfile.jsx";
 import Users from "./pages/Users.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import OurStory from "./pages/OurStory.jsx";
+import AdminList from "./pages/AdminList.jsx";
 
 function App() {
   
@@ -55,6 +56,7 @@ function App() {
               <Route path="user-profile/:id" element={<UserProfile/>} />
               <Route path="settings" element={<Setting />} />
               <Route path="dashboard" element={<Home/>} />
+              <Route path="admin-list" element={<AdminList/>} />
             </Route>
             <Route element={<PublicLayout />}>
               <Route path="signup" element={<Signup />} />

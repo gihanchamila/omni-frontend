@@ -175,6 +175,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               className="appearance-none input-box-2"
+              autoComplete="new-password"
             />
           </div>
           

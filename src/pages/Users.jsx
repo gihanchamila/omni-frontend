@@ -6,8 +6,12 @@ import Modal from '../component/modal/Modal.jsx';
 import moment from 'moment';
 import { toast } from 'sonner';
 import SearchBar from '../component/search/SearchBar.jsx';
+import { useSocket } from '../hooks/useSocket.jsx';
 
 const Users = () => {
+
+  const socket = useSocket();
+
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,14 +48,48 @@ const Users = () => {
       fetchUsers()
   }, [currentPage, sortField, sortOrder, searchQuery])
 
-  
+  useEffect(() => {
+    if (totalPage > 1) {
+      let tempPageCount = [];
+      for (let i = 1; i <= totalPage; i++) {
+        tempPageCount = [...tempPageCount, i];
+      }
+      setPageCount(tempPageCount);
+    } else {
+      setPageCount([]);
+    }
+  }, [totalPage]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('User-deleted', (data) => {
+        console.log('User-deleted:', data);
+        setUsers((prevUsers) => prevUsers.filter(user => user._id !== data.id));
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off('User-deleted');
+      }
+    };
+  }, [socket]);
 
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`/user/delete-single-user/${id}`);
       toast.success(response.data.message);
       setShowModal(false);
+
+      if(socket){
+        socket.emit('User-deleted', {id})
+        setUsers((prevUsers) => prevUsers.filter(user => user._id !== id));
+      }else{
+        console.error('Socket is undefined');
+      }
     } catch (error) {
+      const response = error.response;
+      const data = response.data
+      console.log(data)
       toast.error('Failed to delete user');
     }
   };
@@ -75,19 +113,6 @@ const Users = () => {
     setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to the first page for new search results
   };
-
-  useEffect(() => {
-    if (totalPage > 1) {
-      let tempPageCount = [];
-      for (let i = 1; i <= totalPage; i++) {
-        tempPageCount = [...tempPageCount, i];
-      }
-      setPageCount(tempPageCount);
-    } else {
-      setPageCount([]);
-    }
-  }, [totalPage]);
-  
 
   return (
     <>

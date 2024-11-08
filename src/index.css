@@ -252,6 +252,18 @@
 
     }
 
+    td {
+      @apply lg:py-2 lg:px-1
+    }
+
+    table {
+      @apply table-auto w-full border-collapse border border-slate-200 rounded-lg lg:text-sm sm:text-xs;
+    }
+    
+    tr {
+      @apply border border-slate-200;
+    }
+
   }
   
   

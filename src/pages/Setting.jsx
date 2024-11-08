@@ -392,7 +392,7 @@ const Setting = () => {
                       </div>
                     </div>
 
-                    <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
+                    <div className="col-span-full w-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">Birth Day</label>
                         <input
@@ -402,7 +402,7 @@ const Setting = () => {
                           placeholder="2001-05-15"
                           value={formData.dateOfBirth}
                           onChange={handleChange}
-                          className="input-box"
+                          className="input-box w-full"
                         />
                       </div>
                       <div className="groupBox">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
@@ -6,6 +6,7 @@ import signUpValidator from '../validators/signUpValidator.js';
 import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi";
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
+import { useSocket } from '../hooks/useSocket.jsx';
 
 const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
@@ -22,6 +23,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const socket = useSocket()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,6 +45,19 @@ const Signup = () => {
     }
   };
 
+  useEffect(() => {
+    if (socket) {
+      socket.on('User-registered', (data) => {
+        console.log('New user registered:', data);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off('User-registered');
+      }
+    };
+  }, [socket]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = signUpValidator({
@@ -73,11 +88,17 @@ const Signup = () => {
         const data = response.data;
 
         toast.success(data.message);
+        console.log(data.newUser._id)
+
         setFormData(initialFormData);
         setFormError(initialFormError);
         setLoading(false);
-
         navigate('/login');
+        if (socket) {
+          socket.emit('User-registered', { id: data.newUser._id });
+        } else {
+          console.error('Socket is undefined');
+        }
       } catch (error) {
         setLoading(false);
         setFormError(initialFormError);
@@ -156,6 +177,7 @@ const Signup = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
+                  autoComplete='email'
                 />
               </div>
               {formError.email && <p className="validateError">{formError.email}</p>}
@@ -194,6 +216,7 @@ const Signup = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className="appearance-none input-box-2"
+                autoComplete='new-password'
               />
               </div>
               {formError.password && <p className="validateError">{formError.password}</p>}
@@ -211,6 +234,7 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="appearance-none input-box-2"
+                autoComplete='current-password'
               />
               </div>
               {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
@@ -219,15 +243,15 @@ const Signup = () => {
 
           {/* Align Sign Up button to the right and "Already have an account?" to the left */}
           <div className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
-  <div className="flex-grow sm:text-center lg:text-left">
-    <span className='font-base text-sm text-color-s'>
-      Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
-    </span>
-  </div>
-  <Button className="w-full sm:w-auto" variant='info' primary={false} disabled={loading}>
-    {loading ? 'Signing up...' : 'Sign Up'}
-  </Button>
-</div>
+            <div className="flex-grow sm:text-center lg:text-left">
+              <span className='font-base text-sm text-color-s'>
+                Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
+              </span>
+            </div>
+            <Button className="w-full sm:w-auto" variant='info' primary={false} disabled={loading}>
+              {loading ? 'Signing up...' : 'Sign Up'}
+            </Button>
+          </div>
         </form>
       </div>
     </div>
