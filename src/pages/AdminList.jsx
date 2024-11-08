@@ -7,10 +7,12 @@ import Button from '../component/button/Button.jsx'
 import Pagination from '../component/pagination/Pagination.jsx'
 import Modal from '../component/modal/Modal.jsx'
 import {useAuth} from '../component/context/useAuth.jsx'
+import { useSocket } from '../hooks/useSocket.jsx'
 
 const AdminList = () => {
 
-    const auth = useAuth()
+    const auth = useAuth();
+    const socket = useSocket();
 
     const [loading, setLoading] = useState(false);
     const [admins, setAdmins] = useState([]);
@@ -24,71 +26,99 @@ const AdminList = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(()=> {
-        const fetchUsers = async () => {
-            setLoading(true);
-            try {
-              const response = await axios.get('/admin/admin-list', {
-                params: {
-                  page: currentPage,
-                  size: 10,
-                  sortField,
-                  sortOrder,
-                  q: searchQuery,
-                },
-              });
-              const data = response.data;
-              setAdmins(data.admins);
-              setTotalPage(data.pages || 1);
-            } catch (error) {
-              toast.error('Failed to fetch users');
-            } finally {
-              setLoading(false);
-            }
-          };
-          fetchUsers()
-      }, [currentPage, sortField, sortOrder, searchQuery])
-
-      useEffect(() => {
-        if (totalPage > 1) {
-          let tempPageCount = [];
-          for (let i = 1; i <= totalPage; i++) {
-            tempPageCount = [...tempPageCount, i];
+      const fetchUsers = async () => {
+          setLoading(true);
+          try {
+            const response = await axios.get('/admin/admin-list', {
+              params: {
+                page: currentPage,
+                size: 10,
+                sortField,
+                sortOrder,
+                q: searchQuery,
+              },
+            });
+            const data = response.data;
+            setAdmins(data.admins);
+            setTotalPage(data.pages || 1);
+          } catch (error) {
+            toast.error('Failed to fetch users');
+          } finally {
+            setLoading(false);
           }
-          setPageCount(tempPageCount);
+        };
+        fetchUsers()
+    }, [currentPage, sortField, sortOrder, searchQuery])
+
+    useEffect(() => {
+      if (totalPage > 1) {
+        let tempPageCount = [];
+        for (let i = 1; i <= totalPage; i++) {
+          tempPageCount = [...tempPageCount, i];
+        }
+        setPageCount(tempPageCount);
+      } else {
+        setPageCount([]);
+      }
+    }, [totalPage]);
+
+    useEffect(() => {
+
+      socket.on("Admin-previlages-changed", (data) => {
+        if(socket){
+          console.log(`Admin-previlages-changed`, data)
+          setAdmins((prevAdmins) => prevAdmins.filter(admin => admin._id !== data.id));
         } else {
-          setPageCount([]);
+          console.error('Socket is undefined');
         }
-      }, [totalPage]);
+      })
 
-      const openModal = (id) => {
-        setUserId(id);
-        setShowModal(true);
-      };
-    
-      const closeModal = () => {
-        setShowModal(false);
-      };
+      return () => {
+        if (socket) socket.off("Admin-previlages-changed");  // Clean up the event listener
+     };
 
-      const handleSort = (field) => {
-        const order = field === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
-        setSortField(field);
-        setSortOrder(order);
-      };
-    
-      const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1); // Reset to the first page for new search results
-      };
+    }, [socket])
 
-      const handleDelete = async (id) => {
-        try {
-          const response = await axios.delete(`/user/delete-single-user/${id}`);
-          toast.success(response.data.message);
-          setShowModal(false);
-        } catch (error) {
-          toast.error('Failed to delete user');
+    const handleRemoveAdmin = async (userId) => {
+      try{
+
+        const response = await axios.put(`/admin/remove-privilages/${userId}`)
+        const data = response.data;
+        toast.success(data.message)
+        if(socket){
+          socket.emit('Admin-previlages-changed', {id : userId})
+        }else {
+          console.error("Socket is undefined")
         }
-      };
+
+        closeModal()
+
+      }catch(error){
+        const response = error.response
+        const data = response.data
+        toast.error(data.message)
+      }
+    };
+
+    const openModal = (id) => {
+      setUserId(id);
+      setShowModal(true);
+    };
+  
+    const closeModal = () => {
+      setShowModal(false);
+    };
+
+    const handleSort = (field) => {
+      const order = field === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
+      setSortField(field);
+      setSortOrder(order);
+    };
+  
+    const handleSearch = (e) => {
+      setSearchQuery(e.target.value);
+      setCurrentPage(1); // Reset to the first page for new search results
+    };
 
   return (
     <div>
@@ -166,19 +196,19 @@ const AdminList = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {admins.map((user) => (
-                    <tr key={user._id} className="border border-slate-300 hover:bg-gray-50">
+                {admins.map((admin) => (
+                    <tr key={admin._id} className="border border-slate-300 hover:bg-gray-50">
                         {/* <td className="border border-slate-300 px-2 lg:px-4 py-2">{user._id}</td> */}
-                        <td className="tableTd">{user.firstName} {user.lastName}</td>
-                        <td className="tableTd">{user.email}</td>
-                        <td className="tableTd capitalize">{user.gender ? `${user.gender}` : "Not updated"}</td>
-                        <td className="tableTd">{user.isVerified ? "Verified" : "Not verified"}</td>
+                        <td className="tableTd">{admin.firstName} {admin.lastName}</td>
+                        <td className="tableTd">{admin.email}</td>
+                        <td className="tableTd capitalize">{admin.gender ? `${admin.gender}` : "Not updated"}</td>
+                        <td className="tableTd">{admin.isVerified ? "Verified" : "Not verified"}</td>
                         <td className="tableTd">
-                        {moment(user.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                        {moment(admin.createdAt).format('YYYY-MM-DD HH:mm:ss')}
                     </td>
                     {auth.role === 1 && (
                         <td className="border border-slate-300 px-2 lg:px-4 py-2 text-center">
-                            <Button variant="error" onClick={() => openModal(user._id)}>Dismiss Admin</Button>
+                            <Button variant="error" onClick={() => openModal(admin._id)}>Dismiss Admin</Button>
                         </td>
                     )}
                    
@@ -190,7 +220,7 @@ const AdminList = () => {
         )}
       
         <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-        <Modal showModal={showModal} title="Are you sure you want to revoke this user's admin privileges?" onConfirm={() => handleDelete(userId)} onCancel={closeModal} />
+        <Modal showModal={showModal} title="Are you sure you want to revoke this user's admin privileges?" onConfirm={() => handleRemoveAdmin(userId)} onCancel={closeModal} />
     </div>
   )
 }
