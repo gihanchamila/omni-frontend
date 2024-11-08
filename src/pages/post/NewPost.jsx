@@ -10,11 +10,6 @@ import addPostValidator from '../../validators/addPostValidator.js';
 import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
 
-// Skeleton component for loading placeholders
-const Skeleton = ({ className }) => (
-  <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
-);
-
 const initialFormData = { title: "", description: "", file: null, category: "" };
 const initialFormError = { title: "", description: "", category: "" };
 
@@ -109,13 +104,6 @@ const NewPost = () => {
       <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
         <BackButton />
         <p className="step">{getTitle()}</p>
-        {loading ? (
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-[50rem] w-full" />
-          </div>
-        ) : (
           <>
             {step === 1 && (
               <form onSubmit={handleNext} className="space-y-6">
@@ -203,7 +191,6 @@ const NewPost = () => {
               </div>
             )}
           </>
-        )}
       </div>
     </div>
   );

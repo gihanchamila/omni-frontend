@@ -130,9 +130,6 @@ const Users = () => {
     </div>
     </div>
     
-    
-      
-
       {loading ? (
         "Loading..."
       ) : (
