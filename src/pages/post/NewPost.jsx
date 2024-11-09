@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import Button from '../../component/button/Button.jsx';
 import ImageUploader from './ImageUploader.jsx';
 import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
-import { HiOutlineArrowNarrowRight } from "react-icons/hi";
 import addPostValidator from '../../validators/addPostValidator.js';
 import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
