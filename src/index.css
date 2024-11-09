@@ -48,11 +48,6 @@
       
     }
 
-    .button {
-
-    
-
-    }
 
     .navlink {
 
@@ -202,18 +197,6 @@
 
     }
 
-    .ql-container {
-      @apply bg-white border  border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
-    }
-    
-    .ql-toolbar {
-      @apply bg-gray-100 border-b border-gray-300 rounded-lg;
-    }
-    
-    .ql-editor {
-      @apply h-48 p-0 text-sm text-gray-900;
-    }
-
     .social {
       @apply w-5 h-5 hover:text-blue-500
     }
@@ -262,6 +245,12 @@
     
     tr {
       @apply border border-slate-200;
+    }
+
+    .ql-editor {
+      
+      @apply p-0 font-sans  text-slate-700 font-light  text-lg
+      
     }
 
   }

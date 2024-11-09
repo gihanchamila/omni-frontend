@@ -124,7 +124,8 @@ const NewPost = () => {
 
                 <div className='space-y-4'>
                   <h3 className="label">Upload an Image</h3>
-                  <ImageUploader onUpload={handleImageUpload} />
+                  <ImageUploader onUpload={handleImageUpload} file={formData.file} />
+
                   {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
                 </div>
 
@@ -185,7 +186,7 @@ const NewPost = () => {
                 <div className="flex justify-end">
                   <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(2)}>Back</Button>
                   <Button variant="info" className="mt-4 px-4 py-2 text-sm bg-blue-500 text-white font-medium rounded-lg" onClick={handleSubmit}>
-                    Add Post
+                    {loading ? "Adding post..." : "Add Post"}
                   </Button>
                 </div>
               </div>

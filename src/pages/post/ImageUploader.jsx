@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlinePhotograph } from "react-icons/hi";
 import Button from '../../component/button/Button.jsx';
 
-const ImageUploader = ({ onUpload }) => {
+const ImageUploader = ({ onUpload, file }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [formError, setFormError] = useState({ file: '' });
+
+  // Display the existing image when file prop is provided
+  useEffect(() => {
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage({ file, preview: imageUrl });
+    }
+  }, [file]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
