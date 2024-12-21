@@ -15,7 +15,7 @@ const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
-  const { notifications, markAsRead } = useNotification();
+  const { notifications, markAsRead, deleteNotification } = useNotification();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const { profilePicUrl, setProfilePicUrl } = useProfile();
