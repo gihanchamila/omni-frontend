@@ -55,6 +55,23 @@ const PrivateNavBar = () => {
     getCurrentUser();
   }, []);
 
+  const handleMarkAsRead = async (id) => {
+    try {
+      await markAsRead(id);
+    } catch (error) {
+      console.error("Failed to mark as read", error);
+    }
+  };
+  
+  const handleDelete = async (e, id) => {
+    e.stopPropagation(); // Prevent parent click handler
+    try {
+      await deleteNotification(id);
+    } catch (error) {
+      console.error("Failed to delete notification", error);
+    }
+  };
+
   // Toggle dropdown visibility
   const toggleDropdown = () => setDropdownOpen(prev => !prev);
 
@@ -127,50 +144,47 @@ const PrivateNavBar = () => {
                  Mark all as read
                </button>
              </div>
-             <ul className="space-y-2">
-               {notifications.length > 0 ? (
-                 notifications.map((notification) => (
-                   <li
-                     key={notification.id}
-                     className={`relative flex items-center justify-between rounded-lg text-sm  ${
-                       notification.isRead ? "font-regular text-gray-700" : "font-light"
-                     }`}
-                     onClick={() => markAsRead(notification.id)}
-                   >
-                     <span className="w-full hover:underline">{notification.message}</span>
-                     <button
-                       className="text-gray-700 text-xs"
-                       onClick={(e) => {
-                         e.stopPropagation(); // Prevent li onClick from firing
-                         deleteNotification(notification.id);
-                       }}
-                     >
-                       <svg
-                        className="w-2 h-2"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 14"
+              <ul className="space-y-2">
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <li
+                      key={notification.id}
+                      className={`relative flex items-center justify-between rounded-lg text-sm cursor-pointer ${
+                        notification.isRead ? "font-regular text-gray-700" : "font-light"
+                      }`}
+                      onClick={() => handleMarkAsRead(notification.id)}
+                    >
+                      <span className="w-full hover:underline truncate" title={notification.message}>
+                        {notification.message}
+                      </span>
+                      <button
+                        className="text-gray-700 text-xs"
+                        aria-label="Delete notification"
+                        onClick={(e) => handleDelete(e, notification.id)}
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                        />
-                      </svg>
-                     </button>
-                   </li>
-                 ))
-               ) : (
-                 <li className="text-gray-500">No notifications</li>
-               )}
-             </ul>
+                        <svg
+                          className="w-2 h-2"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 14"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                          />
+                        </svg>
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-gray-500 text-center">No notifications available</li>
+                )}
+              </ul>
            </div>
-           
-            
-            
             )}
           </div>
 

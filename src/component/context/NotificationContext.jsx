@@ -25,7 +25,6 @@ export const NotificationProvider = ({children}) => {
 
       const markAsRead = async (id) => {
         try {
-          // Call backend API to mark the notification as read
           const response = await axios.put("/notification/mark-as-read", { notificationId: id });
           const updatedNotification = response.data.data;
   
@@ -35,8 +34,10 @@ export const NotificationProvider = ({children}) => {
           setUnreadCount((prev) => prev - 1);
         } catch (error) {
           const response = error.response;
+          console.log(error)
           const data = response.data;
           toast.error(data.message);
+
         }
       };
 
