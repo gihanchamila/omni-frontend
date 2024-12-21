@@ -148,11 +148,11 @@ const PrivateNavBar = () => {
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <li
-                      key={notification.id}
+                      key={notification._id}
                       className={`relative flex items-center justify-between rounded-lg text-sm cursor-pointer ${
                         notification.isRead ? "font-regular text-gray-700" : "font-light"
                       }`}
-                      onClick={() => handleMarkAsRead(notification.id)}
+                      onClick={() => handleMarkAsRead(notification._id)}
                     >
                       <span className="w-full hover:underline truncate" title={notification.message}>
                         {notification.message}
@@ -160,7 +160,7 @@ const PrivateNavBar = () => {
                       <button
                         className="text-gray-700 text-xs"
                         aria-label="Delete notification"
-                        onClick={(e) => handleDelete(e, notification.id)}
+                        onClick={(e) => handleDelete(e, notification._id)}
                       >
                         <svg
                           className="w-2 h-2"

@@ -21,9 +21,9 @@ export const NotificationProvider = ({children}) => {
           const data = response.data;
           toast.error(data.message);
         }
-      };
+    };
 
-      const markAsRead = async (id) => {
+    const markAsRead = async (id) => {
         try {
           const response = await axios.put("/notification/mark-as-read", { notificationId: id });
           const updatedNotification = response.data.data;
@@ -39,7 +39,25 @@ export const NotificationProvider = ({children}) => {
           toast.error(data.message);
 
         }
-      };
+    };
+
+    const deleteNotification = async (id) => {
+      try {
+        const response = await axios.delete("/notification/delete-notification", { notificationId: id });
+        const updatedNotification = response.data.data;
+
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, isRead: updatedNotification.isRead } : n))
+        );
+        setUnreadCount((prev) => prev - 1);
+      } catch (error) {
+        const response = error.response;
+        console.log(error)
+        const data = response.data;
+        toast.error(data.message);
+
+      }
+  };
 
     const addNotifications = (message, type = "success") => {
         setNotifications((prev) => [...prev, {message, type, id: Date.now()}]);
