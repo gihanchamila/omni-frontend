@@ -6,15 +6,18 @@ import { ProfileProvider } from './component/context/ProfileContext.jsx'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import { NotificationProvider } from './component/context/NotificationContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <SocketProvider>
           <ProfileProvider>
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>
+            <NotificationProvider>
+              <React.StrictMode>
+                <App />
+              </React.StrictMode>
+            </NotificationProvider>
           </ProfileProvider> 
         </SocketProvider>
       </AuthProvider> 

@@ -6,11 +6,17 @@ import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import ScrollLock from "react-scrolllock";
 import { useAuth } from '../component/context/useAuth.jsx';
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { useNotification } from "./context/useNotification.jsx";
+import { NotificationContext } from "./context/NotificationContext.jsx";
+
 
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
+  const { notifications, markAsRead } = useNotification();
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const { profilePicUrl, setProfilePicUrl } = useProfile();
 
@@ -18,6 +24,7 @@ const PrivateNavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
+  const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
 
   // Close dropdowns and reset classes on location change
   useEffect(() => {
@@ -53,6 +60,8 @@ const PrivateNavBar = () => {
 
   // Toggle mobile menu visibility
   const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
+
+  const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
   // Handle user logout
   const handleLogOut = () => {
@@ -94,6 +103,76 @@ const PrivateNavBar = () => {
               <div className="navGroup">Dashboard</div>
             </NavLink>
           )}
+
+          {/* <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`}>
+                <div className="navGroup"><IoMdNotificationsOutline className="w-6 h-6" /></div>
+              </NavLink>*/}
+          <div className="relative">
+            <button onClick={toggleDropdownNotification} className="navGroup flex items-center">
+              <IoMdNotificationsOutline className="relative w-6 h-6" />
+              {unreadCount > 0 && (
+                <span className="absolute bg-red-500 left-1.5 top-3 text-white text-xs w-2 h-2 rounded-full font-semibold">
+                  {/* {unreadCount} */}
+                </span>
+              )}
+            </button>
+            {notificationDropdownOpen && (
+             <div className="absolute right-0 mt-4 bg-white p-4 w-[27rem] rounded-lg border border-slate-200 z-50">
+             <h4 className="font-bold text-lg mb-2 text-blue-500">Notifications</h4>
+             <div className="flex justify-between items-center mb-2">
+               <button
+                 className="text-blue-500 text-sm font-medium hover:underline"
+                 onClick={() => markAllAsRead()}
+               >
+                 Mark all as read
+               </button>
+             </div>
+             <ul className="space-y-2">
+               {notifications.length > 0 ? (
+                 notifications.map((notification) => (
+                   <li
+                     key={notification.id}
+                     className={`relative flex items-center justify-between rounded-lg text-sm  ${
+                       notification.isRead ? "font-regular text-gray-700" : "font-light"
+                     }`}
+                     onClick={() => markAsRead(notification.id)}
+                   >
+                     <span className="w-full hover:underline">{notification.message}</span>
+                     <button
+                       className="text-gray-700 text-xs"
+                       onClick={(e) => {
+                         e.stopPropagation(); // Prevent li onClick from firing
+                         deleteNotification(notification.id);
+                       }}
+                     >
+                       <svg
+                        className="w-2 h-2"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                      </svg>
+                     </button>
+                   </li>
+                 ))
+               ) : (
+                 <li className="text-gray-500">No notifications</li>
+               )}
+             </ul>
+           </div>
+           
+            
+            
+            )}
+          </div>
 
           {/* Profile Dropdown */}
           <div className="relative">

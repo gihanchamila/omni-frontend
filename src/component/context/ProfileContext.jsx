@@ -10,7 +10,6 @@ export const ProfileProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState(null);
 
-
     const getCurrentUser = async () => {
         try {
             resetProfileState(); 
