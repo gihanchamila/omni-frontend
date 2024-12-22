@@ -2,6 +2,7 @@ import { useState, useEffect, useRef  } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSocket } from '../../hooks/useSocket.jsx';
+import { useNotification } from '../../component/context/useNotification.jsx';
 import axios from '../../utils/axiosInstance.js';
 
 import Skeleton from 'react-loading-skeleton';
@@ -28,6 +29,7 @@ const SinglePost = () => {
   const navigate = useNavigate()
   const params = useParams()
   const socket = useSocket()
+  const { setNotifications } = useNotification()
   const { profilePicUrl } = useProfile();
   const postId = params.id
   const hasListeners = useRef(false);
@@ -363,6 +365,23 @@ const SinglePost = () => {
       setLoading(true);
       const response = await axios.post(`/comments/${postId}`, formData);
       const newComment = response.data.data
+      const { notificationId } = response.data;
+      
+
+      console.log(notificationId)
+
+      if (socket) {
+        console.log('Emitting new-comment event for postId:', postId);
+        socket.emit("newComment", {notificationId});
+      }
+
+      setNotifications(prev => [...prev, {
+        type: "comment",
+        message: `New comment on post ${postId}`,
+        isRead: false,
+        _id : notificationId
+      }]);
+
       setComments((prevComments) => [newComment, ...prevComments]);
       setFormData(initialFormData);
       setLoading(false);

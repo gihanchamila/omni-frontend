@@ -1,6 +1,6 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate} from "react-router-dom";
 import axios from '../utils/axiosInstance.js';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -9,15 +9,16 @@ import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
 import { NotificationContext } from "./context/NotificationContext.jsx";
-
+import { useSocket } from "../hooks/useSocket.jsx";
 
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
-  const { notifications, markAsRead, deleteNotification } = useNotification();
+  const socket = useSocket();
+  const { notifications, setNotifications, markAsRead, deleteNotification } = useNotification();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
-
+  const [loading, setLoading] = useState(false);
   const { profilePicUrl, setProfilePicUrl } = useProfile();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -63,14 +64,39 @@ const PrivateNavBar = () => {
     }
   };
   
-  const handleDelete = async (e, id) => {
+  const handleDelete = useCallback(async (e, id) => {
     e.stopPropagation(); // Prevent parent click handler
+    setLoading(true);
     try {
-      await deleteNotification(id);
+
+      if (!id) {
+        console.error("Notification ID is missing");
+        return;
+      }
+
+      console.log("Deleting notification with ID:", id);
+      
+
+      if (socket) {
+        console.log('Emitting notification-deleted event for notificationId:', id);
+        socket.emit('notification-deleted', { notificationId: id });
+      }
+
+      console.log(notifications)
+      console.log(id)
+      
+      await deleteNotification(id); 
+      await setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification._id !== id)
+      );
+
     } catch (error) {
       console.error("Failed to delete notification", error);
+      toast.error("Failed to delete notification");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [deleteNotification, socket, setNotifications, notifications]);
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setDropdownOpen(prev => !prev);
@@ -86,8 +112,10 @@ const PrivateNavBar = () => {
     setCurrentUser(null);
     setProfilePicUrl(null);
     toast.success("Logout successful");
-    navigate('/login');
-  };
+    setTimeout(() => {
+      navigate('/login');
+    }, 0);
+};
 
   return (
     <div>
@@ -139,7 +167,6 @@ const PrivateNavBar = () => {
              <div className="flex justify-between items-center mb-2">
                <button
                  className="text-blue-500 text-sm font-medium hover:underline"
-                 onClick={() => markAllAsRead()}
                >
                  Mark all as read
                </button>
@@ -148,7 +175,7 @@ const PrivateNavBar = () => {
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <li
-                      key={notification._id}
+                      key={notification._id || `${notification.message}`}
                       className={`relative flex items-center justify-between rounded-lg text-sm cursor-pointer ${
                         notification.isRead ? "font-regular text-gray-700" : "font-light"
                       }`}

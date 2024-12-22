@@ -84,6 +84,8 @@ const Login = () => {
         setFormData(initialFormData);
         setFormError(initialFormError);
         setLoading(false);
+
+
         navigate('/');
       } catch (error) {
         console.error("Error occurred:", error);
