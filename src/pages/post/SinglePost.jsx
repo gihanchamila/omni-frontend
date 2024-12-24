@@ -80,20 +80,26 @@ const SinglePost = () => {
     if (!hasListeners.current) {
       const handleCommentAdd = ({ postId: updatedPostId, profilePicKey }) => {
         if (updatedPostId === postId) {
-          console.log(profilePicKey)
           setCommentCount(prevCount => prevCount + 1);
             fetchProfilePic(profilePicKey)
             fetchSignedUrl(profilePicKey)
         }
       };
   
-      const handleReplyAdd = ({ postId: updatedPostId }) => {
-        console.log('Emitting notification-deleted event for notificationId:', postId);
-        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      const handleReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+            fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey)
+        }
       };
   
-      const handleNestedReplyAdd = ({ postId: updatedPostId }) => {
-        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      const handleNestedReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+            fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey)
+        }
       };
   
       const handleCommentRemove = ({ postId: updatedPostId, count }) => {
@@ -745,7 +751,7 @@ const SinglePost = () => {
                                   createdAt={reply.createdAt}
                                   dropdownId={reply._id}
                                   actionHandlers={actionHandlers}
-                                  imageUrl={comment.author._id === currentUser? profilePicUrl : reply.author.profilePic}
+                                  imageUrl={reply.author._id === currentUser? profilePicUrl : reply.author.profilePic}
                                 />
                                 <p className="text-gray-500">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
@@ -783,7 +789,7 @@ const SinglePost = () => {
                                     createdAt={nestedReply.createdAt}
                                     dropdownId={nestedReply._id}
                                     actionHandlers={actionHandlers}
-                                    imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
+                                    imageUrl={nestedReply.author._id === currentUser? profilePicUrl : nestedReply.author.profilePic}
                                   />
                                   <p className="text-gray-500 pb-4">{nestedReply.content}</p>
                                 </article>
