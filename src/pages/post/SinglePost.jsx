@@ -78,13 +78,13 @@ const SinglePost = () => {
 
   useEffect(() => {
 
-  
     if (!hasListeners.current) {
       const handleCommentAdd = ({ postId: updatedPostId }) => {
         if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
       };
   
       const handleReplyAdd = ({ postId: updatedPostId }) => {
+        console.log('Emitting notification-deleted event for notificationId:', postId);
         if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
       };
   
@@ -111,6 +111,7 @@ const SinglePost = () => {
       socket.on('follow-status-updated', handleFollowStatusUpdate);
   
       hasListeners.current = true; // Mark listeners as attached
+  
 
       return () => {
         socket.off('commentAdd', handleCommentAdd);
@@ -239,14 +240,18 @@ const SinglePost = () => {
           const response = await axios.get(`/comments/${postId}/comments`);
           const data = response.data.data;
   
-            const formattedComments = await Promise.all(data.map(async (comment) => {
+          const formattedComments = await Promise.all(data.map(async (comment) => {
             let commenterProfilePicUrl = null;
 
-            if (comment.author.profilePic) {
-              commenterProfilePicUrl = await fetchSignedUrl(comment.author.profilePic.key);
+            if (comment.author && comment.author.profilePic) {
+              try {
+                commenterProfilePicUrl = await fetchSignedUrl(comment.author.profilePic.key);
+              } catch (error) {
+                console.error('Failed to fetch profile picture URL', error);
+              }
             }
 
-            const authorFullName = `${comment.author.firstName} ${comment.author.lastName}`;
+            const authorFullName = `${comment.author?.firstName || ''} ${comment.author?.lastName || ''}`.trim();
   
             return {
               ...comment,
@@ -355,7 +360,7 @@ const SinglePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    
     const errors = addCommentValidator({ content: formData.content });
     if (errors.content) {
       setFormError(errors);
@@ -364,31 +369,29 @@ const SinglePost = () => {
     try {
       setLoading(true);
       const response = await axios.post(`/comments/${postId}`, formData);
-      const newComment = response.data.data
+      const newComment = response.data.data;
       const { notificationId } = response.data;
-      
-
-      console.log(notificationId)
-
+  
+      console.log(notificationId);
+  
       if (socket) {
         console.log('Emitting new-comment event for postId:', postId);
         socket.emit("newComment", {notificationId});
       }
-
+  
       setNotifications(prev => [...prev, {
         type: "comment",
         message: `New comment on post ${postId}`,
         isRead: false,
         _id : notificationId
       }]);
-
+  
       setComments((prevComments) => [newComment, ...prevComments]);
       setFormData(initialFormData);
       setLoading(false);
     } catch (error) {
-      setLoading(false)
-      setFormError({ content: error.message || 'An error occurred' });
-      toast.error(error.message);
+      console.error('Failed to submit comment', error);
+      setLoading(false);
     }
   };
 
@@ -420,17 +423,20 @@ const SinglePost = () => {
     try {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${commentId}`, replyFormData);
-        const newReply = response.data.data.reply;
+        const newReply = response.data.data;
 
         // Update the state with the new reply
         setComments(prevComments => {
             const addReply = (comments) => {
                 return comments.map(comment =>
                     comment._id === commentId
-                        ? { ...comment, replies: [newReply, ...comment.replies] }
+                        ? { ...comment, replies
+                          : [newReply, ...comment.replies
+                          ] }  // Prepending the new reply
                         : {
                             ...comment,
-                            replies: addReply(comment.replies)
+                            replies: addReply(comment.replies
+                            )
                         }
                 );
             };
@@ -456,7 +462,8 @@ const SinglePost = () => {
     try {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${replyId}`, replyToReplyFormData);
-        const newReplyToReply = response.data.data.reply;  // Extracting the newly created reply
+        const newReplyToReply = response.data.data  // Extracting the newly created reply
+        console.log(newReplyToReply);
         setComments(prevComments => {
             const updateReplies = (replies) => {
                 if (!Array.isArray(replies)) {
@@ -727,27 +734,28 @@ const SinglePost = () => {
                         comment.replies &&
                         comment.replies.map((reply) => (
                           <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
-                            <CommentFooter
-                              author={reply.author}
-                              createdAt={reply.createdAt}
-                              dropdownId={reply._id}
-                              actionHandlers={actionHandlers}
-                              imageUrl={comment.author.profilePic}
-                            />
-                            <p className="text-gray-500">{reply.content}</p>
-                            <div className="flex items-center mt-4 space-x-4">
-                              <button
-                                type="button"
-                                className="flex items-center text-sm text-gray-500 hover:underline font-medium"
-                                onClick={() => {
-                                  toggleNestedReplies(comment._id);
-                                  toggleReplyToReplyForm(reply._id);
-                                }}
-                              >
-                                <IoChatbubblesOutline className="iconSize" />
-                                {getReplyText(reply.replies)}
+                            {reply && reply.author && (
+                              <>
+                                <CommentFooter
+                                  author={reply.author}
+                                  createdAt={reply.createdAt}
+                                  dropdownId={reply._id}
+                                  actionHandlers={actionHandlers}
+                                  imageUrl={comment.author.profilePic}
+                                />
+                                <p className="text-gray-500">{reply.content}</p>
+                                <div className="flex items-center mt-4 space-x-4">
+                                <button
+                                  type="button"
+                                  className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                                  onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id)}}
+                                  >
+                                  <IoChatbubblesOutline className='iconSize' />
+                                  {getReplyText(reply.replies)}
                               </button>
-                            </div>
+                                </div>
+                              </>
+                            )}
 
                             {/* Reply to Reply */}
                             {replyToReply === reply._id && (

@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DropdownMenu from './DropdownMenu.jsx';
-
 
 const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl }) => {
   const authorName = (author?.firstName || author?.lastName) 
@@ -13,7 +13,7 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
         <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
           <img
             className="mr-2 w-6 h-6 rounded-full"
-            src={imageUrl || 'https://default-image-url.com/default-profile.jpg'}
+            src={typeof imageUrl === 'string' ? imageUrl : 'https://default-image-url.com/default-profile.jpg'}
             alt={authorName}
           />
           {authorName}
@@ -27,6 +27,13 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
       <DropdownMenu dropdownId={dropdownId} actionHandlers={actionHandlers} />
     </footer>
   );
+};
+
+CommentFooter.propTypes = {
+  createdAt: PropTypes.string.isRequired,
+  dropdownId: PropTypes.string.isRequired,
+  actionHandlers: PropTypes.object.isRequired,
+  imageUrl: PropTypes.string,
 };
 
 export default CommentFooter;
