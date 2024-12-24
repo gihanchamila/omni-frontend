@@ -73,7 +73,9 @@ export const ProfileProvider = ({ children }) => {
     const value = useMemo(() => ({
         profilePicUrl,
         setProfilePicUrl,
-        getCurrentUser,
+        fetchProfilePic,
+        getCurrentUser
+        
     }), [profilePicUrl]);
 
     return (

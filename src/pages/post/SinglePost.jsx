@@ -30,7 +30,7 @@ const SinglePost = () => {
   const params = useParams()
   const socket = useSocket()
   const { setNotifications } = useNotification()
-  const { profilePicUrl } = useProfile();
+  const { profilePicUrl, fetchProfilePic, getCurrentUser } = useProfile();
   const postId = params.id
   const hasListeners = useRef(false);
 
@@ -62,7 +62,6 @@ const SinglePost = () => {
   const [profileUrl, setProfileUrl] = useState()
   const [profilePic, setProfilePic] = useState();
   const [authorId, setAuthorId] = useState()
-  const [profilePics, setProfilePics] = useState({});
 
   const actionHandlers = {
     edit: (commentId) => {
@@ -79,8 +78,13 @@ const SinglePost = () => {
   useEffect(() => {
 
     if (!hasListeners.current) {
-      const handleCommentAdd = ({ postId: updatedPostId }) => {
-        if (updatedPostId === postId) setCommentCount(prevCount => prevCount + 1);
+      const handleCommentAdd = ({ postId: updatedPostId, profilePicKey }) => {
+        if (updatedPostId === postId) {
+          console.log(profilePicKey)
+          setCommentCount(prevCount => prevCount + 1);
+            fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey)
+        }
       };
   
       const handleReplyAdd = ({ postId: updatedPostId }) => {
@@ -123,7 +127,7 @@ const SinglePost = () => {
         hasListeners.current = false; // Reset on unmount
       };
     }
-  }, [socket, postId]);
+  }, [socket, postId, profilePicUrl, fetchProfilePic]);
   
   useEffect(() => {
     if (postId) {
@@ -702,7 +706,7 @@ const SinglePost = () => {
                         createdAt={comment.createdAt}
                         dropdownId={comment._id}
                         actionHandlers={actionHandlers}
-                        imageUrl={comment.author.profilePic}
+                        imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                       />
                       <p className="text-gray-500">{comment.content}</p>
                       <div className="flex items-center mt-4 space-x-4">
@@ -741,7 +745,7 @@ const SinglePost = () => {
                                   createdAt={reply.createdAt}
                                   dropdownId={reply._id}
                                   actionHandlers={actionHandlers}
-                                  imageUrl={comment.author.profilePic}
+                                  imageUrl={comment.author._id === currentUser? profilePicUrl : reply.author.profilePic}
                                 />
                                 <p className="text-gray-500">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
@@ -779,7 +783,7 @@ const SinglePost = () => {
                                     createdAt={nestedReply.createdAt}
                                     dropdownId={nestedReply._id}
                                     actionHandlers={actionHandlers}
-                                    imageUrl="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                    imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                                   />
                                   <p className="text-gray-500 pb-4">{nestedReply.content}</p>
                                 </article>

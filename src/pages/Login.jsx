@@ -79,7 +79,6 @@ const Login = () => {
         
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
         toast.success(data.message);
-        getCurrentUser();
   
         setFormData(initialFormData);
         setFormError(initialFormError);
