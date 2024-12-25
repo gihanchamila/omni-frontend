@@ -133,7 +133,7 @@ const SinglePost = () => {
         hasListeners.current = false; // Reset on unmount
       };
     }
-  }, [socket, postId, profilePicUrl, fetchProfilePic]);
+  }, [socket, postId, fetchProfilePic]);
   
   useEffect(() => {
     if (postId) {
@@ -561,6 +561,8 @@ const SinglePost = () => {
     setShowModal(false)
   }
 
+  console.log(currentUser)
+
   return (
 
       <div className=' mx-auto md:px-[10rem]'>
@@ -709,9 +711,11 @@ const SinglePost = () => {
                     <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
                       <CommentFooter
                         author={comment.author}
+                        authorId={comment.author._id}
                         createdAt={comment.createdAt}
                         dropdownId={comment._id}
                         actionHandlers={actionHandlers}
+                        currentUser ={currentUser._id}
                         imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                       />
                       <p className="text-gray-500">{comment.content}</p>
@@ -751,7 +755,7 @@ const SinglePost = () => {
                                   createdAt={reply.createdAt}
                                   dropdownId={reply._id}
                                   actionHandlers={actionHandlers}
-                                  imageUrl={reply.author._id === currentUser? profilePicUrl : reply.author.profilePic}
+                                  imageUrl={reply.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                                 />
                                 <p className="text-gray-500">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
@@ -789,7 +793,7 @@ const SinglePost = () => {
                                     createdAt={nestedReply.createdAt}
                                     dropdownId={nestedReply._id}
                                     actionHandlers={actionHandlers}
-                                    imageUrl={nestedReply.author._id === currentUser? profilePicUrl : nestedReply.author.profilePic}
+                                    imageUrl={nestedReply.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                                   />
                                   <p className="text-gray-500 pb-4">{nestedReply.content}</p>
                                 </article>

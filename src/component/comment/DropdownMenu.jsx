@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const DropdownMenu = ({ dropdownId, actionHandlers }) => {
+const DropdownMenu = ({ dropdownId, actionHandlers, currentUser, author, authorId }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -8,11 +8,21 @@ const DropdownMenu = ({ dropdownId, actionHandlers }) => {
     setDropdownOpen((prev) => !prev);
   };
 
-  const options = [
-    { label: 'Edit', action: 'edit' },
+  /* const authorOptions = [
+    { label: 'Edit', action: 'edit', },
     { label: 'Remove', action: 'delete' },
     { label: 'Report', action: 'report' },
   ];
+
+  const options = [
+    { label: 'Report', action: 'report' },
+  ] */
+
+    const options = [
+      { label: 'Edit', action: 'edit', },
+      { label: 'Remove', action: 'delete' },
+      { label: 'Report', action: 'report' },
+    ];
 
   const handleOptionClick = (option) => {
     const actionHandler = actionHandlers[option.action];
@@ -70,6 +80,27 @@ const DropdownMenu = ({ dropdownId, actionHandlers }) => {
         <span className="sr-only">Comment settings</span>
       </button>
 
+      {/* {dropdownOpen && (
+        <div
+          className="absolute right-0 z-10 py-2 w-36 bg-white rounded-lg border-2 border-gray-100"
+          role="menu"
+          aria-labelledby={`dropdown-${dropdownId}`}
+        >
+         <ul className="py-1 text-sm text-gray-700">
+          {(currentUser === authorId ? authorOptions : options).map((option, i) => (
+            <li
+              key={i}
+              role="menuitem"
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleOptionClick(option)}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+        </div>
+      )} */}
+
       {dropdownOpen && (
         <div className="absolute right-0 z-10 py-2 w-36 bg-white rounded-lg border-2 border-gray-100">
           <ul className="py-1 text-sm text-gray-700">
@@ -85,6 +116,7 @@ const DropdownMenu = ({ dropdownId, actionHandlers }) => {
           </ul>
         </div>
       )}
+
     </div>
   );
 };

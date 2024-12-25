@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DropdownMenu from './DropdownMenu.jsx';
 
-const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl }) => {
+const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl, currentUser, authorId }) => {
   const authorName = (author?.firstName || author?.lastName) 
     ? `${author?.firstName || ''} ${author?.lastName || ''}`.trim() 
     : 'Anonymous';
@@ -24,7 +24,12 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
           </time>
         </p>
       </div>
-      <DropdownMenu dropdownId={dropdownId} actionHandlers={actionHandlers} />
+      <DropdownMenu 
+        dropdownId={dropdownId} 
+        currentUser={currentUser} 
+        author={author} 
+        authorId={authorId} 
+        actionHandlers={actionHandlers} />
     </footer>
   );
 };
