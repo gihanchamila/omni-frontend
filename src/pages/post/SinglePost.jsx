@@ -75,6 +75,8 @@ const SinglePost = () => {
     },
   };
 
+  
+
   useEffect(() => {
 
     if (!hasListeners.current) {
@@ -101,10 +103,15 @@ const SinglePost = () => {
             fetchSignedUrl(profilePicKey)
         }
       };
-  
-      const handleCommentRemove = ({ postId: updatedPostId, count }) => {
-        if (updatedPostId === postId) setCommentCount(prevCount => prevCount - count);
-    };
+      
+      const handleCommentRemove = ({ postId: updatedPostId, count, deletedComments }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount - count);
+          console.log("Deleting comments:", deletedComments);
+          setComments(prevComments => prevComments.filter(comment => !deletedComments.includes(comment.id))); 
+        }
+      };
+     
   
       const handleFollowStatusUpdate = ({ followerId, followingId }) => {
         setFollowStatuses(prevStatuses => ({
@@ -113,27 +120,29 @@ const SinglePost = () => {
         }));
       };
   
-      // Register event listeners only once
-      socket.on('commentAdd', handleCommentAdd);
-      socket.on('replyAdd', handleReplyAdd);
-      socket.on('nestedReplyAdd', handleNestedReplyAdd);
-      socket.on('commentRemove', handleCommentRemove);
-      socket.on('follow-status-updated', handleFollowStatusUpdate);
+      if (!hasListeners.current) {
+        console.log("Attaching socket listeners");
+        socket.on('commentAdd', handleCommentAdd);
+        socket.on('replyAdd', handleReplyAdd);
+        socket.on('nestedReplyAdd', handleNestedReplyAdd);
+        socket.on('commentRemove', handleCommentRemove);
+        socket.on('follow-status-updated', handleFollowStatusUpdate);
+    
+        hasListeners.current = true;
+      }
   
-      hasListeners.current = true; // Mark listeners as attached
-  
-
       return () => {
+        console.log("Cleaning up socket listeners");
         socket.off('commentAdd', handleCommentAdd);
         socket.off('replyAdd', handleReplyAdd);
         socket.off('nestedReplyAdd', handleNestedReplyAdd);
         socket.off('commentRemove', handleCommentRemove);
         socket.off('follow-status-updated', handleFollowStatusUpdate);
-  
-        hasListeners.current = false; // Reset on unmount
+    
+        hasListeners.current = false;
       };
     }
-  }, [socket, postId, fetchProfilePic]);
+  }, [socket, postId, fetchProfilePic,]);
   
   useEffect(() => {
     if (postId) {
@@ -252,7 +261,7 @@ const SinglePost = () => {
   
           const formattedComments = await Promise.all(data.map(async (comment) => {
             let commenterProfilePicUrl = null;
-
+  
             if (comment.author && comment.author.profilePic) {
               try {
                 commenterProfilePicUrl = await fetchSignedUrl(comment.author.profilePic.key);
@@ -260,8 +269,8 @@ const SinglePost = () => {
                 console.error('Failed to fetch profile picture URL', error);
               }
             }
-
-            const authorFullName = `${comment.author?.firstName || ''} ${comment.author?.lastName || ''}`.trim();
+  
+          /*   const authorFullName = `${comment.author?.firstName || ''} ${comment.author?.lastName || ''}`.trim(); */
   
             return {
               ...comment,
@@ -280,7 +289,7 @@ const SinglePost = () => {
         }
       }
     };
-  
+
     getComments();
   }, [postId]);
   
@@ -530,7 +539,6 @@ const SinglePost = () => {
         const response2 = await axios.get(`/comments/${postId}/comments`);
         const data2 = response2.data.data; 
         setComments(data2); 
-
     } catch (error) {
         setLoading(false)
         const response = error.response;
@@ -560,8 +568,6 @@ const SinglePost = () => {
   const closeModal = () => {
     setShowModal(false)
   }
-
-  console.log(currentUser)
 
   return (
 

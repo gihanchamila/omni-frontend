@@ -24,8 +24,7 @@ const Login = () => {
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
-  const { profilePicUrl, setProfilePicUrl } = useProfile()
-  const { getCurrentUser } = useContext(ProfileContext);
+  const { profilePicUrl, setProfilePicUrl, getCurrentUser, fetchProfilePic } = useProfile()
 
 
   const navigate = useNavigate()
@@ -74,9 +73,8 @@ const Login = () => {
         if(data.data.user.profilePic?.key){
           const profilePicKey = data.data.user.profilePic.key;
           window.localStorage.setItem('profilePicKey', profilePicKey);
-          setProfilePicUrl(profilePicKey);
+          fetchProfilePic(profilePicKey);
         }
-        
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
         toast.success(data.message);
   

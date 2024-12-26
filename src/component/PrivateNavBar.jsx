@@ -43,6 +43,7 @@ const PrivateNavBar = () => {
         if (user && user._id) {
           setCurrentUser(user);
           if (user.profilePic && user.profilePic.key) {
+            console.log(user.profilePic.key)
             setProfileKey(user.profilePic.key);
           }
         } else {

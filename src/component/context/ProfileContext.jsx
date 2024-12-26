@@ -83,7 +83,7 @@ export const ProfileProvider = ({ children }) => {
         setProfilePicUrl,
         fetchProfilePic,
         getCurrentUser
-    }), [profilePicUrl, getCurrentUser, fetchProfilePic]);
+    }), [profilePicUrl, fetchProfilePic, getCurrentUser, setProfilePicUrl]);
 
     return (
         <ProfileContext.Provider value={value}>
