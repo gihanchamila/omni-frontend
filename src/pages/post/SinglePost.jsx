@@ -74,9 +74,7 @@ const SinglePost = () => {
       // handle report
     },
   };
-
   
-
   useEffect(() => {
 
     if (!hasListeners.current) {
@@ -104,12 +102,11 @@ const SinglePost = () => {
         }
       };
       
-      const handleCommentRemove = ({ postId: updatedPostId, count, deletedComments }) => {
+      const handleCommentRemove = ({ postId: updatedPostId, count, deletedCommentIds }) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount - count);
-          console.log("Deleting comments:", deletedComments);
-          setComments(prevComments => prevComments.filter(comment => !deletedComments.includes(comment.id))); 
         }
+        setComments(prevComments => prevComments.filter(comment => !deletedCommentIds.includes(comment._id)));
       };
      
   
@@ -121,7 +118,6 @@ const SinglePost = () => {
       };
   
       if (!hasListeners.current) {
-        console.log("Attaching socket listeners");
         socket.on('commentAdd', handleCommentAdd);
         socket.on('replyAdd', handleReplyAdd);
         socket.on('nestedReplyAdd', handleNestedReplyAdd);
@@ -132,7 +128,6 @@ const SinglePost = () => {
       }
   
       return () => {
-        console.log("Cleaning up socket listeners");
         socket.off('commentAdd', handleCommentAdd);
         socket.off('replyAdd', handleReplyAdd);
         socket.off('nestedReplyAdd', handleNestedReplyAdd);
@@ -143,6 +138,8 @@ const SinglePost = () => {
       };
     }
   }, [socket, postId, fetchProfilePic,]);
+
+
   
   useEffect(() => {
     if (postId) {
@@ -258,6 +255,7 @@ const SinglePost = () => {
           setLoading(true);
           const response = await axios.get(`/comments/${postId}/comments`);
           const data = response.data.data;
+          console.log(data)
   
           const formattedComments = await Promise.all(data.map(async (comment) => {
             let commenterProfilePicUrl = null;
@@ -391,10 +389,7 @@ const SinglePost = () => {
       const newComment = response.data.data;
       const { notificationId } = response.data;
   
-      console.log(notificationId);
-  
       if (socket) {
-        console.log('Emitting new-comment event for postId:', postId);
         socket.emit("newComment", {notificationId});
       }
   
