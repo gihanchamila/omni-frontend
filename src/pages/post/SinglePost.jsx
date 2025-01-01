@@ -61,8 +61,6 @@ const SinglePost = () => {
   const [profileUrl, setProfileUrl] = useState()
   const [profilePic, setProfilePic] = useState();
   const [authorId, setAuthorId] = useState()
-  const [commenterProfilePic, setCommenterProfilePic] = useState();
-  const [replierProfilePic, setReplierProfilePic] = useState()
 
 
   const actionHandlers = {
