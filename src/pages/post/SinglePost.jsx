@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef  } from 'react';
+import { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSocket } from '../../hooks/useSocket.jsx';
@@ -23,14 +23,13 @@ import addCommentValidator from '../../validators/addCommentValidator.js';
 const initialFormData = {content : ""}
 const initialFormError = {content : ""}
 
-
 const SinglePost = () => {
 
   const navigate = useNavigate()
   const params = useParams()
   const socket = useSocket()
   const { setNotifications } = useNotification()
-  const { profilePicUrl, fetchProfilePic, getCurrentUser } = useProfile();
+  const { profilePicUrl, fetchProfilePic} = useProfile();
   const postId = params.id
   const hasListeners = useRef(false);
 
@@ -62,6 +61,9 @@ const SinglePost = () => {
   const [profileUrl, setProfileUrl] = useState()
   const [profilePic, setProfilePic] = useState();
   const [authorId, setAuthorId] = useState()
+  const [commenterProfilePic, setCommenterProfilePic] = useState();
+  const [replierProfilePic, setReplierProfilePic] = useState()
+
 
   const actionHandlers = {
     edit: (commentId) => {
@@ -74,73 +76,7 @@ const SinglePost = () => {
       // handle report
     },
   };
-  
-  useEffect(() => {
 
-    if (!hasListeners.current) {
-      const handleCommentAdd = ({ postId: updatedPostId, profilePicKey }) => {
-        if (updatedPostId === postId) {
-          setCommentCount(prevCount => prevCount + 1);
-            fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey)
-        }
-      };
-  
-      const handleReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
-        if (updatedPostId === postId) {
-          setCommentCount(prevCount => prevCount + 1);
-            fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey)
-        }
-      };
-  
-      const handleNestedReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
-        if (updatedPostId === postId) {
-          setCommentCount(prevCount => prevCount + 1);
-            fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey)
-        }
-      };
-      
-      const handleCommentRemove = ({ postId: updatedPostId, count, deletedCommentIds }) => {
-        if (updatedPostId === postId) {
-          setCommentCount(prevCount => prevCount - count);
-        }
-        setComments(prevComments => prevComments.filter(comment => !deletedCommentIds.includes(comment._id)));
-      };
-     
-  
-      const handleFollowStatusUpdate = ({ followerId, followingId }) => {
-        setFollowStatuses(prevStatuses => ({
-          ...prevStatuses,
-          [followingId]: followerId === socket.id,
-        }));
-      };
-  
-      if (!hasListeners.current) {
-        socket.on('commentAdd', handleCommentAdd);
-        socket.on('replyAdd', handleReplyAdd);
-        socket.on('nestedReplyAdd', handleNestedReplyAdd);
-        socket.on('commentRemove', handleCommentRemove);
-        socket.on('follow-status-updated', handleFollowStatusUpdate);
-    
-        hasListeners.current = true;
-      }
-  
-      return () => {
-        socket.off('commentAdd', handleCommentAdd);
-        socket.off('replyAdd', handleReplyAdd);
-        socket.off('nestedReplyAdd', handleNestedReplyAdd);
-        socket.off('commentRemove', handleCommentRemove);
-        socket.off('follow-status-updated', handleFollowStatusUpdate);
-    
-        hasListeners.current = false;
-      };
-    }
-  }, [socket, postId, fetchProfilePic,]);
-
-
-  
   useEffect(() => {
     if (postId) {
         const getPost = async () => {
@@ -172,6 +108,8 @@ const SinglePost = () => {
                 toast.error(data.message)
           }
         }; */
+
+        
 
         const getCurrentUser = async () => {
             try {
@@ -238,59 +176,6 @@ const SinglePost = () => {
     }
   }, [post]);
 
-  const fetchSignedUrl = async (key) => {
-    try {
-      const response = await axios.get(`/file/signed-url?key=${key}`);
-      return response.data.data.url;
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to get signed URL');
-      return null; // Return null if failed to get URL
-    }
-  };
-
-  useEffect(() => {
-    const getComments = async () => {
-      if (postId) {
-        try {
-          setLoading(true);
-          const response = await axios.get(`/comments/${postId}/comments`);
-          const data = response.data.data;
-          console.log(data)
-  
-          const formattedComments = await Promise.all(data.map(async (comment) => {
-            let commenterProfilePicUrl = null;
-  
-            if (comment.author && comment.author.profilePic) {
-              try {
-                commenterProfilePicUrl = await fetchSignedUrl(comment.author.profilePic.key);
-              } catch (error) {
-                console.error('Failed to fetch profile picture URL', error);
-              }
-            }
-  
-          /*   const authorFullName = `${comment.author?.firstName || ''} ${comment.author?.lastName || ''}`.trim(); */
-  
-            return {
-              ...comment,
-              author: {
-                ...comment.author,
-                profilePic: commenterProfilePicUrl
-              }
-            };
-          }));
-  
-          setComments(formattedComments);
-        } catch (error) {
-          toast.error(error.response?.data?.message || 'Failed to load comments');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    getComments();
-  }, [postId]);
-  
   useEffect(() => {
     const getCommentCount = async () => {
       if(postId){
@@ -335,6 +220,158 @@ const SinglePost = () => {
     };
     fetchFollowStatus()
   }, [post]);
+
+  const fetchSignedUrl = useCallback(async (key) => {
+    try {
+      const response = await axios.get(`/file/signed-url?key=${key}`);
+      return response.data.data.url;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to get signed URL');
+      return null; // Return null if failed to get URL
+    }
+  },[])
+
+  const getComments = useCallback(async () => {
+    if (!postId) return;
+  
+    try {
+      setLoading(true);
+  
+      const response = await axios.get(`/comments/${postId}/comments`);
+      const data = response.data.data;
+      console.log(data)
+  
+      const fetchProfilePic = async (key) => {
+        try {
+          return key ? await fetchSignedUrl(key) : null;
+        } catch {
+          console.error("Failed to fetch profile picture URL");
+          return null;
+        }
+      };
+  
+      const formatReplies = async (replies = []) => {
+        return Promise.all(
+          replies.map(async (reply) => {
+            const formattedNestedReplies = await formatReplies(reply.replies || []);
+            return {
+              ...reply,
+              author: {
+                ...reply.author,
+                profilePic: await fetchProfilePic(reply.author?.profilePic?.key),
+              },
+              replies: formattedNestedReplies,
+            };
+          })
+        );
+      };
+      
+
+      /* const formatNestedReplies = async (replies = []) => {
+        return Promise.all(
+          replies.replies.map(async (reply) => ({
+            ...reply,
+            author: {
+              ...reply.author,
+              profilePic: await fetchProfilePic(reply.author?.profilePic?.key),
+            },
+          }))
+        );
+      }; */
+  
+      const formattedComments = await Promise.all(
+        data.map(async (comment) => {
+          const formattedReplies = await formatReplies(comment.replies);
+          return {
+            ...comment,
+            author: {
+              ...comment.author,
+              profilePic: await fetchProfilePic(comment.author?.profilePic?.key),
+            },
+            replies: formattedReplies,
+          };
+        })
+      );
+      
+      setComments(formattedComments);
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [postId, fetchSignedUrl]);
+
+  useEffect(() => {
+    getComments();
+  }, [getComments]);
+
+  useEffect(() => {
+
+    if (!hasListeners.current) {
+      const handleCommentAdd = ({ postId: updatedPostId, profilePicKey, commentId, firstName, lastName }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+            /* fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey) */
+            getComments()
+        }
+      };
+  
+      const handleReplyAdd = ({ postId: updatedPostId, profilePicKey, firstName, lastName }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+            /* fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey) */
+            getComments()
+        }
+      };
+  
+      const handleNestedReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount + 1);
+            /* fetchProfilePic(profilePicKey)
+            fetchSignedUrl(profilePicKey) */
+            getComments()
+        }
+      };
+      
+      const handleCommentRemove = async({ postId: updatedPostId, count, deletedComments}) => {
+        if (updatedPostId === postId) {
+          setCommentCount(prevCount => prevCount - count);
+          setComments((prevComments) => prevComments.filter(comment => comment._id !== deletedComments));
+          getComments()
+        }
+      };
+     
+      const handleFollowStatusUpdate = ({ followerId, followingId }) => {
+        setFollowStatuses(prevStatuses => ({
+          ...prevStatuses,
+          [followingId]: followerId === socket.id,
+        }));
+      };
+  
+      if (!hasListeners.current) {
+        socket.on('commentAdd', handleCommentAdd);
+        socket.on('replyAdd', handleReplyAdd);
+        socket.on('nestedReplyAdd', handleNestedReplyAdd);
+        socket.on('commentRemove', handleCommentRemove);
+        socket.on('follow-status-updated', handleFollowStatusUpdate);
+    
+        hasListeners.current = true;
+      }
+  
+      return () => {
+        socket.off('commentAdd', handleCommentAdd);
+        socket.off('replyAdd', handleReplyAdd);
+        socket.off('nestedReplyAdd', handleNestedReplyAdd);
+        socket.off('commentRemove', handleCommentRemove);
+        socket.off('follow-status-updated', handleFollowStatusUpdate);
+    
+        hasListeners.current = false;
+      };
+    }
+  }, [socket, postId, fetchProfilePic, fetchSignedUrl, getComments]);
 
   const handleFollow = async (authorId) => {
     try {
@@ -395,7 +432,7 @@ const SinglePost = () => {
   
       setNotifications(prev => [...prev, {
         type: "comment",
-        message: `New comment on post ${postId}`,
+        message: `Commment posted successfully!`,
         isRead: false,
         _id : notificationId
       }]);
@@ -438,6 +475,7 @@ const SinglePost = () => {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${commentId}`, replyFormData);
         const newReply = response.data.data;
+        const { notificationId,  } = response.data;
 
         // Update the state with the new reply
         setComments(prevComments => {
@@ -456,6 +494,15 @@ const SinglePost = () => {
             };
             return addReply(prevComments);
         });
+
+        setNotifications(prev => [...prev, {
+          type: "comment",
+          message: `Reply posted successfully!`,
+          isRead: false,
+          _id : notificationId
+        }]);
+
+
         setReplyFormData(initialFormData);
         setLoading(false)
     } catch (error) {
@@ -534,6 +581,7 @@ const SinglePost = () => {
         const response2 = await axios.get(`/comments/${postId}/comments`);
         const data2 = response2.data.data; 
         setComments(data2); 
+        getComments()
     } catch (error) {
         setLoading(false)
         const response = error.response;
@@ -756,7 +804,7 @@ const SinglePost = () => {
                                   createdAt={reply.createdAt}
                                   dropdownId={reply._id}
                                   actionHandlers={actionHandlers}
-                                  imageUrl={reply.author._id === currentUser? profilePicUrl : comment.author.profilePic}
+                                  imageUrl={reply.author._id === currentUser? profilePicUrl : reply.author.profilePic}
                                 />
                                 <p className="text-gray-500">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
@@ -794,7 +842,7 @@ const SinglePost = () => {
                                     createdAt={nestedReply.createdAt}
                                     dropdownId={nestedReply._id}
                                     actionHandlers={actionHandlers}
-                                    imageUrl={nestedReply.author._id === currentUser? profilePicUrl : comment.author.profilePic}
+                                    imageUrl={nestedReply.author._id === currentUser? profilePicUrl : nestedReply.author.profilePic}
                                   />
                                   <p className="text-gray-500 pb-4">{nestedReply.content}</p>
                                 </article>

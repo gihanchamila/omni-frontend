@@ -13,6 +13,11 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+    
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [pageCount, setPageCount] = useState([]);
+
   const fetchNotifications = async () => {
     try {
       const response = await axios.get("/notification/get-notifications");

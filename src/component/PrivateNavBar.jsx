@@ -11,6 +11,7 @@ import { useNotification } from "./context/useNotification.jsx";
 import { NotificationContext } from "./context/NotificationContext.jsx";
 import { useSocket } from "../hooks/useSocket.jsx";
 
+
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,7 +44,6 @@ const PrivateNavBar = () => {
         if (user && user._id) {
           setCurrentUser(user);
           if (user.profilePic && user.profilePic.key) {
-            console.log(user.profilePic.key)
             setProfileKey(user.profilePic.key);
           }
         } else {
@@ -74,18 +74,11 @@ const PrivateNavBar = () => {
         console.error("Notification ID is missing");
         return;
       }
-
-      console.log("Deleting notification with ID:", id);
-      
-
       if (socket) {
         console.log('Emitting notification-deleted event for notificationId:', id);
         socket.emit('notification-deleted', { notificationId: id });
       }
 
-      console.log(notifications)
-      console.log(id)
-      
       await deleteNotification(id); 
       await setNotifications((prevNotifications) =>
         prevNotifications.filter((notification) => notification._id !== id)
@@ -97,7 +90,7 @@ const PrivateNavBar = () => {
     } finally {
       setLoading(false);
     }
-  }, [deleteNotification, socket, setNotifications, notifications]);
+  }, [deleteNotification, socket, setNotifications]);
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setDropdownOpen(prev => !prev);
@@ -207,6 +200,7 @@ const PrivateNavBar = () => {
                         </svg>
                       </button>
                     </li>
+                    
                   ))
                 ) : (
                   <li className="text-gray-500 text-center">No notifications available</li>
