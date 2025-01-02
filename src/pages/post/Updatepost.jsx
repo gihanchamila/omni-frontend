@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSocket } from '../../hooks/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
+
 
 // Custom Components
 import Button from '../../component/button/Button.jsx';
@@ -29,7 +30,7 @@ const UpdatePost = () => {
   const [fileKey, setFileKey] = useState("")
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const [file, setFile] = useState()
+  const [file, setFile] = useState();
   const navigate = useNavigate();
   const socket = useSocket();
 
@@ -69,8 +70,6 @@ const UpdatePost = () => {
               console.log("Failed to get profile picture");
           }
       }
-  
-      
     };
 
     getExisitingFile()
@@ -150,7 +149,7 @@ const UpdatePost = () => {
         toast.success(response.data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
-        navigate('/posts');
+        navigate('/');
       } catch (error) {
         console.error("Error updating post:", error);
         const errorMessage = error.response?.data?.message || "Couldn't update post";
@@ -196,7 +195,12 @@ const UpdatePost = () => {
               </div>
 
               <div className='space-y-4'>
-                <h3 className="label">Upload an Image</h3>
+                <h3 className="label">Upload an image (if no existing image is found, it will be saved).</h3>
+                {formData.image && (
+                  <div className="mb-4">
+                    <ImageUploader file={file} />
+                  </div>
+                )}
                 <ImageUploader onUpload={handleImageUpload} />
                 {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
               </div>

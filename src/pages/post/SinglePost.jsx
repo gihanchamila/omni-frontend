@@ -371,6 +371,31 @@ const SinglePost = () => {
     }
   }, [socket, postId, fetchProfilePic, fetchSignedUrl, getComments]);
 
+  useEffect(() => {
+
+    if(!hasListeners.current){
+      const handlePostDelete = (data) => {
+        setNotifications(prev => [...prev, {
+          type: "post",
+          message: `Post deleted successfully`,
+          isRead: false,
+          _id : data.notificationId
+        }]);
+      }
+
+      if (!hasListeners.current) {
+        console.log("adding listener for delete post");
+        socket.on('postAddedNotification', handlePostDelete)
+        hasListeners.current = true;
+      }
+
+      return () => {
+        socket.off('postAddedNotification', handlePostDelete)
+      }
+    }
+  }, [socket, setNotifications])
+
+
   const handleFollow = async (authorId) => {
     try {
       setLoading(true)
@@ -590,15 +615,32 @@ const SinglePost = () => {
 
   const handlePostDelete = async (postId) => {
     try{
-      const response = await axios.delete(`/posts/${postId}`)
-      const data = response.data;
-      toast.success(data.message)
-      setShowModal(false)
-      navigate('/posts')
+      const response = await axios.delete(`/posts/${postId}`);
+        const data = response.data;
+
+        console.log("Delete Response:", response);
+        const notificationId = data.notificationId;
+        console.log("Notification ID:", notificationId);
+
+        // Emit notification event if socket is available
+        if (socket) {
+            try {
+                console.log("Emitting postDeletedNotification");
+                socket.emit("postDeletedNotification", { notificationId });
+            } catch (emitError) {
+                console.error("Socket emission error:", emitError);
+            }
+        }
+
+        // Notify user and navigate
+        toast.success(data.message);
+        closeModal(); // Ensure closeModal is defined in your scope
+        navigate('/');
     }catch(error){
-      const response = error.response;
-      const data = response.data;
-      toast.error(data.message)
+        console.error("Error while deleting post:", error);
+        const response = error.response;
+        const message = response?.data?.message || "An error occurred while deleting the post";
+        toast.error(message);
     }
   }
 

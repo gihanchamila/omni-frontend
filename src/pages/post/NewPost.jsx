@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
@@ -8,6 +8,8 @@ import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
 import addPostValidator from '../../validators/addPostValidator.js';
 import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
+import { useSocket } from '../../hooks/useSocket.jsx';
+import { useNotification } from '../../component/context/useNotification.jsx';
 
 const initialFormData = { title: "", description: "", file: null, category: "" };
 const initialFormError = { title: "", description: "", category: "" };
@@ -19,6 +21,9 @@ const NewPost = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const socket = useSocket();
+  const {setNotifications } = useNotification();
+  const hasListeners = useRef(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -36,6 +41,29 @@ const NewPost = () => {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if(!hasListeners.current){
+      const handlePostAdded = (data) => { 
+        setNotifications(prev => [...prev, {
+          type: "post",
+          message: `Post added successfully`,
+          isRead: false,
+          _id : data.notificationId
+        }]);
+      }
+
+      if (!hasListeners.current) {
+        console.log("adding listener");
+        socket.on('postAddedNotification', handlePostAdded)
+        hasListeners.current = true;
+      }
+  
+      return () => {
+        socket.off('postAddedNotification', handlePostAdded)
+      }
+    }
+  }, [socket, setNotifications])
 
   const handleImageUpload = (file) => {
     setFormData((prev) => ({ ...prev, file }));
@@ -78,7 +106,14 @@ const NewPost = () => {
       }
 
       const response = await axios.post('/posts', formInput);
+      const notificationId = response.data.data.notificationId;
+      console.log(notificationId);
       toast.success(response.data.message);
+
+      if (socket) {
+        console.log("emitting");
+        socket.emit("postAddedNotification", {notificationId});
+      }
       setFormData(initialFormData);
       setFormError(initialFormError);
       navigate('/');
