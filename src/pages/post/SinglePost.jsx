@@ -395,7 +395,6 @@ const SinglePost = () => {
     }
   }, [socket, setNotifications])
 
-
   const handleFollow = async (authorId) => {
     try {
       setLoading(true)
@@ -547,7 +546,7 @@ const SinglePost = () => {
         setLoading(true);
         const response = await axios.post(`/comments/${postId}/reply/${replyId}`, replyToReplyFormData);
         const newReplyToReply = response.data.data  // Extracting the newly created reply
-        console.log(newReplyToReply);
+        const { notificationId } = response.data;
         setComments(prevComments => {
             const updateReplies = (replies) => {
                 if (!Array.isArray(replies)) {
@@ -567,6 +566,15 @@ const SinglePost = () => {
 
             return updatedComments;
         });
+
+        setNotifications(prev => [...prev, {
+          type: "comment",
+          message: `Reply posted successfully!`,
+          isRead: false,
+          _id : notificationId
+        }]);
+
+
         setReplyToReplyFormData(initialFormData);
         setLoading(false)
     } catch (error) {
