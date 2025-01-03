@@ -158,13 +158,10 @@ const PrivateNavBar = () => {
              <div className="absolute right-0 mt-4 bg-white p-4 w-[27rem] rounded-lg border border-slate-200 z-50">
              <h4 className="font-bold text-lg mb-2 text-blue-500">Notifications</h4>
              <div className="flex justify-between items-center mb-2">
-               <button
-                 className="text-blue-500 text-sm font-medium hover:underline"
-               >
-                 Mark all as read
-               </button>
+              
              </div>
-              <ul className="space-y-2">
+             <div>
+             <ul className="space-y-2">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <li
@@ -199,12 +196,17 @@ const PrivateNavBar = () => {
                         </svg>
                       </button>
                     </li>
-                    
                   ))
                 ) : (
                   <li className="text-gray-500 text-center">No notifications available</li>
                 )}
               </ul>
+                <div className="flex justify-end">
+                  <button className="text-gray-700 text-sm font-light hover:underline justify-self-end mt-2 pt-5">
+                    Mark all as read
+                  </button>
+                </div>
+             </div>
            </div>
             )}
           </div>
