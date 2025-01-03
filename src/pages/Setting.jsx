@@ -402,7 +402,7 @@ const Setting = () => {
                           placeholder="2001-05-15"
                           value={formData.dateOfBirth}
                           onChange={handleChange}
-                          className="input-box w-full"
+                          className="border border-gray-300 rounded-md bg-white py-2 pl-4  text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none"
                         />
                       </div>
                       <div className="groupBox">

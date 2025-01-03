@@ -162,6 +162,8 @@ const PrivateNavBar = () => {
              </div>
              <div>
              <ul className="space-y-2">
+              
+              {/* Notifications */}
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <li
