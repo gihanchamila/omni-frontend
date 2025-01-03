@@ -170,7 +170,7 @@ const PrivateNavBar = () => {
                     <li
                       key={notification._id || `${notification.message}`}
                       className={`relative flex items-center justify-between rounded-lg text-sm cursor-pointer ${
-                        notification.isRead ? "font-regular text-gray-700" : "font-light"
+                        notification.isRead ? "font-light text-gray-500" : "font-regular text-gray-700"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
