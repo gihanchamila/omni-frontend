@@ -237,7 +237,6 @@ const SinglePost = () => {
   
       const response = await axios.get(`/comments/${postId}/comments`);
       const data = response.data.data;
-      console.log(data)
   
       const fetchProfilePic = async (key) => {
         try {
@@ -355,7 +354,6 @@ const SinglePost = () => {
         socket.on('nestedReplyAdd', handleNestedReplyAdd);
         socket.on('commentRemove', handleCommentRemove);
         socket.on('follow-status-updated', handleFollowStatusUpdate);
-    
         hasListeners.current = true;
       }
   
@@ -365,7 +363,6 @@ const SinglePost = () => {
         socket.off('nestedReplyAdd', handleNestedReplyAdd);
         socket.off('commentRemove', handleCommentRemove);
         socket.off('follow-status-updated', handleFollowStatusUpdate);
-    
         hasListeners.current = false;
       };
     }
@@ -517,6 +514,10 @@ const SinglePost = () => {
             return addReply(prevComments);
         });
 
+        if (socket) {
+          socket.emit("replyAdd", {notificationId});
+        }
+
         setNotifications(prev => [...prev, {
           type: "comment",
           message: `Reply posted successfully!`,
@@ -547,6 +548,7 @@ const SinglePost = () => {
         const response = await axios.post(`/comments/${postId}/reply/${replyId}`, replyToReplyFormData);
         const newReplyToReply = response.data.data  // Extracting the newly created reply
         const { notificationId } = response.data;
+
         setComments(prevComments => {
             const updateReplies = (replies) => {
                 if (!Array.isArray(replies)) {
@@ -567,13 +569,17 @@ const SinglePost = () => {
             return updatedComments;
         });
 
+        
+        if (socket) {
+          socket.emit("nestedReplyAdd", {notificationId});
+        }
+
         setNotifications(prev => [...prev, {
           type: "comment",
           message: `Reply posted successfully!`,
           isRead: false,
           _id : notificationId
         }]);
-
 
         setReplyToReplyFormData(initialFormData);
         setLoading(false)

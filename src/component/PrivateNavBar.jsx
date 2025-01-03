@@ -75,7 +75,6 @@ const PrivateNavBar = () => {
         return;
       }
       if (socket) {
-        console.log('Emitting notification-deleted event for notificationId:', id);
         socket.emit('notification-deleted', { notificationId: id });
       }
 
