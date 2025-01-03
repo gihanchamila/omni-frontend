@@ -155,7 +155,7 @@ const PrivateNavBar = () => {
               )}
             </button>
             {notificationDropdownOpen && (
-             <div className="absolute right-0 mt-4 bg-white p-4 w-[27rem] rounded-lg border border-slate-200 z-50">
+             <div className="absolute right-0 mt-4 bg-white p-4 w-[26.9rem] rounded-lg border border-slate-200 z-50">
              <h4 className="font-bold text-lg mb-2 text-blue-500">Notifications</h4>
              <div className="flex justify-between items-center mb-2">
               
@@ -198,7 +198,7 @@ const PrivateNavBar = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="text-gray-500 text-center">No notifications available</li>
+                  <li className="text-gray-500 text-center pt-5 pb-2">No notifications available</li>
                 )}
               </ul>
                 <div className="flex justify-end">
