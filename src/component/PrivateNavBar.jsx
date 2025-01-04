@@ -204,7 +204,7 @@ const PrivateNavBar = () => {
                 )}
               </ul>
                 <div className="flex justify-end">
-                  <button className="text-gray-700 text-sm font-light hover:underline justify-self-end mt-2 pt-5">
+                  <button className="text-gray-700 text-xs font-light hover:underline justify-self-end mt-2 pt-5">
                     Mark all as read
                   </button>
                 </div>
