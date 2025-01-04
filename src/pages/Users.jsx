@@ -6,7 +6,7 @@ import Modal from '../component/modal/Modal.jsx';
 import moment from 'moment';
 import { toast } from 'sonner';
 import SearchBar from '../component/search/SearchBar.jsx';
-import { useSocket } from '../hooks/useSocket.jsx';
+import { useSocket } from '../component/context/useSocket.jsx';
 
 const Users = () => {
 

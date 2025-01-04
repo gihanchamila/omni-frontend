@@ -6,7 +6,7 @@ import 'cropperjs/dist/cropper.css';
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
 import { toast } from 'sonner';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../context/useSocket.jsx';
 
 function UpdateProfilePictureModal() {
 

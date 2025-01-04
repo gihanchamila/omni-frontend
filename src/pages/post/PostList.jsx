@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
 

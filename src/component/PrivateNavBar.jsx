@@ -8,8 +8,7 @@ import ScrollLock from "react-scrolllock";
 import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
-import { NotificationContext } from "./context/NotificationContext.jsx";
-import { useSocket } from "../hooks/useSocket.jsx";
+import { useSocket } from "./context/useSocket.jsx";
 
 
 const PrivateNavBar = () => {

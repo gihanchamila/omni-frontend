@@ -8,7 +8,7 @@ import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
 import addPostValidator from '../../validators/addPostValidator.js';
 import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../../component/context/useSocket.jsx';
 import { useNotification } from '../../component/context/useNotification.jsx';
 
 const initialFormData = { title: "", description: "", file: null, category: "" };

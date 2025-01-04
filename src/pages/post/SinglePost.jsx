@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../../component/context/useSocket.jsx';
 import { useNotification } from '../../component/context/useNotification.jsx';
 import axios from '../../utils/axiosInstance.js';
 

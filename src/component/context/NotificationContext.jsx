@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import axios from '../../utils/axiosInstance';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from './useSocket.jsx';
 
 export const NotificationContext = createContext();
 

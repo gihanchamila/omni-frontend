@@ -8,7 +8,7 @@ import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
 import { toast } from 'sonner'
 
 import { useProfile } from "../component/context/useProfilePic.jsx"
-import { useSocket } from "../hooks/useSocket.jsx"
+import { useSocket } from "../component/context/useSocket.jsx"
 
 import loginValidator from "../validators/LoginValidator.js"
 

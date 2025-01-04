@@ -7,7 +7,7 @@ import Button from '../component/button/Button.jsx'
 import Pagination from '../component/pagination/Pagination.jsx'
 import Modal from '../component/modal/Modal.jsx'
 import {useAuth} from '../component/context/useAuth.jsx'
-import { useSocket } from '../hooks/useSocket.jsx'
+import { useSocket } from '../component/context/useSocket.jsx'
 
 const AdminList = () => {
 
