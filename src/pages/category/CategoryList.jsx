@@ -65,10 +65,8 @@ const CategoryList = () => {
     try {
       const input = e.target.value;
       setSearchValue(input);
-
       const response = await axios.get(`/category?q=${input}&page=${currentPage}&sortField=${sortField}&sortOrder=${sortOrder}`);
       const data = response.data.data;
-
       setCategories(data.categories);
       setTotalPage(data.pages);
     } catch (error) {

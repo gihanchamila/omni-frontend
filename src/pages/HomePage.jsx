@@ -1,5 +1,3 @@
-import React from 'react'
-import Button from '../component/button/Button.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 

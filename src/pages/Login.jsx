@@ -1,14 +1,10 @@
-import { useState, useContext } from "react"
+import { useState} from "react"
 import axios from "../utils/axiosInstance.js"
 import Button from '../component/button/Button.jsx'
 import { Link, useNavigate } from 'react-router-dom'
-import { ProfileContext } from "../component/context/ProfileContext.jsx"
 import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
-
 import { toast } from 'sonner'
-
 import { useProfile } from "../component/context/useProfilePic.jsx"
-import { useSocket } from "../component/context/useSocket.jsx"
 
 import loginValidator from "../validators/LoginValidator.js"
 
@@ -17,14 +13,13 @@ const initialFormError = {email : "", password : ""}
 
 const Login = () => {
   
-  const socket = useSocket()
   const [isEmailTyping, setIsEmailTyping] = useState(false);
   const [isPasswordTyping, setIsPasswordTyping] = useState(false);
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
-  const { profilePicUrl, setProfilePicUrl, getCurrentUser, fetchProfilePic } = useProfile()
+  const {fetchProfilePic} = useProfile()
 
 
   const navigate = useNavigate()
