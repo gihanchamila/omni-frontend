@@ -142,21 +142,23 @@ const PrivateNavBar = () => {
             </NavLink>
           )}
 
-          {/* <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`}>
+              {/* 
+              <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`}>
                 <div className="navGroup"><IoMdNotificationsOutline className="w-6 h-6" /></div>
-              </NavLink>*/}
+              </NavLink>
+              */}
           <div className="relative">
             <button onClick={toggleDropdownNotification} className="navGroup flex items-center">
               <IoMdNotificationsOutline className="relative w-6 h-6" />
               {unreadCount > 0 && (
                 <span className="absolute bg-red-500 left-1.5 top-3 text-white text-xs w-2 h-2 rounded-full font-semibold">
-                  {/* {unreadCount} */}
                 </span>
               )}
             </button>
+
             {notificationDropdownOpen && (
              <div className="absolute right-0 mt-4 bg-white p-4 w-[26.9rem] rounded-lg border border-slate-200 z-50">
-             <h4 className="font-bold text-lg mb-2 text-blue-500">Notifications</h4>
+             <h4 className="font-bold text-xl mb-2 text-blue-500">Notifications</h4>
              <div className="flex justify-between items-center mb-2">
               
              </div>
@@ -173,7 +175,7 @@ const PrivateNavBar = () => {
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
-                      <span className="w-full hover:underline truncate" title={notification.message}>
+                      <span className="w-full hover:underline truncate pt-4" title={notification.message}>
                         {notification.message}
                       </span>
                       <button

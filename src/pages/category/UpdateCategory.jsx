@@ -75,7 +75,6 @@ const UpdateCategory = () => {
             
         }
     }
-    
 
   return (
     <section className="bg-white">
