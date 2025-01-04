@@ -32,7 +32,6 @@ import ForgotPassword from "./pages/ForgotPassword.jsx"
 import UserProfile from "./pages/UserProfile.jsx";
 import Users from "./pages/Users.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import OurStory from "./pages/OurStory.jsx";
 import AdminList from "./pages/AdminList.jsx";
 
 function App() {
