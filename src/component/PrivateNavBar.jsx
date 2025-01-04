@@ -50,8 +50,9 @@ const PrivateNavBar = () => {
           toast.error('User data is incomplete');
         }
       } catch (error) {
-        toast.error('Error getting user');
-        console.log(error);
+        const response = error.response;
+        const data = response.data;
+        toast.error(data.message);
       }
     };
     getCurrentUser();

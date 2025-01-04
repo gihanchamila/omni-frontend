@@ -63,16 +63,13 @@ const AdminList = () => {
     }, [totalPage]);
 
     useEffect(() => {
-
       socket.on("Admin-previlages-changed", (data) => {
         if(socket){
-          console.log(`Admin-previlages-changed`, data)
           setAdmins((prevAdmins) => prevAdmins.filter(admin => admin._id !== data.id));
         } else {
           console.error('Socket is undefined');
         }
       })
-
       return () => {
         if (socket) socket.off("Admin-previlages-changed");  // Clean up the event listener
      };

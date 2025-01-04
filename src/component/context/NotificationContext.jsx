@@ -1,4 +1,3 @@
-// filepath: /d:/Projects/Non academic/omni-frontend/src/component/context/NotificationContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 import axios from '../../utils/axiosInstance';
 import { useAuth } from './useAuth';
@@ -12,11 +11,6 @@ export const NotificationProvider = ({ children }) => {
   const socket = useSocket();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-
-    
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [pageCount, setPageCount] = useState([]);
 
   const fetchNotifications = async () => {
     try {
@@ -42,7 +36,6 @@ export const NotificationProvider = ({ children }) => {
       setUnreadCount((prev) => prev - 1);
     } catch (error) {
       const response = error.response;
-      console.log(error);
       const data = response.data;
       toast.error(data.message);
     }
@@ -80,7 +73,6 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (socket) {
       socket.on('new-notification', (data) => {
-        console.log('New notification added:', data);
         setNotifications((prev) => [...prev, data]);
         setUnreadCount((prev) => prev + 1);
       });
@@ -95,7 +87,6 @@ export const NotificationProvider = ({ children }) => {
       });
 
       socket.on('notification-deleted', (data) => {
-        console.log('Notification deleted', data);
         setNotifications((prev) =>
           prev.filter((n) => n.id !== data.notificationId)
         );
@@ -103,7 +94,6 @@ export const NotificationProvider = ({ children }) => {
       });
 
       socket.on("newComment", (data) => {
-        console.log('New comment added:', data);
         setNotifications((prev) => [
           ...prev,
           { message: `New comment on post ${data.postId}`, type: 'info', id: data.comment._id }
@@ -112,7 +102,6 @@ export const NotificationProvider = ({ children }) => {
       });
 
       socket.on('new-reply', (data) => {
-        console.log('New reply added:', data);
         setNotifications((prev) => [
           ...prev,
           { message: `New reply on post ${data.postId}`, type: 'info', id: data.reply._id }

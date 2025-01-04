@@ -48,7 +48,6 @@ const Signup = () => {
   useEffect(() => {
     if (socket) {
       socket.on('User-registered', (data) => {
-        console.log('New user registered:', data);
       });
     }
     return () => {
@@ -86,9 +85,7 @@ const Signup = () => {
 
         const response = await axios.post('/auth/signup', requestBody);
         const data = response.data;
-
         toast.success(data.message);
-        console.log(data.newUser._id)
 
         setFormData(initialFormData);
         setFormError(initialFormError);

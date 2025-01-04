@@ -188,7 +188,6 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/security-question', securityQuestionData)
       const data = response.data;
-      console.log(securityQuestionData)
       toast.success(data.message)
       setSecurityQuestionData(initialQuestionData)
     }catch(error){
@@ -499,7 +498,7 @@ const Setting = () => {
                       <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
                       <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
                       <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
-                      <Button onClick={() => {setShowModal(true); console.log("Clicked" ); }} variant="error" className="mt-4">Delete Account</Button>
+                      <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
                     </div>
                   </div>
 

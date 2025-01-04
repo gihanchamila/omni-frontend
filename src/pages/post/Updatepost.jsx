@@ -60,14 +60,14 @@ const UpdatePost = () => {
     const getExisitingFile = async () => {
       if (fileKey) {  
           try {
-              console.log(fileKey)
               const response = await axios.get(`/file/signed-url?key=${fileKey}`);
               const data = response.data.data;
               setFile(response.data.data.url)
               toast.success(data.message);
-              console.log(response.data.data.url)
           } catch (error) {
-              console.log("Failed to get profile picture");
+              const response = error.response;
+              const data = response.data;
+              toast.error(data.message || "Failed to fetch existing file");
           }
       }
     };

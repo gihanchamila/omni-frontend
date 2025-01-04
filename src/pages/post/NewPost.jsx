@@ -54,7 +54,6 @@ const NewPost = () => {
       }
 
       if (!hasListeners.current) {
-        console.log("adding listener");
         socket.on('postAddedNotification', handlePostAdded)
         hasListeners.current = true;
       }
@@ -107,11 +106,9 @@ const NewPost = () => {
 
       const response = await axios.post('/posts', formInput);
       const notificationId = response.data.data.notificationId;
-      console.log(notificationId);
       toast.success(response.data.message);
 
       if (socket) {
-        console.log("emitting");
         socket.emit("postAddedNotification", {notificationId});
       }
       setFormData(initialFormData);

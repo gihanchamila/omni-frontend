@@ -63,7 +63,6 @@ const Users = () => {
   useEffect(() => {
     if (socket) {
       socket.on('User-deleted', (data) => {
-        console.log('User-deleted:', data);
         setUsers((prevUsers) => prevUsers.filter(user => user._id !== data.id));
       });
     }
@@ -89,8 +88,7 @@ const Users = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data
-      console.log(data)
-      toast.error('Failed to delete user');
+      toast.error(data.message || 'Failed to delete user');
     }
   };
 

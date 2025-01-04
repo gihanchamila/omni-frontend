@@ -131,7 +131,9 @@ const SinglePost = () => {
                   setProfilePic(response.data.data.url)
                   toast.success(data.message);
               } catch (error) {
-                  console.log("Failed to get profile picture");
+                  const response = error.response;
+                  const data = response.data;
+                  toast.error(data.message || "Failed to fetch profile picture");
               }
           }
         };
@@ -292,8 +294,9 @@ const SinglePost = () => {
       
       setComments(formattedComments);
     } catch (error) {
-      console.log(error)
-      toast.error(error.response?.data?.message);
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message || 'Failed to fetch comments');
     } finally {
       setLoading(false);
     }
@@ -306,7 +309,7 @@ const SinglePost = () => {
   useEffect(() => {
 
     if (!hasListeners.current) {
-      const handleCommentAdd = ({ postId: updatedPostId, profilePicKey, commentId, firstName, lastName }) => {
+      const handleCommentAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
             /* fetchProfilePic(profilePicKey)
@@ -315,7 +318,7 @@ const SinglePost = () => {
         }
       };
   
-      const handleReplyAdd = ({ postId: updatedPostId, profilePicKey, firstName, lastName }) => {
+      const handleReplyAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
             /* fetchProfilePic(profilePicKey)
@@ -324,7 +327,7 @@ const SinglePost = () => {
         }
       };
   
-      const handleNestedReplyAdd = ({ postId: updatedPostId, profilePicKey }) => {
+      const handleNestedReplyAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
             /* fetchProfilePic(profilePicKey)
@@ -381,7 +384,6 @@ const SinglePost = () => {
       }
 
       if (!hasListeners.current) {
-        console.log("adding listener for delete post");
         socket.on('postAddedNotification', handlePostDelete)
         hasListeners.current = true;
       }
@@ -631,15 +633,11 @@ const SinglePost = () => {
     try{
       const response = await axios.delete(`/posts/${postId}`);
         const data = response.data;
-
-        console.log("Delete Response:", response);
         const notificationId = data.notificationId;
-        console.log("Notification ID:", notificationId);
 
         // Emit notification event if socket is available
         if (socket) {
             try {
-                console.log("Emitting postDeletedNotification");
                 socket.emit("postDeletedNotification", { notificationId });
             } catch (emitError) {
                 console.error("Socket emission error:", emitError);
