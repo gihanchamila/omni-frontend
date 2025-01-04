@@ -5,5 +5,4 @@ import post from './Post/Post.jpg'
 import coverPhoto from './Profile/cover.jpg'
 import profilePic from './Profile/profilePic.jpg'
 
-
 export {profile, omni, post, coverPhoto, profilePic}

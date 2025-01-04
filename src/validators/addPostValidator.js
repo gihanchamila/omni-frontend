@@ -9,15 +9,12 @@ const addPostValidator = ({ title, description, category, file }, step) => {
         if (!title) {
             errors.title = "title is required";
         }
-
     }
 
     if (step === 2) {
-
         if (!description || description.trim() === "") {
             errors.description = "Description is required";
         }
-
         if (!category) {
             errors.category = "category is required";
         }
