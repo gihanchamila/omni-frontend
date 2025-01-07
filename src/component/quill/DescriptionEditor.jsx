@@ -1,25 +1,6 @@
-import React, { useRef } from 'react';
+import{ useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import {
-  FaHeading,
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaStrikethrough,
-  FaQuoteLeft,
-  FaCode,
-  FaListOl,
-  FaListUl,
-  FaPalette,
-  FaTint,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-  FaAlignJustify,
-  FaLink,
-  FaEraser,
-} from 'react-icons/fa';
 
 const DescriptionEditor = ({ formData, handleChange }) => {
   const quillRef = useRef(null);
