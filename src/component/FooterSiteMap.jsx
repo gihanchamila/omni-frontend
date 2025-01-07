@@ -21,8 +21,8 @@ const FooterSiteMap = () => {
   ];
 
   return (
-    <footer className="bg-gray-50 text-gray-500 py-12 mt-10 rounded-t-xl">
-      <div className="container mx-auto px-6 md:px-12">
+    <footer className="bg-gray-50 text-gray-500 py-8 mt-10 rounded-t-xl">
+      {/* <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-[240px] gap-y-8">
           {sections.map((section, index) => (
             <div key={index}>
@@ -42,12 +42,11 @@ const FooterSiteMap = () => {
             </div>
           ))}
         </div>
-        <div className="mt-8 text-center border-t border-gray-700 pt-4">
-          <p className="text-gray-500 text-lg">
+        
+      </div> */}
+          <p className="text-gray-500 text-sm flex items-center justify-center">
             © {new Date().getFullYear()} Omni. All rights reserved.
           </p>
-        </div>
-      </div>
     </footer>
   );
 };
