@@ -170,12 +170,12 @@ const PrivateNavBar = () => {
                   notifications.map((notification) => (
                     <li
                       key={notification._id || `${notification.message}`}
-                      className={`relative flex items-center justify-between rounded-lg text-sm cursor-pointer ${
+                      className={`relative flex m-0 items-center justify-between rounded-lg text-sm cursor-pointer ${
                         notification.isRead ? "font-light text-gray-500" : "font-regular text-gray-700"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
-                      <span className="w-full hover:underline truncate pt-4" title={notification.message}>
+                      <span className="w-full hover:underline truncate pt-1" title={notification.message}>
                         {notification.message}
                       </span>
                       <button
