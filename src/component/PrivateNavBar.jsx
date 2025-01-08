@@ -175,7 +175,7 @@ const PrivateNavBar = () => {
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
-                      <span className="w-full hover:underline truncate pt-1" title={notification.message}>
+                      <span className="w-full hover:underline truncate" title={notification.message}>
                         {notification.message}
                       </span>
                       <button
@@ -202,11 +202,11 @@ const PrivateNavBar = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="text-gray-500 text-center pt-5 pb-2">No notifications available</li>
+                  <li className="text-gray-500 text-center pt-2 pb-2">No notifications available</li>
                 )}
               </ul>
                 <div className="flex justify-end">
-                  <button className="text-gray-700 text-xs font-light hover:underline justify-self-end mt-2 pt-5">
+                  <button className="text-gray-700 text-xs font-light hover:underline justify-self-end mt-1 pt-2">
                     Mark all as read
                   </button>
                 </div>
