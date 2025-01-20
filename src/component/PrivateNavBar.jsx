@@ -1,6 +1,6 @@
 import { NavLink, useLocation, useNavigate} from "react-router-dom";
 import axios from '../utils/axiosInstance.js';
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef} from "react";
 import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -9,32 +9,32 @@ import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
-
+import useClickOutside from "./context/useClickOutside.jsx";
 
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
   const socket = useSocket();
+  const panelRef = useRef(null)
   const { notifications, setNotifications, markAsRead, deleteNotification } = useNotification();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const [loading, setLoading] = useState(false);
   const { profilePicUrl, setProfilePicUrl } = useProfile();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
 
-  // Close dropdowns and reset classes on location change
   useEffect(() => {
     setDropdownOpen(false);
     setMobileMenuOpen(false);
     document.body.classList.remove('backdrop-blur');
   }, [location]);
 
-  // Fetch current user data
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
@@ -91,15 +91,6 @@ const PrivateNavBar = () => {
     }
   }, [deleteNotification, socket, setNotifications]);
 
-  // Toggle dropdown visibility
-  const toggleDropdown = () => setDropdownOpen(prev => !prev);
-
-  // Toggle mobile menu visibility
-  const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
-
-  const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
-
-  // Handle user logout
   const handleLogOut = () => {
     window.localStorage.removeItem('blogData');
     setCurrentUser(null);
@@ -108,11 +99,19 @@ const PrivateNavBar = () => {
     setTimeout(() => {
       navigate('/login');
     }, 0);
-};
+  };
+
+  const toggleDropdown = () => setDropdownOpen(prev => !prev);
+
+  const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
+
+  const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
+
+  useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
 
   return (
     <div>
-      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 pr-0">
+      <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
         
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
@@ -142,6 +141,10 @@ const PrivateNavBar = () => {
             </NavLink>
           )}
 
+            {/* <NavLink className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} to="/login" onClick={handleLogOut}>
+                  <div className="navGroup">Logout</div>
+            </NavLink> */}
+
               {/* 
               <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`}>
                 <div className="navGroup"><IoMdNotificationsOutline className="w-6 h-6" /></div>
@@ -157,7 +160,7 @@ const PrivateNavBar = () => {
             </button>
 
             {notificationDropdownOpen && (
-             <div className="absolute right-0 mt-4 bg-white p-4 w-[26.9rem] rounded-lg border border-slate-200 z-50">
+             <div ref={panelRef} className="absolute right-0 mt-4 bg-white p-4 w-[26.9rem] rounded-lg border border-slate-200 z-50">
              <h4 className="font-bold text-xl mb-2 text-blue-500">Notifications</h4>
              <div className="flex justify-between items-center mb-2">
               

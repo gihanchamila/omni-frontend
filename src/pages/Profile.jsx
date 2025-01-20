@@ -168,7 +168,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-slate-50 rounded-xl p-4">
+    <div className="bg-slate-50 rounded-xl lg:p-4">
       <div className="relative">
         <div className="bg-gradient-to-b from-blue-500 to-indigo-700 h-48 w-full rounded-lg flex items-center justify-center relative">
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">

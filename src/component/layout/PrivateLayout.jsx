@@ -12,9 +12,18 @@ const PrivateLayout = () => {
 
     return (
         <>
-            <PrivateNavBar />
-            <Outlet />
-            <FooterSiteMap/>
+             <div className="flex flex-col min-h-screen">
+                {/* Navbar */}
+                <PrivateNavBar />
+
+                {/* Main Content */}
+                <div className="flex-1">
+                    <Outlet />
+                </div>
+
+                {/* Footer */}
+                <FooterSiteMap />
+            </div>
         </>
     )
 }

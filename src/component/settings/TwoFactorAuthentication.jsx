@@ -130,13 +130,13 @@ const TwoFactorAuthentication = ({
 
           {step === 'verify' && (
             <>
-              <div className="groupBox mb-12">
-                <label htmlFor="verification-code" className="text-gray-700 font-medium">Enter 6-digit Code</label>
+              <div className="groupBox mb-12 ">
+                <label htmlFor="verification-code" className="text-gray-700 font-medium pb-6">Enter 6-digit Code</label>
                 <input
                   type="text"
                   name="verificationCode"
                   id="verification-code"
-                  className="input-box px-4 py-2 pb-3 border rounded-lg focus:outline-none"
+                  className="input-box px-4 py-2 pb-3 border rounded-lg focus:outline-none "
                   placeholder="Enter 6-digit code"
                   value={verificationCode}
                   onChange={(e) => {

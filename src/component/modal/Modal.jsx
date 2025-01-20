@@ -1,7 +1,12 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import useClickOutside from '../context/useClickOutside';
 
 const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
+  const modalRef = useRef(null)
+
+  useClickOutside(modalRef, onCancel);
+
   useEffect(() => {
     if (showModal) {
       document.body.classList.add('no-scroll');
@@ -17,11 +22,12 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
 
   return (
     <div
+      
       id="popup-modal"
       tabIndex="-1"
-      className=" fixed top-0 right-0 left-0 z-0 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50"
+      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50 min-h-screen"
     >
-      <div className="relative p-4 w-full max-w-md max-h-full">
+      <div ref={modalRef} className="relative p-4 w-full max-w-md">
         <div className="relative bg-white rounded-lg shadow">
           <button
             type="button"

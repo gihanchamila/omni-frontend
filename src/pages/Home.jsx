@@ -43,7 +43,7 @@ const Home = () => {
   const handleNavigateAdmins = () => navigate('/admin-list');
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 min-h-[60vh] gap-4 md:gap-8 rounded-lg">
+    <div className="grid grid-cols-1 md:grid-cols-12 min-h-[60vh] gap-4 md:gap-8 rounded-lg sm:w-full">
       {/* Left Column: Welcome User */}
       <div className="col-span-1 md:col-start-1 md:col-end-8 bg-gray-50 rounded-lg p-6 md:p-12 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-2 text-center">

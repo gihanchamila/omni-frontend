@@ -119,7 +119,6 @@ const AdminList = () => {
 
   return (
     <div>
-
         <div>
             <div>
                 <h2 className='title'>Administrative Users</h2>
@@ -134,9 +133,6 @@ const AdminList = () => {
             </div>
         </div>
     
-    
-      
-
         {loading ? (
             "Loading..."
         ) : (
