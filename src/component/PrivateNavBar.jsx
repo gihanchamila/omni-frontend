@@ -171,8 +171,8 @@ const PrivateNavBar = () => {
                   notifications.map((notification) => (
                     <li
                       key={notification._id || `${notification.message}`}
-                      className={`relative flex m-0 items-center justify-between rounded-lg text-sm cursor-pointer pb-2 ${
-                        notification.isRead ? "font-light text-gray-500" : "font-regular text-gray-600"
+                      className={`relative flex m-0 items-center justify-between rounded-lg text-gray-700 text-sm font-light cursor-pointer pt-2 pb-2 ${
+                        notification.isRead ? "font-light text-gray-700" : "font-regular text-gray-600"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
@@ -203,7 +203,7 @@ const PrivateNavBar = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="text-gray-500 text-center pt-2 pb-2">No notifications available</li>
+                  <li className="text-gray-500 text-center text-sm pt-2 pb-2">No notifications available</li>
                 )}
               </ul>
                 <div className="flex justify-end space">
