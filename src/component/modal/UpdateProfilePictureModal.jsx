@@ -7,10 +7,12 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
 import { toast } from 'sonner';
 import { useSocket } from '../context/useSocket.jsx';
+import useClickOutside from '../context/useClickOutside.jsx';
 
 function UpdateProfilePictureModal() {
 
     const socket = useSocket();
+    const modalRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [removeModal, setRemoveModal] = useState(false);
@@ -23,6 +25,7 @@ function UpdateProfilePictureModal() {
     const [deleteProfileKey, setDeleteProfileKey] = useState(null);
     const cropperRef = useRef(null);
     const [currentUser, setCurrentUser] = useState();
+
 
     useEffect(() => {
         const getCurrentUser = async () => {
@@ -146,6 +149,8 @@ function UpdateProfilePictureModal() {
         }
     };
 
+    useClickOutside(modalRef, () => setShowModal(false));
+
     return (
         <div>
             <div className='space-x-4'>
@@ -174,7 +179,7 @@ function UpdateProfilePictureModal() {
 
             {/* Add/Edit Profile Picture Modal */}
             {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
+                <div ref={modalRef} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
                             onClick={handleCloseModal}

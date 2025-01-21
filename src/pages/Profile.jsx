@@ -27,7 +27,6 @@ const Profile = () => {
   const [likedPosts, setLikedPosts] = useState({});
   const [profileKey, setProfileKey] = useState(null);
 
-
   // Fetch current user profile
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +77,6 @@ const Profile = () => {
     };
     fetchUserPosts();
   }, [id]);
-
 
  // Fetch followers or following
     const fetchFollowersOrFollowing = async (endpoint, setState, setLoadingState) => {

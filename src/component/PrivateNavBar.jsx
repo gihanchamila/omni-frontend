@@ -107,8 +107,10 @@ const PrivateNavBar = () => {
 
   const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
-  useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
-  useClickOutside(profileRef, () => setDropdownOpen(false));
+    useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
+  //useClickOutside(profileRef, () => setDropdownOpen(false));
+
+
 
   return (
     <div>
@@ -164,6 +166,7 @@ const PrivateNavBar = () => {
              <ul className="space-y-2">
               
               {/* Notifications */}
+
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <li
