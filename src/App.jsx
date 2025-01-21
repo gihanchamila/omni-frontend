@@ -34,6 +34,8 @@ import Users from "./pages/Users.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import AdminList from "./pages/AdminList.jsx";
 
+import NotificationList from "./pages/NotificationList.jsx";
+
 function App() {
   
   return (
@@ -56,6 +58,7 @@ function App() {
               <Route path="settings" element={<Setting />} />
               <Route path="dashboard" element={<Home/>} />
               <Route path="admin-list" element={<AdminList/>} />
+              <Route path="notifications" element={<NotificationList/>} />
             </Route>
             <Route element={<PublicLayout />}>
               <Route path="signup" element={<Signup />} />

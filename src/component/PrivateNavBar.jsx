@@ -11,6 +11,8 @@ import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
 import useClickOutside from "./context/useClickOutside.jsx";
 
+import { Link } from "react-router-dom";
+
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -171,7 +173,7 @@ const PrivateNavBar = () => {
                   notifications.map((notification) => (
                     <li
                       key={notification._id || `${notification.message}`}
-                      className={`relative flex m-0 items-center justify-between rounded-lg text-gray-700 text-sm font-light cursor-pointer pt-2 pb-2 ${
+                      className={`relative flex m-0 items-center justify-between rounded-lg text-gray-700 text-sm font-light cursor-pointer pt-2 ${
                         notification.isRead ? "font-light text-gray-700" : "font-regular text-gray-600"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
@@ -210,9 +212,15 @@ const PrivateNavBar = () => {
                   <button className="notification-bottom">
                     Mark all as read
                   </button>
-                  <button className="notification-bottom pr-0" onClick={clearNotifications}>
+                  <button className="notification-bottom" onClick={clearNotifications}>
                     Clear all
                   </button>
+                  <Link to={`/notifications`}>
+                    <button className="notification-bottom pr-0" onClick={clearNotifications}>
+                      View all
+                    </button>
+                  </Link>
+                  
                 </div>
              </div>
            </div>
@@ -259,7 +267,7 @@ const PrivateNavBar = () => {
                 <NavLink className="mobile-nav-link" to="/" onClick={toggleMobileMenu}>Home</NavLink>
                 <NavLink className="mobile-nav-link" to="/posts" onClick={toggleMobileMenu}>Posts</NavLink>
                 <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Write</NavLink>
-                <NavLink className="mobile-nav-link" to="" onClick={toggleMobileMenu}>Notifications</NavLink>
+                <NavLink className="mobile-nav-link" to="/notifications" onClick={toggleMobileMenu}>Notifications</NavLink>
                 
                 <div className="border-t mt-4 pt-4">
                   <NavLink className="mobile-nav-link" to={`${currentUser?._id}`} onClick={toggleMobileMenu}>Profile</NavLink>

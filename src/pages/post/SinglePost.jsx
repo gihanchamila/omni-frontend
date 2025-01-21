@@ -312,17 +312,13 @@ const SinglePost = () => {
       const handleCommentAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
-            /* fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey) */
-            getComments()
+          getComments()
         }
       };
   
       const handleReplyAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
-            /* fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey) */
             getComments()
         }
       };
@@ -330,9 +326,7 @@ const SinglePost = () => {
       const handleNestedReplyAdd = ({ postId: updatedPostId}) => {
         if (updatedPostId === postId) {
           setCommentCount(prevCount => prevCount + 1);
-            /* fetchProfilePic(profilePicKey)
-            fetchSignedUrl(profilePicKey) */
-            getComments()
+          getComments()
         }
       };
       
@@ -445,15 +439,15 @@ const SinglePost = () => {
       setLoading(true);
       const response = await axios.post(`/comments/${postId}`, formData);
       const newComment = response.data.data;
-      const { notificationId } = response.data;
+      const { notificationId, message } = response.data;
   
       if (socket) {
-        socket.emit("newComment", {notificationId});
+        socket.emit("new-comment", {notificationId});
       }
   
       setNotifications(prev => [...prev, {
         type: "comment",
-        message: `Commment posted successfully!`,
+        message,
         isRead: false,
         _id : notificationId
       }]);

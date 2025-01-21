@@ -16,6 +16,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       const response = await axios.get("/notification/get-notifications");
       const data = response.data.data;
+      console.log(data)
       setNotifications(data);
       setUnreadCount(data.filter((n) => !n.isRead).length);
     } catch (error) {
