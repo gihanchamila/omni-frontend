@@ -114,11 +114,13 @@ const PrivateNavBar = () => {
       <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
         
         {/* Logo */}
+
         <div className="flex-shrink-0 flex items-center">
           <span>Omni</span>
         </div>
         
         {/* Mobile Menu Toggle Button */}
+
         <div className="md:hidden">
           <button onClick={toggleMobileMenu} className="focus:outline-none">
             {mobileMenuOpen ? <AiOutlineClose className="w-5 h-5 font-bold" /> : <AiOutlineMenu className="w-5 h-5" />}
@@ -126,6 +128,7 @@ const PrivateNavBar = () => {
         </div>
 
         {/* Desktop Navigation */}
+
         <div className="hidden md:flex items-center space-x-5">
           <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`} to="/" end>
             <div className="navGroup">Home</div>
@@ -141,15 +144,6 @@ const PrivateNavBar = () => {
             </NavLink>
           )}
 
-            {/* <NavLink className={({ isActive }) => `dropdown ${isActive ? 'activeNavLink' : ''}`} to="/login" onClick={handleLogOut}>
-                  <div className="navGroup">Logout</div>
-            </NavLink> */}
-
-              {/* 
-              <NavLink className={({ isActive }) => `navlink ${isActive ? 'activeNavLink' : ''}`}>
-                <div className="navGroup"><IoMdNotificationsOutline className="w-6 h-6" /></div>
-              </NavLink>
-              */}
           <div className="relative">
             <button onClick={toggleDropdownNotification} className="navGroup flex items-center">
               <IoMdNotificationsOutline className="relative w-6 h-6" />
@@ -222,6 +216,7 @@ const PrivateNavBar = () => {
           </div>
 
           {/* Profile Dropdown */}
+          
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center">
               <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
@@ -243,6 +238,7 @@ const PrivateNavBar = () => {
         </div>
 
         {/* Mobile Menu */}
+
         {mobileMenuOpen && (
           <ScrollLock>
             <div className="md:hidden fixed inset-0 z-50 bg-white flex flex-col px-5 text-black transition-transform duration-300 ease-in-out transform">
