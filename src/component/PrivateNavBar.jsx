@@ -17,13 +17,13 @@ const PrivateNavBar = () => {
   const auth = useAuth();
   const socket = useSocket();
   const panelRef = useRef(null)
+  const profileRef = useRef(null)
   const { notifications, setNotifications, markAsRead, deleteNotification, clearNotifications } = useNotification();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const [loading, setLoading] = useState(false);
   const { profilePicUrl, setProfilePicUrl } = useProfile();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
@@ -66,7 +66,7 @@ const PrivateNavBar = () => {
   };
   
   const handleDelete = useCallback(async (e, id) => {
-    e.stopPropagation(); // Prevent parent click handler
+    e.stopPropagation(); 
     setLoading(true);
     try {
 
@@ -108,6 +108,7 @@ const PrivateNavBar = () => {
   const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
   useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
+  useClickOutside(profileRef, () => setDropdownOpen(false));
 
   return (
     <div>
@@ -216,9 +217,9 @@ const PrivateNavBar = () => {
           </div>
 
           {/* Profile Dropdown */}
-          
+
           <div className="relative">
-            <button onClick={toggleDropdown} className="flex items-center">
+            <button onClick={toggleDropdown} ref={profileRef} className="flex items-center">
               <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
             </button>
             {dropdownOpen && (
