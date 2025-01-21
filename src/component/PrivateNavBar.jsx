@@ -17,7 +17,7 @@ const PrivateNavBar = () => {
   const auth = useAuth();
   const socket = useSocket();
   const panelRef = useRef(null)
-  const { notifications, setNotifications, markAsRead, deleteNotification } = useNotification();
+  const { notifications, setNotifications, markAsRead, deleteNotification, clearNotifications } = useNotification();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const [loading, setLoading] = useState(false);
   const { profilePicUrl, setProfilePicUrl } = useProfile();
@@ -208,9 +208,12 @@ const PrivateNavBar = () => {
                   <li className="text-gray-500 text-center pt-2 pb-2">No notifications available</li>
                 )}
               </ul>
-                <div className="flex justify-end">
-                  <button className="text-gray-700 text-xs font-light hover:underline justify-self-end mt-1 pt-2">
+                <div className="flex justify-end space">
+                  <button className="notification-bottom">
                     Mark all as read
+                  </button>
+                  <button className="notification-bottom pr-0" onClick={clearNotifications}>
+                    Clear all
                   </button>
                 </div>
              </div>
