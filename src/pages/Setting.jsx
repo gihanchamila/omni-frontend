@@ -97,25 +97,6 @@ const Setting = () => {
     getDevices()
   }, []);
 
-  /*
-  useEffect(() => {
-   const getprofilePic = async () => {
-      try{
-        const response = await axios.get(`/file/signed-url?key=${profileKey}`)
-        const data = response.data.data
-        setProfilePic(data.url)
-        toast.success(response.data.message)
-      }catch(error){
-        const response = error.response;
-        const data = response.data
-        toast.error(data.message)
-      }
-   }
-   if (profileKey) {
-    getprofilePic();
-  }
-  },[profileKey])
-*/
   useEffect(() => {
     if (!socket) return;
 

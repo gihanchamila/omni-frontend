@@ -111,7 +111,6 @@ const PostList = () => {
     }
   }, [posts]);
 
-
   useEffect(() => {
     const getLikedPosts = async () => {
       const response = await axios.get('/likes/posts/liked');

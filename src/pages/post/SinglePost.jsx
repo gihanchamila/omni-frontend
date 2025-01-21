@@ -907,7 +907,6 @@ const SinglePost = () => {
                 )}
               </div>
             </section>
-
             <Modal className='z-auto' showModal={showModal} title="Are you sure you want to delete this post?" onConfirm={() => handlePostDelete(post._id)} onCancel={closeModal} />
           </div>
       </div>
