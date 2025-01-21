@@ -130,7 +130,7 @@ const TwoFactorAuthentication = ({
 
           {step === 'verify' && (
             <>
-              <div className="groupBox mb-12 ">
+              <div className="groupBox">
                 <label htmlFor="verification-code" className="text-gray-700 font-medium pb-6">Enter 6-digit Code</label>
                 <input
                   type="text"
@@ -148,14 +148,14 @@ const TwoFactorAuthentication = ({
                   required
                 />
               </div>
-              <Button variant='info' type="submit" disabled={loading}>
+              <Button variant='info' type="submit" className={"mt-5"} disabled={loading}>
                 {loading ? 'Verifying...' : codeButtonText}
               </Button>
             </>
           )}
 
           {step === 'success' && isVerified && (
-            <Button variant="info" onClick={() => setShowModal(true)}>
+            <Button className={'mt-6'} variant="info" onClick={() => setShowModal(true)}>
               Update 2-step verification email
             </Button>
           )}

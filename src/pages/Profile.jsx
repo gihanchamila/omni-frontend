@@ -5,6 +5,7 @@ import { useProfile } from "../component/context/useProfilePic.jsx";
 import { toast } from "sonner";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
+import { coverPhoto } from "../assets/index.js";
 import { HiOutlineCamera } from "react-icons/hi";
 
 const Profile = () => {
@@ -168,28 +169,40 @@ const Profile = () => {
   return (
     <div className="bg-slate-50 rounded-xl lg:p-4">
       <div className="relative">
-        <div className="bg-gradient-to-b from-blue-500 to-indigo-700 h-48 w-full rounded-lg flex items-center justify-center relative">
-        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
-            {loadingProfile ? (
-              <Skeleton circle={true} height={225} width={225} />
-            ) : (
-              <div className="relative group w-52 h-52">
-                {/* Profile Image */}
-                <img
-                  src={profilePicUrl}
-                  alt="Profile"
-                  className="w-full h-full rounded-full border-4 border-white object-cover"
-                />
+        <div className="h-48 w-full rounded-lg flex items-center justify-center relative">
+          {/* Cover Photo with Gradient Overlay */}
+            <div 
+              className="w-full h-full absolute top-0 left-0 rounded-lg bg-gradient-to-b from-blue-500 to-indigo-700"
+              style={{
+                backgroundImage: `url(${coverPhoto})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+  
+            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+              {loadingProfile ? (
+                <Skeleton circle={true} height={225} width={225} />
+              ) : (
+                <div className="relative group w-52 h-52">
+                  {/* Profile Image */}
+                  <img
+                    src={profilePicUrl}
+                    alt="Profile"
+                    className="w-full h-full rounded-full border-4 border-white object-cover"
+                  />
 
-                {/* Camera Icon on Hover */}
-                <div onClick={handleChangeProfile} className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <HiOutlineCamera  className="h-10 w-10 text-white" />
+                  {/* Camera Icon on Hover */}
+                  <div
+                    onClick={handleChangeProfile}
+                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <HiOutlineCamera className="h-10 w-10 text-white" />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
         </div>
-
         <div className="text-center mt-4">
           <div className="flex flex-col items-center space-y-2 mt-16">
             {loadingProfile ? (

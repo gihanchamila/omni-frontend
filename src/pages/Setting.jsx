@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../component/context/useSocket.jsx';
+import { useNotification } from '../component/context/useNotification.jsx';
 import { FiCamera } from "react-icons/fi";
 import { FaBars} from 'react-icons/fa';
 import { toast } from 'sonner';
@@ -20,6 +22,8 @@ const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 
 const Setting = () => {
   const navigate = useNavigate()
+  const socket = useSocket()
+  const { setNotifications } = useNotification()
   const { profilePicUrl, setProfilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
@@ -112,10 +116,32 @@ const Setting = () => {
   }
   },[profileKey])
 */
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for user update notifications
+    const handleUserUpdate = (notification) => {
+      setNotifications((prev) => [
+        ...prev,
+        {
+          type: notification.type || "update",
+          message: notification.message || "Your profile has been updated",
+          isRead: notification.isRead || false,
+          _id: notification._id,
+        },
+      ]);
+    };
+
+    socket.on("user-updated", handleUserUpdate);
+    
+    return () => {
+      socket.off("user-updated", handleUserUpdate);
+    };
+  }, [socket, setNotifications]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
+  
     // If the name is 'interests', split the value into an array
     if (name === "interests") {
         setFormData((prevData) => ({
@@ -126,7 +152,9 @@ const Setting = () => {
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
-        }));
+        }))
+        
+        
     }
   };
 
@@ -146,6 +174,19 @@ const Setting = () => {
             setLoading(true)
             const response = await axios.put(`/user/update-profile`, formData)
             const data = response.data
+            const { notificationId, message } = response.data;
+
+            if (socket) {
+              socket.emit("update-user", {notificationId});
+            }
+    
+            setNotifications(prev => [...prev, {
+              type: "comment",
+              message,
+              isRead: false,
+              _id : notificationId
+            }]);
+
             toast.success(data.message)
             setFormData(initialFormData)
             setFormError(initialFormError)
