@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
 import { toast } from 'sonner'
 import { useProfile } from "../component/context/useProfilePic.jsx"
+import { motion } from "framer-motion";
 
 import loginValidator from "../validators/LoginValidator.js"
 
@@ -20,7 +21,6 @@ const Login = () => {
   const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
   const {fetchProfilePic} = useProfile()
-
 
   const navigate = useNavigate()
 
@@ -77,7 +77,6 @@ const Login = () => {
         setFormError(initialFormError);
         setLoading(false);
 
-
         navigate('/');
       } catch (error) {
         console.error("Error occurred:", error);
@@ -131,13 +130,23 @@ const Login = () => {
 };
 
   return (
-    <div className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl'>
+    <motion.div
+      className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl'
+      initial={{ opacity: 0, scale : 0.8 }} 
+      animate={{ opacity: 1, scale : 1 }} 
+      transition={{ duration: 0.6 }}
+    >
       <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
       </div>
 
       <form action="" className="space-y-4" onSubmit={handleSubmit}>
-        <div className="groupBox">
+        <motion.div
+          className="groupBox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.4, duration: 0.6 }}
+        >
           <label htmlFor="email" className="label">Email address</label>
           <div className="relative input-wrapper">
             <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
@@ -153,13 +162,19 @@ const Login = () => {
               className="appearance-none input-box-2"
             />
           </div>
-        </div>
-        <div className="groupBox">
-          <label htmlFor="email" className="label">
+        </motion.div>
+
+        <motion.div
+          className="groupBox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.6, duration: 0.6 }}
+        >
+          <label htmlFor="password" className="label">
             Password
           </label>
           <div className="relative input-wrapper">
-          <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+            <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
               id="password"
               name="password"
@@ -172,10 +187,14 @@ const Login = () => {
               autoComplete="new-password"
             />
           </div>
-          
-        </div>
+        </motion.div>
+
         <div className='flex items-center justify-between'>
-          <div className="flex items-center">
+          <motion.div 
+            className="flex items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{delay : 0.8, duration: 0.6 }}>
             <input
               id="remember-me"
               type="checkbox"
@@ -184,21 +203,42 @@ const Login = () => {
             <label htmlFor="remember-me" className="ml-2 text-sm text-color-s ">
               Remember Me
             </label>
-          </div>
+          </motion.div >
 
-          <div className="text-sm">
+          <motion.div
+            className="text-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{delay : 0.8, duration: 0.6 }}
+          >
             <Link className="font-base text-sm text-blue-500 hover:underline" to="/forgot-password">
               Forgot Password?
             </Link>
-          </div>
+          </motion.div>
+        </div>
 
-        </div>
-        <Button variant="info" className={`w-full py-2.5`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
-        <div>
-          <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link></span>
-        </div>
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.8, duration: 0.6 }}
+        >
+          <Button variant="info" className={`w-full py-2.5`} disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </Button>
+        </motion.div>
+
+        <motion.div 
+          className="flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 1, duration: 0.6 }}>
+          <span className='font-base text-sm text-color-s center'>
+            Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link>
+          </span>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   )
 }
 

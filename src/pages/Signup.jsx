@@ -7,7 +7,7 @@ import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
-
+import { motion } from 'framer-motion';
 
 const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
@@ -112,16 +112,31 @@ const Signup = () => {
   };
 
   return (
-    <div className='lg:flex lg:items-center lg:justify-center sm:block'>
-      <div className='border-2 border-slate-800 lg:w-[38rem] sm:m-5 sm:w-6/6 bg-white px-12 py-12 mt-[3rem] mb-[5rem] rounded-2xl'>
+    <motion.div 
+      className='lg:flex lg:items-center lg:justify-center sm:block' 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.6 }}
+    >
+      <motion.div 
+        className='border-2 border-slate-800 lg:w-[38rem] sm:m-5 sm:w-6/6 bg-white px-12 py-12 mt-[3rem] mb-[5rem] rounded-2xl'
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome</h1>
         </div>
 
         {/* Sign up form */}
-        <form className="" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           {/* Name fields */}
-          <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+          <motion.div 
+            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="firstName" className="label">First Name</label>
               <div className='relative input-wrapper'>
@@ -158,10 +173,15 @@ const Signup = () => {
               </div>
               {formError.lastName && <p className="validateError">{formError.lastName}</p>}
             </div>
-          </div>
+          </motion.div>
 
           {/* Email and Confirm Email fields */}
-          <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4">
+          <motion.div 
+            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="email" className="label">Email</label>
               <div className='relative input-wrapper'>
@@ -185,37 +205,42 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiOutlineMail className={`input-icon ${isConfirmEmailTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
-                id="confirmEmail"
-                name="confirmEmail"
-                type="email"
-                placeholder="Re-enter your email"
-                required
-                value={formData.confirmEmail}
-                onChange={handleChange}
-                className="appearance-none input-box-2"
-              />
+                  id="confirmEmail"
+                  name="confirmEmail"
+                  type="email"
+                  placeholder="Re-enter your email"
+                  required
+                  value={formData.confirmEmail}
+                  onChange={handleChange}
+                  className="appearance-none input-box-2"
+                />
               </div>
               {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
             </div>
-          </div>
+          </motion.div>
 
           {/* Password and Confirm Password fields */}
-          <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4">
+          <motion.div 
+            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
             <div className="groupBox lg:w-[35rem]">
               <label htmlFor="password" className="label">Password</label>
               <div className='relative input-wrapper'>
                 <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Create a password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="appearance-none input-box-2"
-                autoComplete='new-password'
-              />
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Create a password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="appearance-none input-box-2"
+                  autoComplete='new-password'
+                />
               </div>
               {formError.password && <p className="validateError">{formError.password}</p>}
             </div>
@@ -224,23 +249,28 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiLockClosed className={`input-icon ${isConfirmPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="Re-enter your password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="appearance-none input-box-2"
-                autoComplete='current-password'
-              />
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Re-enter your password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="appearance-none input-box-2"
+                  autoComplete='current-password'
+                />
               </div>
               {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Align Sign Up button to the right and "Already have an account?" to the left */}
-          <div className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2">
+          {/* Sign Up button */}
+          <motion.div 
+            className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
             <div className="flex-grow sm:text-center lg:text-left">
               <span className='font-base text-sm text-color-s'>
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
@@ -249,10 +279,10 @@ const Signup = () => {
             <Button className="w-full sm:w-auto" variant='info' primary={false} disabled={loading}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
-          </div>
+          </motion.div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
