@@ -608,7 +608,7 @@ const Setting = () => {
                         required
                       />
                     </div>
-                      <Button className="" type="submit" variant="info" >
+                      <Button className="sm:py-2 sm:text-sm" type="submit" variant="info" >
                         Change Password
                       </Button>                
                   </div>
@@ -643,7 +643,7 @@ const Setting = () => {
                         rows="5"
                       />
                     </div>
-                    <Button type='submit' variant="info">Save Security Settings</Button>
+                    <Button type='submit' className={"sm:py-2 sm:text-sm"} variant="info">Save Security Settings</Button>
                   </div>
                 </form>
               </div>

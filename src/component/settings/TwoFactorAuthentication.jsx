@@ -122,7 +122,7 @@ const TwoFactorAuthentication = ({
                   required
                 />
               </div>
-              <Button type="submit" variant='info' disabled={loading}>
+              <Button className={'sm:py-2 sm:text-sm'} type="submit" variant='info' disabled={loading}>
                 {loading ? 'Sending...' : buttonText}
               </Button>
             </>
@@ -155,7 +155,7 @@ const TwoFactorAuthentication = ({
           )}
 
           {step === 'success' && isVerified && (
-            <Button className={'mt-6'} variant="info" onClick={() => setShowModal(true)}>
+            <Button className={'mt-6 sm:py-2 sm:text-sm'} variant="info" onClick={() => setShowModal(true)}>
               Update 2-step verification email
             </Button>
           )}

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from '../../utils/axiosInstance';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  const markAsRead = async (id) => {
+  const markAsRead = useCallback(async (id) => {
     try {
       const response = await axios.put("/notification/mark-as-read", { notificationId: id });
       const updatedNotification = response.data.data;
@@ -40,7 +40,11 @@ export const NotificationProvider = ({ children }) => {
       const data = response.data;
       toast.error(data.message);
     }
-  };
+  }, []) 
+
+  useEffect(() => {
+    markAsRead()
+  }, [markAsRead])
 
   const deleteNotification = async (id) => {
     try {

@@ -11,8 +11,7 @@ const NotificationList = () => {
       <div>
         <h2 className='title'>Notifications</h2>
       </div>
-      
-      <div>
+      <div className='bg-gray-50 rounded-lg p-4'>
         {notifications.length === 0 ? null : (
             <div className="">
             <div>
@@ -22,8 +21,8 @@ const NotificationList = () => {
                 className="flex justify-between items-center py-3"
                 >
                     <div className="flex-1">
-                        <p className="text-gray-800">{notification.message}</p>
-                        <span className="text-sm text-gray-500">
+                        <p className="text-gray-800 lg:text-lg sm:text-sm">{notification.message}</p>
+                        <span className="lg:text-md sm:text-sm text-gray-500">
                         {new Date(notification.createdAt).toLocaleString()}
                         </span>
                         

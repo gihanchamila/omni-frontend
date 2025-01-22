@@ -113,7 +113,10 @@ const PrivateNavBar = () => {
   //useClickOutside(profileRef, () => setDropdownOpen(false));
 
 
-
+  const handleViewAll = () => {
+    navigate('/notifications');
+    setNotificationDropdownOpen(false);
+  }
   return (
     <div>
       <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
@@ -160,7 +163,7 @@ const PrivateNavBar = () => {
 
             {notificationDropdownOpen && (
              <div ref={panelRef} className="absolute right-0 mt-4 bg-white p-4 w-[26.9rem] rounded-lg border border-slate-200 z-50">
-             <h4 className="font-bold text-xl mb-2 text-blue-500">Notifications</h4>
+             <h4 className="font-bold text-md mb-2 text-blue-500">Notifications</h4>
              <div className="flex justify-between items-center mb-2">
               
              </div>
@@ -169,25 +172,28 @@ const PrivateNavBar = () => {
               
               {/* Notifications */}
 
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => (
+              {notifications.length > 0 ? (
+                <>
+                  {notifications.slice(0, 10).map((notification) => (
+                    <>
                     <li
                       key={notification._id || `${notification.message}`}
-                      className={`relative flex m-0 items-center justify-between rounded-lg text-gray-700 text-sm font-light cursor-pointer pt-2 ${
-                        notification.isRead ? "font-light text-gray-700" : "font-regular text-gray-600"
+                      className={`relative flex m-0 items-center justify-between rounded-lg text-gray-600 text-sm font-light cursor-pointer pt-2 ${
+                        notification.isRead ? "font-light text-gray-500" : "font-medium text-gray-600"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
                     >
                       <span className="w-full hover:underline truncate" title={notification.message}>
                         {notification.message}
                       </span>
+
                       <button
-                        className="text-gray-700 text-xs"
+                        className="text-gray-500 text-sm"
                         aria-label="Delete notification"
                         onClick={(e) => handleDelete(e, notification._id)}
                       >
                         <svg
-                          className="w-2 h-2"
+                          className="w-2 h-2" // Adjusted size for better visibility
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -202,11 +208,22 @@ const PrivateNavBar = () => {
                           />
                         </svg>
                       </button>
+                      
                     </li>
-                  ))
-                ) : (
-                  <li className="text-gray-500 text-center text-sm pt-2 pb-2">No notifications available</li>
-                )}
+                    <hr className="mt-6 border-t border-gray-300"></hr>
+                    </>
+                  ))}
+                  {notifications.length > 10 && (
+                    <p className="text-blue-500 text-sm text-center cursor-pointer hover:underline pt-2" onClick={handleViewAll}>
+                      View all
+                    </p>
+                  )}
+                </>
+              ) : (
+                <li className="text-gray-500 text-center text-sm pt-2 pb-2">
+                  No notifications available
+                </li>
+              )}
               </ul>
                 <div className="flex justify-end space">
                   <button className="notification-bottom">

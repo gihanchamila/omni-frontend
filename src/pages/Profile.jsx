@@ -169,7 +169,7 @@ const Profile = () => {
   return (
     <div className="bg-slate-50 rounded-xl lg:p-4">
       <div className="relative">
-        <div className="h-48 w-full rounded-lg flex items-center justify-center relative">
+        <div className="h-72 w-full rounded-lg flex items-center justify-center relative">
           {/* Cover Photo with Gradient Overlay */}
             <div 
               className="w-full h-full absolute top-0 left-0 rounded-lg bg-gradient-to-b from-blue-500 to-indigo-700"

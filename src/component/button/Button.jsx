@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const Button = ({className, type, children, variant, to, onClick, ...props}) => {
-  const baseClasses = "transition-colors duration-100 font-medium rounded-lg text-sm px-2 py-2  focus:outline-none tracking-wider";
+  const baseClasses = "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-1 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
 
   // Variant-based classes
   const variantClasses = {
