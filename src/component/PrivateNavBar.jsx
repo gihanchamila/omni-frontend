@@ -11,8 +11,6 @@ import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
 import useClickOutside from "./context/useClickOutside.jsx";
 
-import { Link } from "react-router-dom";
-
 const PrivateNavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
