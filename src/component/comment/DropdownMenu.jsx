@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef } from 'react';
 
-const DropdownMenu = ({ dropdownId, actionHandlers, currentUser, author, authorId }) => {
+const DropdownMenu = forwardRef(({ dropdownId, actionHandlers, currentUser, author, authorId }, ref) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
+    setDropdownOpen(!dropdownOpen);
   };
 
   /* const authorOptions = [
@@ -119,6 +119,8 @@ const DropdownMenu = ({ dropdownId, actionHandlers, currentUser, author, authorI
 
     </div>
   );
-};
+});
+
+DropdownMenu.displayName = 'DropdownMenu';
 
 export default DropdownMenu;

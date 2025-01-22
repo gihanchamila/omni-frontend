@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { forwardRef } from "react";
 import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
 const Button = forwardRef(({ className = "", variant, children, to, onClick, ...props }, ref) => {
   const baseClasses =
@@ -20,9 +21,14 @@ const Button = forwardRef(({ className = "", variant, children, to, onClick, ...
   const spanClasses = "relative z-10";
 
   const renderButton = () => (
-    <button ref={ref} className={classes} onClick={onClick} {...props}>
+    <motion.button ref={ref} 
+      className={classes} 
+      onClick={onClick} 
+      {...props}
+      whileTap={{ scale: 0.95 }}
+    >
       <span className={spanClasses}>{children}</span>
-    </button>
+    </motion.button>
   );
 
   const renderLink = () => (
