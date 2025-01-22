@@ -231,13 +231,7 @@ const PrivateNavBar = () => {
                   </button>
                   <button className="notification-bottom" onClick={clearNotifications}>
                     Clear all
-                  </button>
-                  <Link to={`/notifications`}>
-                    <button className="notification-bottom pr-0" onClick={clearNotifications}>
-                      View all
-                    </button>
-                  </Link>
-                  
+                  </button>               
                 </div>
              </div>
            </div>

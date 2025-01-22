@@ -11,7 +11,7 @@ const NotificationList = () => {
       <div>
         <h2 className='title'>Notifications</h2>
       </div>
-      <div className='bg-gray-50 rounded-lg p-4'>
+      <div className='bg-gray-50 rounded-xl p-4'>
         {notifications.length === 0 ? null : (
             <div className="">
             <div>
@@ -21,11 +21,14 @@ const NotificationList = () => {
                 className="flex justify-between items-center py-3"
                 >
                     <div className="flex-1">
-                        <p className="text-gray-800 lg:text-lg sm:text-sm">{notification.message}</p>
+                        {notification.isRead ? (
+                          <p className="text-gray-800 lg:text-md font-regular sm:text-sm">{notification.message}</p>
+                      ) : (
+                        <p className="text-gray-800 lg:text-md font-regular font-semibold sm:text-sm">{notification.message}</p>
+                      )}
                         <span className="lg:text-md sm:text-sm text-gray-500">
                         {new Date(notification.createdAt).toLocaleString()}
-                        </span>
-                        
+                        </span>             
                     </div>
                     <div className="flex space-x-3">
                         <Button
@@ -45,7 +48,6 @@ const NotificationList = () => {
                     </div>
                     <div className='bg-gray-500 border'/>
                 </div>
-                
             ))}
             </div>
             </div>
