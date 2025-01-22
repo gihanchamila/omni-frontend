@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import { useNotification } from '../../component/context/useNotification.jsx';
 import axios from '../../utils/axiosInstance.js';
+import { motion } from 'framer-motion';
 
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';

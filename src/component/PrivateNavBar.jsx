@@ -10,6 +10,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
 import useClickOutside from "./context/useClickOutside.jsx";
+import { motion } from "framer-motion";
 
 const PrivateNavBar = () => {
   const location = useLocation();
@@ -172,26 +173,35 @@ const PrivateNavBar = () => {
 
               {notifications.length > 0 ? (
                 <>
-                  {notifications.slice(0, 10).map((notification) => (
-                    <>
-                    <li
+                 {notifications.slice(0, 10).map((notification) => (
+                    <motion.li
                       key={notification._id || `${notification.message}`}
                       className={`relative flex m-0 items-center justify-between rounded-lg text-gray-600 text-sm font-light cursor-pointer pt-2 ${
                         notification.isRead ? "font-light text-gray-500" : "font-medium text-gray-600"
                       }`}
                       onClick={() => handleMarkAsRead(notification._id)}
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: 1 }} // Stay visible while in the list
+                      exit={{ opacity: 0 }} // Fade out on removal
+                      transition={{ duration: 0.3 }}
+                      layout
                     >
                       <span className="w-full hover:underline truncate" title={notification.message}>
                         {notification.message}
                       </span>
 
-                      <button
+                      <motion.button
                         className="text-gray-500 text-sm"
                         aria-label="Delete notification"
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }} // Fade out on removal
+                        exit={{ opacity: 0 }} // Fade out when button is clicked
+                        transition={{ duration: 0.8 }}
+                        layout
                         onClick={(e) => handleDelete(e, notification._id)}
                       >
                         <svg
-                          className="w-2 h-2" // Adjusted size for better visibility
+                          className="w-2 h-2"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -205,11 +215,8 @@ const PrivateNavBar = () => {
                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                           />
                         </svg>
-                      </button>
-                      
-                    </li>
-                    <hr className="mt-6 border-t border-gray-300"></hr>
-                    </>
+                      </motion.button>
+                    </motion.li>
                   ))}
                   {notifications.length > 10 && (
                     <p className="text-blue-500 text-sm text-center cursor-pointer hover:underline pt-2" onClick={handleViewAll}>

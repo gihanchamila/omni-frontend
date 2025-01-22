@@ -7,6 +7,7 @@ import moment from 'moment';
 import { toast } from 'sonner';
 import SearchBar from '../component/search/SearchBar.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
+import { motion } from 'framer-motion';
 
 const Users = () => {
 
@@ -113,7 +114,11 @@ const Users = () => {
   };
 
   return (
-    <>
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+    >
     <div>
       <div>
         <h2 className='title'>Users</h2>
@@ -202,7 +207,7 @@ const Users = () => {
       
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       <Modal showModal={showModal} title="Are you sure you want to delete this user?" onConfirm={() => handleDelete(userId)} onCancel={closeModal} />
-    </>
+    </motion.div>
   );
 };
 

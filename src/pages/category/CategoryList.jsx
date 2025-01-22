@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
 import moment from 'moment';
+import { motion } from 'framer-motion';
 
 // Custom Components
 import Button from '../../component/button/Button.jsx';
@@ -111,7 +112,12 @@ const CategoryList = () => {
   };
 
   return (
-    <div className="">
+    <motion.div 
+      className=""
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div>
         <h2 className='title'>Categories</h2>
       </div>
@@ -172,7 +178,7 @@ const CategoryList = () => {
       )}
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
       <Modal  className='z-auto' showModal={showModal} title="Are you sure you want to delete this category?" onConfirm={(handleDelete)} onCancel={closeModal}/>
-    </div>
+    </motion.div>
   );
 };
 

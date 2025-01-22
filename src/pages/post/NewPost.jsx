@@ -10,6 +10,7 @@ import BackButton from '../../component/button/BackButton.jsx';
 import ReactQuill from 'react-quill';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import { useNotification } from '../../component/context/useNotification.jsx';
+import { motion } from 'framer-motion';
 
 const initialFormData = { title: "", description: "", file: null, category: "" };
 const initialFormError = { title: "", description: "", category: "" };
@@ -132,7 +133,13 @@ const NewPost = () => {
 
   return (
     <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
-      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10">
+      <motion.div 
+        className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        
+      >
         <BackButton />
         <p className="step">{getTitle()}</p>
           <>
@@ -223,7 +230,7 @@ const NewPost = () => {
               </div>
             )}
           </>
-      </div>
+      </motion.div>
     </div>
   );
 };

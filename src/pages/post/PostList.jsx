@@ -307,8 +307,10 @@ const PostList = () => {
         {/* Left Section: Post List */}
         <div className="w-full md:w-2/3 space-y-4">
           {/* Dynamic Posts */}
+
+
           {loading ? (
-            Array.from({ length: 3 }).map((_, index) => (
+            Array.from({ length: 1 }).map((_, index) => (
               <PostSkeleton key={index} />
             ))
           ) : (

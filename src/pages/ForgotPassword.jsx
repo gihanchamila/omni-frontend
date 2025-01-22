@@ -112,9 +112,6 @@ const ForgotPassword = () => {
               disabled={loading} // Disable input while loading
             />
             <MotionButton
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay : 1, duration: 0.6 }}
               type="submit"
               variant='info'
               className='mt-5'
@@ -157,9 +154,6 @@ const ForgotPassword = () => {
               disabled={loading} // Disable input while loading
             />
             <MotionButton
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.6 }}
               type="submit"
               variant='info'
               className='mt-5'
