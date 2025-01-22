@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../component/button/Button.jsx'
 import axios from '../utils/axiosInstance.js'
 import { toast } from 'sonner'
+import { motion } from 'framer-motion'
 
 const ForgotPassword = () => {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ const ForgotPassword = () => {
   const [code, setCode] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const MotionButton = motion(Button);
 
   // Handle sending verification email with code
   const handleEmailSubmit = async (email) => {
@@ -58,18 +61,46 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className='flex items-center justify-center min-h-[70vh]'>
-      <div className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl space-y-4'>
-        <div className="body-1">
+    <motion.div className='flex items-center justify-center min-h-[70vh]'>
+      <motion.div 
+      className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl space-y-4'
+      initial={{ opacity: 0, scale : 0.8 }}
+      animate={{ opacity: 1, scale : 1 }}
+      transition={{ duration: 0.6 }}
+      >
+        <motion.div 
+        className="body-1"
+        initial={{ opacity: 0 }}
+        animate={{opacity : 1}}
+        transition={{delay : 0.2, duration: 0.6}}
+        >
           <h1 className="text-3xl font-bold text-slate-800">Password Recovery</h1>
-        </div>
+        </motion.div >
 
         {/* Step 1: Email Address */}
         {step === 'email' && (
-          <div className="groupBox space-y-4">
-            <span className='text-gray-700 text-md'>Enter your email address to get a verification code for password reset.</span>
-            <label htmlFor="verify-email" className="text-gray-700 font-medium">Enter Email Address</label>
-            <input
+          <motion.div 
+          className="groupBox space-y-4"
+          initial={{opacity : 0}}
+          animate={{opacity : 1}}
+          transition={{delay :0.6, duration : 0.6}}
+          >
+            <motion.span 
+              className='text-gray-700 text-md'
+              initial={{opacity : 0}}
+              animate={{opacity : 1}}
+              transition={{delay :0.5, duration : 0.6}}
+            >Enter your email address to get a verification code for password reset.</motion.span>
+            <motion.label 
+              initial={{opacity : 0}}
+              animate={{opacity : 1}}
+              transition={{delay :0.7, duration : 0.6}}
+              htmlFor="verify-email" 
+              className="text-gray-700 font-medium">Enter Email Address</motion.label>
+            <motion.input
+              initial={{opacity : 0}}
+              animate={{opacity : 1}}
+              transition={{delay :0.7, duration : 0.6}}
               type="email"
               name="verify-email"
               id="verify-email"
@@ -80,7 +111,10 @@ const ForgotPassword = () => {
               required
               disabled={loading} // Disable input while loading
             />
-            <Button
+            <MotionButton
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay : 1, duration: 0.6 }}
               type="submit"
               variant='info'
               className='mt-5'
@@ -88,8 +122,8 @@ const ForgotPassword = () => {
               disabled={loading || !email} // Disable if no email or while loading
             >
               {loading ? 'Sending...' : 'Send verification code'}
-            </Button>
-          </div>
+            </MotionButton>
+          </motion.div>
         )}
 
         {/* Step 2: New Password & Code */}
@@ -122,7 +156,10 @@ const ForgotPassword = () => {
               required
               disabled={loading} // Disable input while loading
             />
-            <Button
+            <MotionButton
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.6 }}
               type="submit"
               variant='info'
               className='mt-5'
@@ -130,12 +167,12 @@ const ForgotPassword = () => {
               disabled={loading || !code || password.length < 6} // Disable if code or password is invalid
             >
               {loading ? 'Changing password...' : 'Change password'}
-            </Button>
+            </MotionButton>
           </div>
         )}
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
