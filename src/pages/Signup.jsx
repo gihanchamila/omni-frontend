@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
@@ -25,7 +25,14 @@ const Signup = () => {
 
   const navigate = useNavigate();
   const socket = useSocket()
+  const inputRef = useRef(null);
 
+  useEffect(() => {
+    if(inputRef.current){
+      inputRef.current.focus();
+    }
+  }, [])
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -138,7 +145,7 @@ const Signup = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="firstName" className="label">First Name</label>
+              <label htmlFor="firstName" className="label" ref={inputRef}>First Name</label>
               <div className='relative input-wrapper'>
                 <HiOutlineUserCircle className={`input-icon ${isFirstNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
                 <input
@@ -146,7 +153,7 @@ const Signup = () => {
                   name="firstName"
                   type="text"
                   autoComplete="given-name"
-                  placeholder="Enter your first name"
+                  placeholder="e.g.John"
                   required
                   value={formData.firstName}
                   onChange={handleChange}
@@ -164,7 +171,7 @@ const Signup = () => {
                   name="lastName"
                   type="text"
                   autoComplete="family-name"
-                  placeholder="Enter your last name"
+                  placeholder="e.g.Doe"
                   required
                   value={formData.lastName}
                   onChange={handleChange}
@@ -190,7 +197,7 @@ const Signup = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="e.g. johndoe@gmail.com"
                   required
                   value={formData.email}
                   onChange={handleChange}
@@ -208,7 +215,7 @@ const Signup = () => {
                   id="confirmEmail"
                   name="confirmEmail"
                   type="email"
-                  placeholder="Re-enter your email"
+                  placeholder="e.g. johndoe@gmail.com"
                   required
                   value={formData.confirmEmail}
                   onChange={handleChange}
