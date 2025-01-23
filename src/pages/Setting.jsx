@@ -14,6 +14,7 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 import TwoFactorAuthentication from '../component/settings/TwoFactorAuthentication.jsx';
 import Modal from '../component/modal/Modal.jsx';
+import { motion } from 'framer-motion';
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
@@ -321,7 +322,10 @@ const Setting = () => {
 
       { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
-          <div>
+          <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}>
             <h2 className="title">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
@@ -557,11 +561,15 @@ const Setting = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {activeTab === "security" && (
-          <div>
+          <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          >
             <h2 className="text-2xl font-bold mb-6">Security Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
@@ -698,7 +706,7 @@ const Setting = () => {
               <TwoFactorAuthentication onEmailSubmit={handleEmailSubmit} onCodeSubmit={handleVerificationSubmit}/>
 
             </div>
-          </div>
+          </motion.div>
         )}
       </div>)}
     </div>

@@ -7,6 +7,7 @@ import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
 import { coverPhoto } from "../assets/index.js";
 import { HiOutlineCamera } from "react-icons/hi";
+import { motion } from "framer-motion";
 
 const Profile = () => {
   const { id } = useParams();
@@ -167,7 +168,11 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-slate-50 rounded-xl lg:p-4">
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
+    className="bg-slate-50 rounded-xl lg:p-4">
       <div className="relative">
         <div className="h-72 w-full rounded-lg flex items-center justify-center relative">
           {/* Cover Photo with Gradient Overlay */}
@@ -291,7 +296,7 @@ const Profile = () => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

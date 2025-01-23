@@ -8,6 +8,7 @@ import Pagination from '../component/pagination/Pagination.jsx'
 import Modal from '../component/modal/Modal.jsx'
 import {useAuth} from '../component/context/useAuth.jsx'
 import { useSocket } from '../component/context/useSocket.jsx'
+import { motion } from 'framer-motion'
 
 const AdminList = () => {
 
@@ -118,7 +119,10 @@ const AdminList = () => {
     };
 
   return (
-    <div>
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}>
         <div>
             <div>
                 <h2 className='title'>Administrative Users</h2>
@@ -214,7 +218,7 @@ const AdminList = () => {
       
         <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage} />
         <Modal showModal={showModal} title="Are you sure you want to revoke this user's admin privileges?" onConfirm={() => handleRemoveAdmin(userId)} onCancel={closeModal} />
-    </div>
+    </motion.div>
   )
 }
 

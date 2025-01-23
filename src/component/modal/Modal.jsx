@@ -1,11 +1,27 @@
 import React from 'react';
 import { useEffect, useRef } from 'react';
 import useClickOutside from '../context/useClickOutside';
+import { motion } from 'framer-motion';
 
 const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
   const modalRef = useRef(null)
 
   useClickOutside(modalRef, onCancel);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      }
+    };
+  
+    if (showModal) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showModal, onCancel]);
 
   useEffect(() => {
     if (showModal) {
@@ -21,14 +37,17 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
   if (!showModal) return null;
 
   return (
-    <div
+    <motion.div
       
+      aria-labelledby="modal-title"
+      aria-modal="true"
       id="popup-modal"
       tabIndex="-1"
       className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50 min-h-screen"
     >
       <div ref={modalRef} className="relative p-4 w-full max-w-md">
-        <div className="relative bg-white rounded-lg shadow">
+        <motion.div 
+          className="relative bg-white rounded-lg shadow">
           <button
             type="button"
             className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -73,9 +92,9 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

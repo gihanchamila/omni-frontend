@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 
 // Custom Components
@@ -301,16 +302,18 @@ const PostList = () => {
   };
 
   return (
-    <div className="mx-auto  md:px-[10rem] py-10">
+    <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
+    className="mx-auto  md:px-[10rem] py-10">
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
         <div className="w-full md:w-2/3 space-y-4">
           {/* Dynamic Posts */}
-
-
           {loading ? (
-            Array.from({ length: 1 }).map((_, index) => (
+            Array.from({ length: 2}).map((_, index) => (
               <PostSkeleton key={index} />
             ))
           ) : (
@@ -435,7 +438,7 @@ const PostList = () => {
         </div>
       </div>
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
-    </div>
+    </motion.div >
   );
 };
 

@@ -56,12 +56,9 @@ const Home = () => {
       {/* Left Column: Welcome User */}
       <motion.div 
         className="col-span-1 md:col-start-1 md:col-end-8 bg-gray-50 rounded-lg p-6 md:p-12 flex items-center justify-center"
-        initial={{ x: -100 }} 
-        animate={{ x: 0 }} 
-        transition={{ duration: 0.8 }}
       >
         <div className="flex flex-col items-center space-y-2 text-center">
-          <motion.img src={profilePicUrl} whileHover={{scale : 1.025}}  whileInView={{ scale: [0.8, 1.1, 1], rotate: [0, 10, -10, 0], opacity: [0, 1] }}
+          <motion.img src={profilePicUrl}
             transition={{ duration: 1.5, ease: "easeInOut" }}className="rounded-full h-[10rem] w-[10rem] md:h-[15rem] md:w-[15rem]" alt="" />
           <h1 className="text-2xl md:text-3xl font-bold text-gray-700">{currentUser.firstName} {currentUser.lastName}</h1>
           {/* <p className="text-xs font-light text-gray-700">{currentUser._id}</p> */}
@@ -72,19 +69,12 @@ const Home = () => {
       {/* Right Column: Links Section */}
       <motion.div 
         className="col-span-1 md:col-start-8 md:col-end-13 gap-4 bg-gray-50 rounded-lg p-4 md:p-8"
-        initial={{ x: 100 }} 
-        animate={{ x: 0 }} 
-        transition={{ duration: 0.8 }}
         >
         {/* First Row: Profile and Settings Links */}
         <motion.div 
         className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 md:mb-8"
         >
           <motion.div className="relative group"
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ delay : 0.4, duration: 1 }}
-            whileHover={{ scale: 1.05 }} 
           >
             {/* Half Circle */}
             <div className="absolute bottom-0 w-full h-auto bg-gray-800 group-hover:bg-white rounded-t-full"></div>
@@ -97,10 +87,6 @@ const Home = () => {
           </motion.div>
           <motion.div 
             className="relative group"
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ delay : 0.6, duration: 1 }}
-            whileHover={{ scale: 1.05 }} 
             onClick={handleNavigateUsers}
           >
             <div className="absolute w-10 h-10 right-4 top-4 bg-gray-800 group-hover:bg-white rounded-lg flex items-center justify-center">

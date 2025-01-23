@@ -5,6 +5,7 @@ import { HiOutlineLogin } from "react-icons/hi";
 import { HiBars3, HiOutlineXMark } from "react-icons/hi2";
 import { FcAbout } from "react-icons/fc";
 import ScrollLock from "react-scrolllock";
+import { logo } from "../assets/index.js";
 
 const PublicNavBar = () => {
   const [openNavigation, setOpenNavigation] = useState(false);
@@ -28,7 +29,7 @@ const PublicNavBar = () => {
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-          <img className="w-20 h-20" alt="Logo" />
+          <img src={logo} className="w-20 h-20" alt="Logo" />
         </div>
         
         {/* Toggle Button */}
