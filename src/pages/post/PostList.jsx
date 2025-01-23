@@ -148,7 +148,6 @@ const PostList = () => {
 
         const response = await axios.get('/posts/features/popular-posts')
         const data = response.data.data
-
         setPopularPosts(data)
 
       }catch(error){
@@ -337,7 +336,7 @@ const PostList = () => {
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
           <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
             {loading ? (
-              <Skeleton width='8rem' height='1.5rem' className='mb-4 border-none'/>
+              <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
               ) : (
               <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
@@ -396,7 +395,7 @@ const PostList = () => {
             <div className="space-y-4">
               {/* Popular Post Card */}
               {loading ? (
-                Array(2)
+                Array(3)
                   .fill(0)
                   .map((_, index) => (
                     <div
@@ -411,7 +410,7 @@ const PostList = () => {
                     </div>
                   ))
               ) : (
-                latestPosts.map((post) => (
+                popularPosts.map((post) => (
                   <div key={post._id} className="flex items-center space-x-4">
                     <img
                       className="cardImage"

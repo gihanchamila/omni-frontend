@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
-import Tooltip from '../component/Tooltip.jsx/Tooltip.jsx';
 
 const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };

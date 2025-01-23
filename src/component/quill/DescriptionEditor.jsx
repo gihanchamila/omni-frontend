@@ -114,7 +114,8 @@ const DescriptionEditor = ({ formData, handleChange }) => {
         .ql-editor:focus {
           outline: none; /* Remove the default focus outline */
         }
-      `}</style>
+      `}
+      </style>
     </div>
   );
 };

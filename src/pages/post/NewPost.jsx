@@ -21,10 +21,14 @@ const NewPost = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1)
   const navigate = useNavigate();
   const socket = useSocket();
   const {setNotifications } = useNotification();
   const hasListeners = useRef(false);
+  const inputRef = useRef(null)
+  const topRef = useRef(null)
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -32,6 +36,7 @@ const NewPost = () => {
       try {
         const response = await axios.get('/category');
         setCategories(response.data.data.categories);
+
         toast.success(response.data.message);
       } catch (error) {
         toast.error(error.response?.data?.message || "Failed to fetch categories");
@@ -64,6 +69,12 @@ const NewPost = () => {
       }
     }
   }, [socket, setNotifications])
+
+  useEffect(() => {
+    if(inputRef.current){
+      inputRef.current.focus()
+    }
+  }, [])
 
   const handleImageUpload = (file) => {
     setFormData((prev) => ({ ...prev, file }));
@@ -131,23 +142,63 @@ const NewPost = () => {
     }
   };
 
+  const handleBack = () => {
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth" });
+      if (topRef.current.tabIndex !== -1) {
+        topRef.current.focus();
+      }
+    }
+    if(step === 1){
+      return navigate(-1)
+    } else if(step === 2){
+      setStep(1)
+    } else {
+      setStep(2)
+    }
+  }
+
   return (
     <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
       <motion.div 
-        className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10"
+        ref={topRef}
+        className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         
       >
-        <BackButton />
-        <p className="step">{getTitle()}</p>
+        {/* <div className="relative w-full h-2 bg-gray-200 rounded-sm overflow-hidden mb-6">
+          <motion.div
+            className="h-full bg-blue-500"
+            initial={{ width: 0 }}
+            animate={{ width: `${(step / 3) * 100}%` }}
+            transition={{
+              duration: 0.6,
+              ease: "easeInOut",
+            }}
+          />
+        </div> */}
+        <BackButton onClick={handleBack} />
+        <motion.div className="step bg-blue-50 rounded-lg p-4 mb-4 relative">
+          <motion.div
+            className="absolute top-0 left-0 h-full bg-blue-100 rounded-lg"
+            style={{ width: `${(step / 3) * 100}%` }}  // Dynamically fill the progress
+            initial={{ width: '0%' }} // Start from 0% width
+            animate={{ width: `${(step / 3) * 100}%` }}  // Fill width based on steps
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+          />
+          <motion.p className="relative z-10 text-blue-500 font-bold">
+            {getTitle()}
+          </motion.p>
+        </motion.div>
           <>
             {step === 1 && (
               <form onSubmit={handleNext} className="space-y-6">
                 <div className='space-y-2'>
                   <label htmlFor="title" className="label">Title</label>
                   <input
+                    ref={inputRef}
                     type="text"
                     id="title"
                     name="title"
