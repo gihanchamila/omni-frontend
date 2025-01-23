@@ -3,60 +3,61 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js';
-import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle } from "react-icons/hi";
+import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle,  HiEye, HiEyeOff } from "react-icons/hi";
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
+import Tooltip from '../component/Tooltip.jsx/Tooltip.jsx';
 
 const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 
 const Signup = () => {
+  const [formData, setFormData] = useState(initialFormData);
+  const [formError, setFormError] = useState(initialFormError);
+  const [loading, setLoading] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setconfirmPasswordTouched] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
   const [isFirstNameTyping, setIsFirstNameTyping] = useState(false);
   const [isLastNameTyping, setIsLastNameTyping] = useState(false);
   const [isEmailTyping, setIsEmailTyping] = useState(false);
   const [isConfirmEmailTyping, setIsConfirmEmailTyping] = useState(false);
   const [isPasswordTyping, setIsPasswordTyping] = useState(false);
   const [isConfirmPasswordTyping, setIsConfirmPasswordTyping] = useState(false);
-  const [formData, setFormData] = useState(initialFormData);
-  const [formError, setFormError] = useState(initialFormError);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const socket = useSocket()
+  const socket = useSocket();
+
   const inputRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const emailRef = useRef(null);
+  const confirmEmailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
+  const signUpRef = useRef(null);
+  
+  const password = formData.password;
+  const confirmPassword = formData.confirmPassword
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSymbol = /[\W_]/.test(password);
+  const hasMinLength = password.length >= 8;
+  const strengthScore = hasLowercase + hasUppercase + hasNumber + hasSymbol + hasMinLength;
 
   useEffect(() => {
-    if(inputRef.current){
+    if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [])
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === 'firstName') {
-      setIsFirstNameTyping(value !== '');
-    } else if (name === 'lastName') {
-      setIsLastNameTyping(value !== '');
-    } else if (name === 'email') {
-      setIsEmailTyping(value !== '');
-    } else if (name === 'confirmEmail') {
-      setIsConfirmEmailTyping(value !== '');
-    } else if (name === 'password') {
-      setIsPasswordTyping(value !== '');
-    } else if (name === 'confirmPassword') {
-      setIsConfirmPasswordTyping(value !== '');
-    }
-  };
+  }, []);
 
   useEffect(() => {
     if (socket) {
-      socket.on('User-registered', (data) => {
-      });
+      socket.on('User-registered', (data) => {});
     }
     return () => {
       if (socket) {
@@ -64,59 +65,61 @@ const Signup = () => {
       }
     };
   }, [socket]);
-  
+
+  const handleKeyDown = (e, nextInputRef, value) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); 
+      if (value.trim() !== "" && nextInputRef && nextInputRef.current) {
+        nextInputRef.current.focus();
+      }
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'firstName') setIsFirstNameTyping(value !== '');
+    if (name === 'lastName') setIsLastNameTyping(value !== '');
+    if (name === 'email') setIsEmailTyping(value !== '');
+    if (name === 'confirmEmail') setIsConfirmEmailTyping(value !== '');
+    if (name === 'password') setIsPasswordTyping(value !== '');
+    if (name === 'confirmPassword') setIsConfirmPasswordTyping(value !== '');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = signUpValidator({
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      confirmEmail: formData.confirmEmail,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-    });
-    if (errors.firstName || errors.lastName || errors.email || errors.confirmEmail || errors.password || errors.confirmPassword) {
+    const errors = signUpValidator(formData);
+    if (Object.values(errors).some(error => error)) {
       setFormError(errors);
     } else {
       try {
         setLoading(true);
-
-        // API request
-        const requestBody = {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          confirmEmail: formData.confirmEmail,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-        };
-
-        const response = await axios.post('/auth/signup', requestBody);
-        const data = response.data;
-        toast.success(data.message);
-
+        const response = await axios.post('/auth/signup', formData);
+        toast.success(response.data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
         setLoading(false);
         navigate('/login');
         if (socket) {
-          socket.emit('User-registered', { id: data.newUser._id });
-        } else {
-          console.error('Socket is undefined');
+          socket.emit('User-registered', { id: response.data.newUser._id });
         }
       } catch (error) {
         setLoading(false);
         setFormError(initialFormError);
-        const response = error.response;
-        if (response) {
-          const data = response.data;
-          toast.error(data.message);
-        } else {
-          toast.error("An unexpected error occurred.");
-        }
+        toast.error(error.response?.data?.message || "An unexpected error occurred.");
       }
     }
   };
+
+  const getPasswordStrength = () => {
+    if (strengthScore === 5) return { label: "Strong", color: "text-green-500" };
+    if (strengthScore === 4) return { label: "Very Good", color: "text-blue-500" };
+    if (strengthScore === 3) return { label: "Good", color: "text-yellow-500" };
+    return { label: "Weak", color: "text-red-500" };
+  };
+
+  const { label, color } = getPasswordStrength();
 
   return (
     <motion.div 
@@ -145,10 +148,11 @@ const Signup = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="firstName" className="label" ref={inputRef}>First Name</label>
+              <label htmlFor="firstName" className="label" >First Name</label>
               <div className='relative input-wrapper'>
                 <HiOutlineUserCircle className={`input-icon ${isFirstNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
                 <input
+                  ref={inputRef}
                   id="firstName"
                   name="firstName"
                   type="text"
@@ -158,6 +162,7 @@ const Signup = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
+                  onKeyDown={(e) => {handleKeyDown(e, lastNameRef, formData.firstName)}}
                 />
               </div>
               {formError.firstName && <p className="validateError">{formError.firstName}</p>}
@@ -167,6 +172,7 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiOutlineUserCircle className={`input-icon ${isLastNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
                 <input
+                  ref={lastNameRef}
                   id="lastName"
                   name="lastName"
                   type="text"
@@ -176,6 +182,7 @@ const Signup = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
+                  onKeyDown={(e) => {handleKeyDown(e, emailRef, formData.lastName)}}
                 />
               </div>
               {formError.lastName && <p className="validateError">{formError.lastName}</p>}
@@ -194,6 +201,7 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
                 <input
+                  ref={emailRef}
                   id="email"
                   name="email"
                   type="email"
@@ -203,6 +211,7 @@ const Signup = () => {
                   onChange={handleChange}
                   className="appearance-none input-box-2"
                   autoComplete='email'
+                  onKeyDown={(e) => {handleKeyDown(e, confirmEmailRef, formData.email)}}
                 />
               </div>
               {formError.email && <p className="validateError">{formError.email}</p>}
@@ -212,6 +221,7 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiOutlineMail className={`input-icon ${isConfirmEmailTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
+                  ref={confirmEmailRef}
                   id="confirmEmail"
                   name="confirmEmail"
                   type="email"
@@ -220,6 +230,7 @@ const Signup = () => {
                   value={formData.confirmEmail}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
+                  onKeyDown={(e) => {handleKeyDown(e, passwordRef, formData.confirmEmail)}}
                 />
               </div>
               {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
@@ -238,17 +249,36 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
+                  ref={passwordRef}
                   id="password"
                   name="password"
-                  type="password"
+                  type={isPasswordVisible ? 'text' : 'password'} 
                   placeholder="Create a password"
                   required
                   value={formData.password}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
                   autoComplete='new-password'
+                  onKeyDown={(e) => {handleKeyDown(e, confirmPasswordRef, formData.password)}}
+                  onFocus={() => setPasswordTouched(true)}
+                  onBlur={() => setPasswordTouched(false)}
+                  
                 />
+                {password.length > 1 && (
+                  <div
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
+                    >
+                    {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                  </div>
+                )}
+                
               </div>
+              {passwordTouched && password.length > 0 && (
+                <p className={`text-xs font-light ${color}`}>
+                  Password Strength: {label}
+                </p>
+              )}
               {formError.password && <p className="validateError">{formError.password}</p>}
             </div>
             <div className="groupBox lg:w-[35rem]">
@@ -256,16 +286,28 @@ const Signup = () => {
               <div className='relative input-wrapper'>
                 <HiLockClosed className={`input-icon ${isConfirmPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
                 <input
+                  ref={confirmPasswordRef}
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
+                  type={isConfirmPasswordVisible ? 'text' : 'password'} 
                   placeholder="Re-enter your password"
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
                   autoComplete='current-password'
+                  onKeyDown={(e) => {handleKeyDown(e, signUpRef, formData.confirmPassword)}}
+                  onFocus={() => setconfirmPasswordTouched(true)}
+                  onBlur={() => setconfirmPasswordTouched(false)}
                 />
+                {confirmPassword.length > 1 && (
+                  <div
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                    >
+                    {isConfirmPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                  </div>
+                )}
               </div>
               {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
             </div>
@@ -283,7 +325,7 @@ const Signup = () => {
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button className="w-full sm:w-auto" variant='info' primary={false} disabled={loading}>
+            <Button ref={signUpRef} className="w-full sm:w-auto" variant='info' primary={false} disabled={loading || strengthScore < 3}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </motion.div>

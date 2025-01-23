@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
 import { forwardRef } from "react";
-import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const Button = forwardRef(({ className = "", variant, children, to, onClick, ...props }, ref) => {
+const Button = forwardRef(({ className = "", variant, primary, children, to, onClick, ...props }, ref) => {
+  const finalVariant = primary ? "primary" : variant;
+
   const baseClasses =
     "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-1 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
 
@@ -17,16 +18,11 @@ const Button = forwardRef(({ className = "", variant, children, to, onClick, ...
     outline: "border border-gray-200 hover:bg-gray-50 text-gray-800",
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant] || ""} ${className}`;
+  const classes = `${baseClasses} ${variantClasses[finalVariant] || ""} ${className}`;  // className prop is applied here
   const spanClasses = "relative z-10";
 
   const renderButton = () => (
-    <motion.button ref={ref} 
-      className={classes} 
-      onClick={onClick} 
-      {...props}
-      whileTap={{ scale: 0.95 }}
-    >
+    <motion.button ref={ref} className={classes} onClick={onClick} {...props} whileTap={{ scale: 0.95 }}>
       <span className={spanClasses}>{children}</span>
     </motion.button>
   );
@@ -40,14 +36,6 @@ const Button = forwardRef(({ className = "", variant, children, to, onClick, ...
   return to ? renderLink() : renderButton();
 });
 
-Button.propTypes = {
-  className: PropTypes.string,
-  variant: PropTypes.oneOf(["primary", "error", "success", "info", "back", "outline"]),
-  children: PropTypes.node.isRequired,
-  to: PropTypes.string,
-  onClick: PropTypes.func,
-};
-
-Button.displayName = "ButtonComponent";
+Button.displayName = "Button";
 
 export default Button;

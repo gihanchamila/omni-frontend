@@ -1,8 +1,8 @@
-import { useState} from "react"
+import { useState, useRef, useEffect } from "react"
 import axios from "../utils/axiosInstance.js"
 import Button from '../component/button/Button.jsx'
 import { Link, useNavigate } from 'react-router-dom'
-import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
+import { HiOutlineMail, HiLockClosed, HiEye, HiEyeOff  } from "react-icons/hi";
 import { toast } from 'sonner'
 import { useProfile } from "../component/context/useProfilePic.jsx"
 import { motion } from "framer-motion";
@@ -16,6 +16,8 @@ const Login = () => {
   
   const [isEmailTyping, setIsEmailTyping] = useState(false);
   const [isPasswordTyping, setIsPasswordTyping] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
@@ -23,6 +25,15 @@ const Login = () => {
   const {fetchProfilePic} = useProfile()
 
   const navigate = useNavigate()
+  const inputRef = useRef(null)
+  const passwordRef = useRef(null)
+  const password = formData.password
+
+  useEffect(() => {
+    if(inputRef.current){
+      inputRef.current.focus()
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +43,13 @@ const Login = () => {
       setIsEmailTyping(value !== '');
     } else if (name === 'password') {
       setIsPasswordTyping(value!== '');
+    }
+  };
+
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter" && nextRef && nextRef.current) {
+      e.preventDefault(); 
+      nextRef.current.focus();
     }
   };
 
@@ -151,6 +169,7 @@ const Login = () => {
           <div className="relative input-wrapper">
             <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
+              ref={inputRef}
               id="email"
               name="email"
               type="email"
@@ -160,6 +179,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               className="appearance-none input-box-2"
+              onKeyDown={(e) => {handleKeyDown(e, passwordRef)}}
             />
           </div>
         </motion.div>
@@ -176,16 +196,29 @@ const Login = () => {
           <div className="relative input-wrapper">
             <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
+              ref={passwordRef}
               id="password"
               name="password"
-              type="password"
+              type={isPasswordVisible ? 'text' : 'password'} 
               placeholder="password"
               required
               value={formData.password}
               onChange={handleChange}
               className="appearance-none input-box-2"
               autoComplete="new-password"
+              onKeyDown={(e) => {handleKeyDown(e, null, formData.password)}}
+              onFocus={() => setPasswordTouched(true)}
+              onBlur={() => setPasswordTouched(false)}
             />
+
+            {password.length > 1 && (
+              <div
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
+                >
+                {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+              </div>
+            )}
           </div>
         </motion.div>
 
