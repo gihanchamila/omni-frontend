@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { HiOutlineLogin } from "react-icons/hi";
 import { HiBars3, HiOutlineXMark } from "react-icons/hi2";
 import { FcAbout } from "react-icons/fc";
-import ScrollLock from "react-scrolllock";
 import { logo } from "../assets/index.js";
 
 const PublicNavBar = () => {
@@ -62,7 +61,6 @@ const PublicNavBar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <ScrollLock>
           <div className="md:hidden fixed inset-0 z-50 pt-10 mr-2 bg-white flex flex-col p-5 text-black transition-transform duration-300 ease-in-out transform">
             {/* Close Menu Button */}
             <button
@@ -98,7 +96,6 @@ const PublicNavBar = () => {
 
             </div>
           </div>
-        </ScrollLock>
       )}
     </div>
   );
