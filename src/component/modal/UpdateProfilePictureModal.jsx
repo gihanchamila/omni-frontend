@@ -160,7 +160,7 @@ function UpdateProfilePictureModal() {
 
             {/* Remove Modal */}
             {removeModal && (
-                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm'>
+                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
                     <div className="relative bg-white rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
                             onClick={handleCloseRemoveModal}
