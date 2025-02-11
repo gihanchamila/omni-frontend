@@ -193,6 +193,19 @@ const Setting = () => {
       setLoading(true);
       const response = await axios.put(`/auth/change-password`, passwordData);
       const data = response.data;
+      const {notificationId, message} = response.data;
+
+      if(socket){
+        socket.emit("password-changed", {notificationId});
+      }
+
+      setNotifications(prev => [...prev, {
+        type: "Password Change",
+        message,
+        isRead: false,
+        _id : notificationId
+      }]);
+
       toast.success(data.message);
       setPasswordData(initialPasswordData);
     } catch (error) {
@@ -226,6 +239,19 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/send-verification-email', {email})
       const data = response.data;
+      const {notificationId, message} = response.data
+
+      if (socket) {
+        socket.emit("verification-code-sent", {notificationId});
+      }
+  
+      setNotifications(prev => [...prev, {
+        type: "Email Verification",
+        message,
+        isRead: false,
+        _id : notificationId
+      }]);
+
       toast.success(data.message)
     }catch(error){
       setLoading(false);
@@ -589,6 +615,7 @@ const Setting = () => {
                         onChange={handlePasswordChange}
                         required
                       />
+                      
                     </div>
                     <div className="groupBox">
                       <label htmlFor="newPassword" className="text-gray-700 font-medium">New Password</label>

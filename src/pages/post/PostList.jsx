@@ -306,10 +306,10 @@ const PostList = () => {
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
     className="mx-auto  md:px-[10rem] py-10">
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2">
+      <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4  md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
-        <div className="w-full md:w-2/3 space-y-4">
+        <div className="w-full md:w-2/3 space-y-4 ">
           {/* Dynamic Posts */}
           {loading ? (
             Array.from({ length: 2}).map((_, index) => (

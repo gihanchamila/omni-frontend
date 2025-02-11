@@ -88,28 +88,26 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = signUpValidator(formData);
-    if (Object.values(errors).some(error => error)) {
-      setFormError(errors);
-    } else {
-      try {
-        setLoading(true);
-        const response = await axios.post('/auth/signup', formData);
-        toast.success(response.data.message);
-        setFormData(initialFormData);
-        setFormError(initialFormError);
-        setLoading(false);
-        navigate('/login');
-        if (socket) {
-          socket.emit('User-registered', { id: response.data.newUser._id });
-        }
-      } catch (error) {
-        setLoading(false);
-        setFormError(initialFormError);
-        toast.error(error.response?.data?.message || "An unexpected error occurred.");
+    
+    try {
+      setLoading(true);
+      const response = await axios.post('/auth/signup', formData);
+      toast.success(response.data.message);
+      setFormData(initialFormData);
+      setFormError(initialFormError);
+      setLoading(false);
+      navigate('/login');
+  
+      if (socket) {
+        socket.emit('User-registered', { id: response.data.newUser._id });
       }
+    } catch (error) {
+      setLoading(false);
+      setFormError(initialFormError);
+      toast.error(error.response?.data?.message || "An unexpected error occurred.");
     }
   };
+  
 
   const getPasswordStrength = () => {
     if (strengthScore === 5) return { label: "Strong", color: "text-green-500" };

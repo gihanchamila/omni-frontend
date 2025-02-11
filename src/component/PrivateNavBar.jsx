@@ -30,6 +30,7 @@ const PrivateNavBar = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
+  const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
     setDropdownOpen(false);
@@ -58,6 +59,21 @@ const PrivateNavBar = () => {
     };
     getCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (unreadCount > 0) {
+      // Start animation every 5 seconds
+      const interval = setInterval(() => {
+        setShowAnimation(true);
+
+        setTimeout(() => {
+          setShowAnimation(false);
+        }, 2000); // Animation duration (2 seconds)
+      }, 5000);  // Trigger animation every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [unreadCount]);
 
   const handleMarkAsRead = async (id) => {
     try {
@@ -117,6 +133,8 @@ const PrivateNavBar = () => {
     navigate('/notifications');
     setNotificationDropdownOpen(false);
   }
+
+
   return (
     <div>
       <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
@@ -124,7 +142,7 @@ const PrivateNavBar = () => {
         {/* Logo */}
 
         <div className="flex-shrink-0 flex items-center">
-          <img src={logo} className="h-16 w-20 text-gray-500"  alt="logo"/>
+          <img onClick={() => navigate("/")} src={logo} className="h-16 w-20 text-gray-500 hover:cursor-pointer"  alt="logo"/>
         </div>
         
         {/* Mobile Menu Toggle Button */}
@@ -153,11 +171,20 @@ const PrivateNavBar = () => {
           )}
 
           <div className="relative">
-            <button onClick={toggleDropdownNotification} className="navGroup flex items-center">
+          <button onClick={toggleDropdownNotification} className="navGroup flex items-center relative">
               <IoMdNotificationsOutline className="relative w-6 h-6" />
               {unreadCount > 0 && (
-                <span className="absolute bg-red-500 left-1.5 top-3 text-white text-xs w-2 h-2 rounded-full font-semibold">
-                </span>
+                <motion.span
+                  className="absolute bg-red-500 left-1.5 top-3 text-white text-xs w-2 h-2 rounded-full font-semibold"
+                  animate={{
+                    scale: [1, 1.3, 1],  // Pulse effect
+                    opacity: [1, 0.7, 1], // Fading effect
+                  }}
+                  transition={{
+                    duration: 0.5, // Continuous animation
+                    ease: "easeInOut",
+                  }}
+                />
               )}
             </button>
 
@@ -231,12 +258,15 @@ const PrivateNavBar = () => {
                 </li>
               )}
               </ul>
-                <div className="flex justify-end space">
-                  <button className="notification-bottom">
+                <div className="flex justify-end">
+                  <button className="notification-bottom mt-1">
                     Mark all as read
                   </button>
                   <button className="notification-bottom" onClick={clearNotifications}>
                     Clear all
+                  </button> 
+                  <button className="notification-bottom pr-0" onClick={handleViewAll}>
+                    View all
                   </button>               
                 </div>
              </div>

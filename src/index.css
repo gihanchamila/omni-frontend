@@ -177,10 +177,8 @@
     }
 
     .notification-bottom {
-      @apply text-gray-700 text-xs font-light  hover:underline justify-self-end mt-1 pt-2 pr-2
+      @apply text-gray-700 text-xs font-light hover:underline justify-self-end mt-1 pt-4 pr-2
     }
-
-    
   }
   
   

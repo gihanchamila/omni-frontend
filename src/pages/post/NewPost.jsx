@@ -143,30 +143,23 @@ const NewPost = () => {
   };
 
   const handleBack = () => {
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: "smooth" });
-      if (topRef.current.tabIndex !== -1) {
-        topRef.current.focus();
-      }
-    }
-    if(step === 1){
-      return navigate(-1)
-    } else if(step === 2){
-      setStep(1)
+    if (step === 1) {
+      navigate(-1);
+    } else if (step === 2) {
+      setStep(1);
     } else {
-      setStep(2)
+      setStep(2);
     }
-  }
+  };
+  
 
   return (
     <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
       <motion.div 
-        ref={topRef}
         className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        
       >
         {/* <div className="relative w-full h-2 bg-gray-200 rounded-sm overflow-hidden mb-6">
           <motion.div
@@ -182,11 +175,14 @@ const NewPost = () => {
         <BackButton onClick={handleBack} />
         <motion.div className="step bg-blue-50 rounded-lg p-4 mb-4 relative">
           <motion.div
+            ref={topRef}
             className="absolute top-0 left-0 h-full bg-blue-100 rounded-lg"
-            style={{ width: `${(step / 3) * 100}%` }}  // Dynamically fill the progress
-            initial={{ width: '0%' }} // Start from 0% width
-            animate={{ width: `${(step / 3) * 100}%` }}  // Fill width based on steps
+            style={{ width: `${(step / 3) * 100}%` }} 
+            initial={{ width: '0%' }}
+            animate={{ width: `${(step / 3) * 100}%` }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
+            tabIndex="0"
+            autoFocus
           />
           <motion.p className="relative z-10 text-blue-500 font-bold">
             {getTitle()}

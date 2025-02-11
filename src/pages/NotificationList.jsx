@@ -12,7 +12,13 @@ const NotificationList = () => {
         <h2 className='title'>Notifications</h2>
       </div>
       <div className='bg-gray-50 rounded-xl p-4'>
-        {notifications.length === 0 ? null : (
+        {notifications.length === 0 ? (
+          <div className="flex justify-center items-center">
+            <p className="text-center justify-center  text-gray-500 font-semibold p-4  rounded-lg ">
+              No notifications to display
+            </p>
+          </div>
+          ) : (
             <div className="">
             <div>
             {notifications.map((notification) => (

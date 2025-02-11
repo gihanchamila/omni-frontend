@@ -16,7 +16,7 @@ export const ProfileProvider = ({ children }) => {
     }, []);
 
     const fetchProfilePic = useCallback(async (key) => {
-        if (!key) return; 
+        if (!key) return;
         try {
             const response = await axios.get(`/file/signed-url?key=${key}`);
             setProfilePicUrl(response.data.data.url);
@@ -26,34 +26,42 @@ export const ProfileProvider = ({ children }) => {
     }, []);
 
     const getCurrentUser = useCallback(() => {
+        let isMounted = true; // Flag to prevent state update if unmounted
+
         const fetchUser = async () => {
             try {
-                resetProfileState(); // Resetting the state
                 const response = await axios.get(`/auth/current-user`);
                 const user = response.data.data.user;
 
-                if (user && user._id) {
+                if (user && user._id && isMounted) {
                     setCurrentUser(user);
                     if (user.profilePic?.key) {
-                        await fetchProfilePic(user.profilePic.key); // Fetch profile picture
+                        await fetchProfilePic(user.profilePic.key);
+                    } else {
+                        setProfilePicUrl(`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&font-size=0.33`);
                     }
-                } else {
+                } else if (isMounted) {
                     toast.error('User data is incomplete');
                 }
             } catch (error) {
-                const errorMessage = error.response?.data?.message || 'Error getting user';
-                toast.error(errorMessage);
+                if (isMounted) {
+                    toast.error(error.response?.data?.message || 'Error getting user');
+                }
             }
         };
 
         fetchUser();
-    }, [resetProfileState, fetchProfilePic]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchProfilePic]);
 
     useEffect(() => {
-        getCurrentUser();
+        const cleanup = getCurrentUser();
+        return cleanup;
     }, [getCurrentUser]);
 
-    // Handle socket events for profile picture updates
     useEffect(() => {
         if (!currentUser) return;
 
@@ -64,8 +72,8 @@ export const ProfileProvider = ({ children }) => {
         };
 
         const handleProfilePicRemoved = ({ userId }) => {
-            if (userId === currentUser._id) {
-                setProfilePicUrl(null);
+            if (userId === currentUser._id && profilePicUrl !== null) {
+                setProfilePicUrl(`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&font-size=0.33`);
             }
         };
 
@@ -76,14 +84,14 @@ export const ProfileProvider = ({ children }) => {
             socket.off('profilePicUpdated', handleProfilePicUpdated);
             socket.off('profilePicRemoved', handleProfilePicRemoved);
         };
-    }, [currentUser, socket]);
+    }, [currentUser, socket, profilePicUrl]);
 
     const value = useMemo(() => ({
         profilePicUrl,
         setProfilePicUrl,
         fetchProfilePic,
         getCurrentUser
-    }), [profilePicUrl, fetchProfilePic, getCurrentUser, setProfilePicUrl]);
+    }), [profilePicUrl, fetchProfilePic, getCurrentUser]);
 
     return (
         <ProfileContext.Provider value={value}>

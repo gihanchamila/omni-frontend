@@ -130,8 +130,8 @@ const TwoFactorAuthentication = ({
 
           {step === 'verify' && (
             <>
-              <div className="groupBox">
-                <label htmlFor="verification-code" className="text-gray-700 font-medium pb-6">Enter 6-digit Code</label>
+              <div className="flex flex-col space-y-4 justify-between">
+                <label htmlFor="verification-code" className="text-gray-700 font-medium">Enter 6-digit Code</label>
                 <input
                   type="text"
                   name="verificationCode"
