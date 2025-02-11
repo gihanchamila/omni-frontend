@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef} from "react";
 import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import ScrollLock from "react-scrolllock";
 import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
