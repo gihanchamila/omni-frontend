@@ -149,7 +149,12 @@ const PrivateNavBar = () => {
 
         <div className="md:hidden">
           <button onClick={toggleMobileMenu} className="focus:outline-none">
-            {mobileMenuOpen ? <AiOutlineClose className="w-5 h-5 font-bold" /> : <AiOutlineMenu className="w-5 h-5" />}
+            <motion.div
+              animate={{ rotate: mobileMenuOpen ? 180 : 0, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              {mobileMenuOpen ? <AiOutlineClose className="w-6 h-6 font-bold" /> : <AiOutlineMenu className="w-6 h-6" />}
+            </motion.div>
           </button>
         </div>
 
@@ -299,9 +304,8 @@ const PrivateNavBar = () => {
         {/* Mobile Menu */}
 
         {mobileMenuOpen && (
-          <ScrollLock>
             <div className="md:hidden fixed inset-0 z-50 bg-white flex flex-col px-5 text-black transition-transform duration-300 ease-in-out transform">
-              <div className="absolute flex justify-between top-4 left-5 right-5">
+              <div className="absolute flex justify-between mt-3 top-4 left-5 right-5">
                 <div className="flex items-center">
                   <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover ml-3" />
                   <span className="text-md pl-3 font-semibold">Hey, {currentUser?.firstName} {currentUser?.lastName}</span>
@@ -323,7 +327,6 @@ const PrivateNavBar = () => {
                 </div>
               </div>
             </div>
-          </ScrollLock>
         )}
       </nav>
     </div>

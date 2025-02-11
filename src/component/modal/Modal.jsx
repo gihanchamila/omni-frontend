@@ -25,15 +25,17 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
 
   useEffect(() => {
     if (showModal) {
-      document.body.classList.add('no-scroll');
+      document.body.classList.add('overflow-hidden'); // Lock body scroll
+      modalRef.current?.focus(); // Focus on the modal container itself
     } else {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove('overflow-hidden');
     }
 
     return () => {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove('overflow-hidden');
     };
   }, [showModal]);
+
   if (!showModal) return null;
 
   return (
@@ -43,9 +45,9 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
       aria-modal="true"
       id="popup-modal"
       tabIndex="-1"
-      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50 min-h-screen"
+      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50 min-h-screen overflow-hidden"
     >
-      <div ref={modalRef} className="relative p-4 w-full max-w-md">
+      <div ref={modalRef} className="relative p-4 w-full max-w-md overflow-scroll">
         <motion.div 
           className="relative bg-white rounded-lg shadow">
           <button
