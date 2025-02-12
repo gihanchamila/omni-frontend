@@ -71,7 +71,6 @@ const NewCategory = () => {
                 id="title"
                 className="input-box mt-2"
                 placeholder="Type category name"
-                required
                 value={formData.title}
                 onChange={handleChange}
               />

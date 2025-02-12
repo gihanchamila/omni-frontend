@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
-import signUpValidator from '../validators/signUpValidator.js';
+import signUpValidator from '../validators/signUpValidator.js'
 import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle,  HiEye, HiEyeOff } from "react-icons/hi";
 import { toast } from 'sonner';
 import UserIcon from '../component/icons/UserIcon.jsx';
@@ -88,7 +88,23 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("hel")
+    const errors = signUpValidator(
+      { 
+        firstName :formData.firstName,
+        lastName : formData.lastName,
+        email: formData.email, 
+        password: formData.password, 
+        confirmPassword: formData.confirmPassword
+      }
+    )
+
     
+    console.log(formData)
+
+    if(errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword){
+      setFormError(errors);
+    }
     try {
       setLoading(true);
       const response = await axios.post('/auth/signup', formData);
@@ -155,7 +171,6 @@ const Signup = () => {
                   type="text"
                   autoComplete="given-name"
                   placeholder="e.g.John"
-                  required
                   value={formData.firstName}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -175,7 +190,6 @@ const Signup = () => {
                   type="text"
                   autoComplete="family-name"
                   placeholder="e.g.Doe"
-                  required
                   value={formData.lastName}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -203,7 +217,6 @@ const Signup = () => {
                   name="email"
                   type="email"
                   placeholder="e.g. johndoe@gmail.com"
-                  required
                   value={formData.email}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -223,7 +236,6 @@ const Signup = () => {
                   name="confirmEmail"
                   type="email"
                   placeholder="e.g. johndoe@gmail.com"
-                  required
                   value={formData.confirmEmail}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -251,7 +263,6 @@ const Signup = () => {
                   name="password"
                   type={isPasswordVisible ? 'text' : 'password'} 
                   placeholder="Create a password"
-                  required
                   value={formData.password}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -288,7 +299,6 @@ const Signup = () => {
                   name="confirmPassword"
                   type={isConfirmPasswordVisible ? 'text' : 'password'} 
                   placeholder="Re-enter your password"
-                  required
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="appearance-none input-box-2"
@@ -322,7 +332,7 @@ const Signup = () => {
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button ref={signUpRef} className="w-full sm:w-auto" variant='info' primary={false} disabled={loading || strengthScore < 3}>
+            <Button ref={signUpRef} type="submit" className="w-full sm:w-auto" variant='info' primary={false} disabled={loading || strengthScore < 3 || Object.values(formError).some(error => error)}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </motion.div>

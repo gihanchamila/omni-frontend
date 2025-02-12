@@ -175,13 +175,13 @@ const Login = () => {
               type="email"
               autoComplete="email"
               placeholder="someone@gmail.com"
-              required
               value={formData.email}
               onChange={handleChange}
               className="appearance-none input-box-2"
               onKeyDown={(e) => {handleKeyDown(e, passwordRef)}}
             />
           </div>
+          {formError.email && <p className="validateError">{formError.email}</p>}
         </motion.div>
 
         <motion.div
@@ -201,7 +201,6 @@ const Login = () => {
               name="password"
               type={isPasswordVisible ? 'text' : 'password'} 
               placeholder="password"
-              required
               value={formData.password}
               onChange={handleChange}
               className="appearance-none input-box-2"
@@ -220,6 +219,7 @@ const Login = () => {
               </div>
             )}
           </div>
+          {formError.password && <p className="validateError">{formError.password}</p>}
         </motion.div>
 
         <div className='flex items-center justify-between'>
