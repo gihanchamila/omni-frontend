@@ -29,6 +29,7 @@ const NewCategory = () => {
     const errors = addCategoryValidator({ title: formData.title });
     if (errors.title) {
       setFormError(errors);
+      return
     } else {
       try {
         setLoading(true);
@@ -89,6 +90,7 @@ const NewCategory = () => {
                 value={formData.description}
                 onChange={handleChange}
               ></textarea>
+              {formError.description&& <p className="validateError">{formError.description}</p>}
             </div>
           </div>
           <Button variant="info" className="mt-5" loading={true}>
