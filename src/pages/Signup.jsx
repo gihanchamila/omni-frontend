@@ -77,6 +77,7 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormError((prev) => ({...prev, [name] : ""}))
 
     if (name === 'firstName') setIsFirstNameTyping(value !== '');
     if (name === 'lastName') setIsLastNameTyping(value !== '');
@@ -104,6 +105,7 @@ const Signup = () => {
 
     if(errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword){
       setFormError(errors);
+      return
     }
     try {
       setLoading(true);
@@ -332,7 +334,7 @@ const Signup = () => {
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button ref={signUpRef} type="submit" className="w-full sm:w-auto" variant='info' primary={false} disabled={loading || strengthScore < 3 || Object.values(formError).some(error => error)}>
+            <Button ref={signUpRef} type="submit" className="w-full sm:w-auto" variant='info' primary={false}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </motion.div>
