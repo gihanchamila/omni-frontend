@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import Button from "../button/Button.jsx";
 import addCommentValidator from "../../validators/addCommentValidator.js";
+import { motion } from "framer-motion";
 
+const MotionButton = motion(Button);
 
 const CommentForm = ({
   handleSubmit,
@@ -34,13 +36,17 @@ const CommentForm = ({
           <p className="text-red-500 text-xs italic">{formError.content}</p>
         )}
       </div>
-      <Button
+      <MotionButton
+        initial={{opacity : 0, scale : 0.5}}
+        animate={{opacity : 1, scale : 1}}
+        transition={{delay : 0.5, duration : 0.5}}
+        variant='primary'
         type="submit"
-        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 hover:bg-primary-800"
+        className="mt-2"
         disabled={isLoading}
       >
         {buttonText}
-      </Button>
+      </MotionButton>
     </form>
   );
 };

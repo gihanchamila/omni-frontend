@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../component/context/useSocket.jsx';
+import { useNotification } from '../component/context/useNotification.jsx';
 import { FiCamera } from "react-icons/fi";
 import { FaBars} from 'react-icons/fa';
 import { toast } from 'sonner';
-import { useSwipeable } from 'react-swipeable';
 import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import axios from "../utils/axiosInstance.js"
@@ -13,6 +14,7 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { useProfile } from '../component/context/useProfilePic.jsx';
 import TwoFactorAuthentication from '../component/settings/TwoFactorAuthentication.jsx';
 import Modal from '../component/modal/Modal.jsx';
+import { motion } from 'framer-motion';
 
 const initialFormData = {name : "", email : "", dateOfBirth : "" , interests : [], about : "", gender : "" }
 const initialFormError = {name : "", email : "", dateOfBirth : "", interests : [], about : "", gender : ""  }
@@ -21,11 +23,12 @@ const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 
 const Setting = () => {
   const navigate = useNavigate()
+  const socket = useSocket()
+  const { setNotifications } = useNotification()
   const { profilePicUrl, setProfilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [showModal, setShowModal] = useState(false)
-  const [removeModal, setRemoveModal] = useState(false);
 
   const [passwordData, setPasswordData] = useState(initialPasswordData)
   const [securityQuestionData, setSecurityQuestionData] = useState(initialQuestionData)
@@ -35,24 +38,7 @@ const Setting = () => {
 
   const [devices, setDevices] = useState([])
   const [loading, setLoading] = useState(false)
-  const [activeDeviceIndex, setActiveDeviceIndex] = useState(0);
   const [currentUser, setCurrentUser] = useState()
-
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (activeDeviceIndex < devices.length - 1) {
-        setActiveDeviceIndex(activeDeviceIndex + 1);
-      }
-    },
-    onSwipedRight: () => {
-      if (activeDeviceIndex > 0) {
-        setActiveDeviceIndex(activeDeviceIndex - 1);
-      }
-    },
-    preventDefaultTouchmoveEvent: true, 
-    trackMouse: true,
-  });
 
   const tabs = [
     { icon: <FaUserCircle />, label: 'General' },
@@ -112,29 +98,32 @@ const Setting = () => {
     getDevices()
   }, []);
 
-  /*
   useEffect(() => {
-   const getprofilePic = async () => {
-      try{
-        const response = await axios.get(`/file/signed-url?key=${profileKey}`)
-        const data = response.data.data
-        setProfilePic(data.url)
-        toast.success(response.data.message)
-      }catch(error){
-        const response = error.response;
-        const data = response.data
-        toast.error(data.message)
-      }
-   }
-   if (profileKey) {
-    getprofilePic();
-  }
-  },[profileKey])
-*/
+    if (!socket) return;
+
+    // Listen for user update notifications
+    const handleUserUpdate = (notification) => {
+      setNotifications((prev) => [
+        ...prev,
+        {
+          type: notification.type || "update",
+          message: notification.message || "Your profile has been updated",
+          isRead: notification.isRead || false,
+          _id: notification._id,
+        },
+      ]);
+    };
+
+    socket.on("user-updated", handleUserUpdate);
+    
+    return () => {
+      socket.off("user-updated", handleUserUpdate);
+    };
+  }, [socket, setNotifications]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
+  
     // If the name is 'interests', split the value into an array
     if (name === "interests") {
         setFormData((prevData) => ({
@@ -145,7 +134,9 @@ const Setting = () => {
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
-        }));
+        }))
+        
+        
     }
   };
 
@@ -165,6 +156,19 @@ const Setting = () => {
             setLoading(true)
             const response = await axios.put(`/user/update-profile`, formData)
             const data = response.data
+            const { notificationId, message } = response.data;
+
+            if (socket) {
+              socket.emit("update-user", {notificationId});
+            }
+    
+            setNotifications(prev => [...prev, {
+              type: "comment",
+              message,
+              isRead: false,
+              _id : notificationId
+            }]);
+
             toast.success(data.message)
             setFormData(initialFormData)
             setFormError(initialFormError)
@@ -189,6 +193,19 @@ const Setting = () => {
       setLoading(true);
       const response = await axios.put(`/auth/change-password`, passwordData);
       const data = response.data;
+      const {notificationId, message} = response.data;
+
+      if(socket){
+        socket.emit("password-changed", {notificationId});
+      }
+
+      setNotifications(prev => [...prev, {
+        type: "Password Change",
+        message,
+        isRead: false,
+        _id : notificationId
+      }]);
+
       toast.success(data.message);
       setPasswordData(initialPasswordData);
     } catch (error) {
@@ -207,7 +224,6 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/security-question', securityQuestionData)
       const data = response.data;
-      console.log(securityQuestionData)
       toast.success(data.message)
       setSecurityQuestionData(initialQuestionData)
     }catch(error){
@@ -223,6 +239,19 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/send-verification-email', {email})
       const data = response.data;
+      const {notificationId, message} = response.data
+
+      if (socket) {
+        socket.emit("verification-code-sent", {notificationId});
+      }
+  
+      setNotifications(prev => [...prev, {
+        type: "Email Verification",
+        message,
+        isRead: false,
+        _id : notificationId
+      }]);
+
       toast.success(data.message)
     }catch(error){
       setLoading(false);
@@ -273,9 +302,9 @@ const Setting = () => {
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
-      {/* Sidebar and Toggle Button */}
+
       <div className="relative w-full">
-      {/* Top bar with menu button */}
+
         <div className="flex justify-start text-black">
           <button
             className="text-3xl focus:outline-none"
@@ -285,20 +314,18 @@ const Setting = () => {
           </button>
         </div>
 
-        {/* Sidebar - Works for both Mobile and Desktop */}
         <div
           className={`fixed top-0 left-0 h-full bg-gray-800 text-white z-50 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } w-64 p-6  rounded-r-2xl`}
         >
-          {/* Close button */}
+
           <div className="flex justify-end">
             <button className="text-3xl focus:outline-none" onClick={() => setSidebarOpen(false)}>
               <RiCloseLargeFill className="w-5 h-5 transition-colors duration-200" />
             </button>
           </div>
 
-          {/* Navigation Links */}
           <nav className="mt-8">
             <ul className="space-y-4">
               {tabs.map((tab) => (
@@ -318,15 +345,16 @@ const Setting = () => {
           </nav>
         </div>
       </div>
-  
-      {/* Content Panel */}
+
       { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
-          <div>
+          <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}>
             <h2 className="title">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
-              {/* Profile Picture Section - No Changes */}
               <div className="bg-white p-6 rounded-lg">
                 <h2 className="h6">Profile Picture</h2>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
@@ -363,14 +391,14 @@ const Setting = () => {
                 </div>
               </div>
               
-              {/* Bento Box Layout for User Info and Login Sections */}
               <div className="grid gap-6 md:grid-cols-2">
-                {/* User Information Section */}
+
                 <div className="bg-white p-6 rounded-lg">
+
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-                    {/* First Name and Last Name Section */}
+
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">First Name</label>
@@ -385,6 +413,7 @@ const Setting = () => {
                         />
                       </div>
                     </div>
+
                     <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
                       <div className="groupBox">
                         <label className="label">Last Name</label>
@@ -400,7 +429,6 @@ const Setting = () => {
                       </div>
                     </div>
 
-                    {/* About Section (Full Width) */}
                     <div className="col-span-full space-y-4">
                       <div className="groupBox">
                         <label className="label" htmlFor="about">About</label>
@@ -415,8 +443,7 @@ const Setting = () => {
                       </div>
                     </div>
 
-                    {/* Birth Day, Gender, Email, and Interests Section */}
-                    <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
+                    <div className="col-span-full w-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">Birth Day</label>
                         <input
@@ -426,7 +453,7 @@ const Setting = () => {
                           placeholder="2001-05-15"
                           value={formData.dateOfBirth}
                           onChange={handleChange}
-                          className="input-box"
+                          className="border border-gray-300 rounded-md bg-white py-2 pl-4  text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none"
                         />
                       </div>
                       <div className="groupBox">
@@ -514,7 +541,7 @@ const Setting = () => {
 
                 {/* Account Deactivation/Deletion Section */}
                 <div className="bg-white p-8 rounded-lg  space-y-8">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Management</h2>
+                  <h2 className="h6">Account Management</h2>
 
                   {/* Account Deletion Section */}
                   <div className="bg-red-50 p-6 rounded-lg border border-red-200">
@@ -523,7 +550,7 @@ const Setting = () => {
                       <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
                       <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
                       <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
-                      <Button onClick={() => {setShowModal(true); console.log("Clicked" ); }} variant="error" className="mt-4">Delete Account</Button>
+                      <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
                     </div>
                   </div>
 
@@ -560,11 +587,15 @@ const Setting = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {activeTab === "security" && (
-          <div>
+          <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          >
             <h2 className="text-2xl font-bold mb-6">Security Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
@@ -584,6 +615,7 @@ const Setting = () => {
                         onChange={handlePasswordChange}
                         required
                       />
+                      
                     </div>
                     <div className="groupBox">
                       <label htmlFor="newPassword" className="text-gray-700 font-medium">New Password</label>
@@ -611,7 +643,7 @@ const Setting = () => {
                         required
                       />
                     </div>
-                      <Button className="" type="submit" variant="info" >
+                      <Button className="sm:py-2 sm:text-sm" type="submit" variant="info" >
                         Change Password
                       </Button>                
                   </div>
@@ -646,7 +678,7 @@ const Setting = () => {
                         rows="5"
                       />
                     </div>
-                    <Button type='submit' variant="info">Save Security Settings</Button>
+                    <Button type='submit' className={"sm:py-2 sm:text-sm"} variant="info">Save Security Settings</Button>
                   </div>
                 </form>
               </div>
@@ -701,7 +733,7 @@ const Setting = () => {
               <TwoFactorAuthentication onEmailSubmit={handleEmailSubmit} onCodeSubmit={handleVerificationSubmit}/>
 
             </div>
-          </div>
+          </motion.div>
         )}
       </div>)}
     </div>

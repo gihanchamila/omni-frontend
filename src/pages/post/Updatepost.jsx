@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
+
 
 // Custom Components
 import Button from '../../component/button/Button.jsx';
 import BackButton from '../../component/button/BackButton.jsx';
 import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
+import ImageUploader from './ImageUploader.jsx';
 
 // Validators
 import addPostValidator from '../../validators/addPostValidator.js';
@@ -15,47 +17,64 @@ import addPostValidator from '../../validators/addPostValidator.js';
 // Third-Party Libraries
 import ReactQuill from 'react-quill';
 
-const initialFormData = { title: "", description: "", category: "", file: "" };
+const initialFormData = { title: "", description: "", category: "", file: null };
 const initialFormError = { title: "", description: "", category: "", file: "" };
 
 const UpdatePost = () => {
-
   const params = useParams();
   const postId = params.id;
 
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState(initialFormError);
   const [categories, setCategories] = useState([]);
-  const [fileId, setFileId] = useState(null);
+  const [fileKey, setFileKey] = useState("")
   const [loading, setLoading] = useState(false);
-
-  const socket = useSocket();
+  const [step, setStep] = useState(1);
+  const [file, setFile] = useState();
   const navigate = useNavigate();
+  const socket = useSocket();
 
   useEffect(() => {
-    if (postId) {
-      const getPost = async () => {
-        try {
-          const response = await axios.get(`/posts/${postId}`);
-          const data = response.data.data;
+    const getPost = async () => {
+      try {
+        const response = await axios.get(`/posts/${postId}`);
+        const postData = response.data?.data?.post;
+  
+        if (postData) {
+          setFileKey(postData.file?.key || ""); 
           setFormData({
-            title: data.post.title,
-            description: data.post.description,
-            file: data.post?.file?._id,
-            category: data.post.category._id,
+            title: postData.title || "",
+            description: postData.description || "",
+            file: postData.file?._id || null,
+            category: postData.category?._id || "",
           });
-        } catch (error) {
-          toast.error(error.response.data.message);
+        } else {
+          throw new Error("Unexpected response structure");
         }
-      };
-      getPost();
-    }
-  }, [postId]);
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message || "An error occurred while fetching post data";
+        toast.error(errorMessage); // Display the error message
+      }
+    };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const getExisitingFile = async () => {
+      if (fileKey) {  
+          try {
+              const response = await axios.get(`/file/signed-url?key=${fileKey}`);
+              const data = response.data.data;
+              setFile(response.data.data.url)
+              toast.success(data.message);
+          } catch (error) {
+              const response = error.response;
+              const data = response.data;
+              toast.error(data.message || "Failed to fetch existing file");
+          }
+      }
+    };
+
+    getExisitingFile()
+    getPost();
+  }, [postId, fileKey, file]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -81,102 +100,126 @@ const UpdatePost = () => {
     return () => {
       socket.off('postUpdated');
     };
-  }, []);
+  }, [socket]);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && ["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
-      const formInput = new FormData();
-      formInput.append("image", file);
-      try {
-        setLoading(true);
-        const response = await axios.post("/file/upload", formInput);
-        setFileId(response.data.data.id);
-        toast.success(response.data.message);
-      } catch (error) {
-        toast.error(error.response.data.message);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setFormError((prev) => ({ ...prev, file: "Only .png, .jpg, or .jpeg files allowed" }));
-    }
+  const handleImageUpload = (file) => {
+    setFormData((prev) => ({ ...prev, file }));
   };
 
-  const handleDescriptionChange = (e) => {
-    setFormData((prev) => ({ ...prev, description: e.target.value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleNext = (e) => {
     e.preventDefault();
     const errors = addPostValidator({
       title: formData.title,
       category: formData.category,
     });
 
-    if (errors.title || errors.category) {
+    if (errors.title || errors.category || (step === 1 && !formData.file)) {
       setFormError(errors);
     } else {
+      setFormError(initialFormError);
+      setStep((prev) => prev + 1);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
       try {
         setLoading(true);
-
-        let input = formData;
-        if (fileId) {
-          input = { ...input, file: fileId };
-        }
+          const input = {
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            file: formData.file
+        };
+  
+         if (formData.file instanceof File) {
+          const imageFormData = new FormData();
+          imageFormData.append("image", formData.file);
+          const fileResponse = await axios.post("/file/upload", imageFormData);
+          input.file = fileResponse.data.data.id; // Use the uploaded file's ID
+          toast.success(fileResponse.data.message);
+        } 
 
         const response = await axios.put(`/posts/${postId}`, input);
         toast.success(response.data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
-        navigate('/posts');
+        navigate('/');
       } catch (error) {
-        toast.error("Couldn't update post");
-      } finally {
-        setLoading(false);
+        console.error("Error updating post:", error);
+        const errorMessage = error.response?.data?.message || "Couldn't update post";
+        toast.error(errorMessage);
       }
+    
+  };
+  
+  const getTitle = () => {
+    switch (step) {
+      case 1: return 'Step 1: Update Title and Image';
+      case 2: return 'Step 2: Update  Description and Category';
+      case 3: return 'Step 3: Preview Your updated Post';
+      default: return 'Update Post';
     }
   };
 
   return (
-    <section className="bg-white p-8">
-      <div className="container mx-auto lg:flex lg:space-x-8">
+    <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl">
+      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
         
         {/* Form Section */}
-        <div className="lg:w-1/2">
+        <div className="bg-white rounded-lg ">
           <BackButton />
-          <h4 className="text-2xl font-bold text-gray-800 mb-6">Update Post</h4>
-          <form id='new-post' onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                type="text"
-                name="title"
-                id="title"
-                className="mt-2 w-full px-4 py-2  shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter title"
-                required
-                value={formData.title}
-                onChange={handleChange}
-              />
-              {formError.title && <p className="text-sm text-red-600 mt-2">{formError.title}</p>}
-            </div>
+          <h4 className="step">{getTitle()}</h4>
+          {loading && <div className="text-center">Loading...</div>}
 
-            <div className="space-y-4">
+          {step === 1 && (
+            <form onSubmit={handleNext} className="space-y-6">
               <div>
-                <label htmlFor="file" className="block text-sm font-medium text-gray-700">Upload File</label>
-                <Button className="mt-2 relative flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                  <input
-                    type="file"
-                    name="file"
-                    id="file"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={handleFileChange}
-                  />
-                  Upload File
-                </Button>
-                {formError.file && <p className="text-sm text-red-600 mt-2">{formError.file}</p>}
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter title"
+                  required
+                  value={formData.title || ""}
+                  onChange={handleChange}
+                />
+                {formError.title && <p className="text-sm text-red-600 mt-2">{formError.title}</p>}
               </div>
+
+              <div className='space-y-4'>
+                <h3 className="label">Upload an image (if no existing image is found, it will be saved).</h3>
+                {formData.image && (
+                  <div className="mb-4">
+                    <ImageUploader file={file} />
+                  </div>
+                )}
+                <ImageUploader onUpload={handleImageUpload} />
+                {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
+              </div>
+
+              <div className="flex justify-end">
+                <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                  Next Step
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {step === 2 && (
+            <form onSubmit={handleNext} className="space-y-6">
+              <DescriptionEditor 
+                formData={formData} 
+                handleChange={handleChange} 
+              />
+              {formError.description && <p className="text-red-500 text-sm mt-2">{formError.description}</p>}
 
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700">Select Category</label>
@@ -186,6 +229,7 @@ const UpdatePost = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
+                  required
                 >
                   <option value="">Select category</option>
                   {categories.map((category) => (
@@ -194,30 +238,46 @@ const UpdatePost = () => {
                     </option>
                   ))}
                 </select>
-                {formError.category && <p className="text-sm text-red-600 mt-2">{formError.category}</p>}
+                {formError.category && <p className="text-red-500 text-sm mt-2">{formError.category}</p>}
               </div>
+
+              <div className="flex justify-end">
+                <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(1)}>Back</Button>
+                <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                  Next Step
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-6">
+              <div className="rounded-lg space-y-4">
+                <h4 className="h4 font-bold w-full">{formData.title}</h4>
+                {(formData.file instanceof File) ? (
+                    <img 
+                      src={URL.createObjectURL(formData.file)} 
+                      alt="Uploaded" 
+                      className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" 
+                    />
+                  ) : formData.file ? (
+                    <img 
+                      src={file} 
+                      alt="Existing" 
+                      className="w-full h-[50rem] object-cover mb-2 rounded-lg" 
+                    />
+                  ) : null}
+                <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
+              </div>
+
+              <div className="flex justify-end">
+              <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(2)}>Back</Button>
+              <Button variant="info" className="mt-4 px-4 py-2 text-sm bg-blue-500 text-white font-medium rounded-lg"  onClick={handleSubmit}>
+                Update Post
+              </Button>
             </div>
-
-            <DescriptionEditor formData={formData} handleChange={handleDescriptionChange} />
-
-            <Button type="submit" className="mt-6 w-full py-3 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700">
-              Update Post
-            </Button>
-          </form>
-        </div>
-
-        {/* Preview Section */}
-        <div className="lg:w-1/2 lg:py-0 py-10">
-          <h4 className="text-2xl font-bold text-gray-800 mb-6 mt-14">Preview</h4>
-          <div className="border border-gray-300 rounded-lg">
-            <h4 className="text-xl font-semibold text-gray-800  px-4 py-4">{formData.title}</h4>
-            <ReactQuill
-              className=''
-              value={formData.description}
-              readOnly={true}
-              theme="bubble"
-            />
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

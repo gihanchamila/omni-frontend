@@ -10,6 +10,7 @@ import { useProfile } from "../context/useProfilePic.jsx";
 import PropTypes from 'prop-types';
 import ProfilePicSkeleton from './ProfilePicSkeleton'; // Import your skeleton loader component
 import AuthorProfilePic from './AuthorProfilePic.jsx';
+import { motion } from 'framer-motion';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
   const navigate = useNavigate();
@@ -25,8 +26,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         const authorId = post.author._id;
         const key = post.author.profilePic.key;
         if (!authorId) return;
-        
-        // Check if the profile picture is already cached
+
         if (profilePicCache.current[authorId]) {
           setProfilePic(profilePicCache.current[authorId]);
           return;
@@ -34,7 +34,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         
         const response = await axios.get(`/file/signed-url?key=${key}`);
         const url = response.data.data.url;
-        profilePicCache.current[authorId] = url; // Cache the URL
+        profilePicCache.current[authorId] = url; 
         setProfilePic(url);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
@@ -72,18 +72,18 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
-              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="" />
+              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" />
 
              {/*  <AuthorProfilePic author={post?.author} /> */}
-              <span className="px-2 text-xs">{`${post.author.firstName} ${post.author.lastName}`}</span>
-              {currentUser && post.author._id !== currentUser._id && (
+              <span className="px-2 text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
+              {currentUser && post?.author?._id !== currentUser._id && (
                 <span
                   className={`text-blue-500 hover:underline hover:cursor-pointer ${
                     followStatuses[post?.author?._id] ? 'text-red-500' : ''
                   }`}
-                  onClick={() => handleFollow(post.author._id)}
+                  onClick={() => handleFollow(post?.author?._id)}
                 >
-                  {followStatuses[post.author._id] ? 'Unfollow' : 'Follow'}
+                  {followStatuses[post?.author?._id] ? 'Unfollow' : 'Follow'}
                 </span>
               )}
             </div>
@@ -99,9 +99,12 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
             <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']} />
           </p>
           <div className="flex space-x-4">
-            <button
+            <motion.button
               className="flex items-center text-gray-500 hover:text-gray-700"
               onClick={() => handleLike(post._id)}
+              whileTap={{ scale: 0.8 }}
+              animate={{ scale: liked ? [1, 1.2, 1] : 1, rotate: liked ? [0, 10, -10, 0] : 0 }}
+              transition={{ duration: 0.3 }}
             >
               {liked ? (
                 <IoIosHeart className="iconSize text-red-500" />
@@ -109,7 +112,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
                 <IoIosHeartEmpty className="iconSize" />
               )}
               <span className="text-xs">{post.likesCount}</span>
-            </button>
+            </motion.button>
             <button className="flex items-center text-gray-500 hover:text-gray-700">
               <IoChatbubblesOutline className="iconSize" />
               <span className="text-xs">{post.commentCount}</span>

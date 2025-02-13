@@ -1,44 +1,57 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
-const Button = ({type = "button", children, variant = "primary", className, to, onClick, ...props }) => {
-  const baseClasses = "button transition-colors duration-100 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none tracking-wider";
+const Button = forwardRef(
+  ({ className = "", variant, primary, children, to, onClick, disabled, ...props }, ref) => {
+    const finalVariant = primary ? "primary" : variant;
 
-  // Variant-based classes
-  const variantClasses = {
-    primary: "bg-slate-800 text-white hover:bg-slate-600",
-    error: "bg-red-500 text-white hover:bg-red-600",
-    success: "bg-green-500 text-white hover:bg-green-500",
-    info: "bg-blue-500 text-white hover:bg-blue-600 ",
-    back : "bg-gray-300 rounded-full",
-    outline : "border border-gray-200 hover:bg-gray-50 text-gray-800"
-  };
+    const baseClasses =
+      "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-2 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className || ""}`;
-  const spanClasses = "relative z-10";
+    // Variant-based classes
+    const variantClasses = {
+      primary: "bg-slate-900 text-white hover:bg-slate-600 focus:bg-slate-900",
+      error: "bg-red-500 text-white hover:bg-red-600",
+      success: "bg-green-500 text-white hover:bg-green-500",
+      info: "bg-blue-500 text-white hover:bg-blue-600",
+      back: "bg-gray-300 rounded-full",
+      outline: "border border-gray-200 hover:bg-gray-50 text-gray-800",
+    };
 
-  const renderButton = () => (
-    <button className={`${classes} ${className}`} onClick={onClick} {...props}>
-      <span className={spanClasses}>{children}</span>
-    </button>
-  );
+    // Custom disabled color
+    const disabledClasses = "bg-gray-100 text-gray-500 cursor-not-allowed pointer-events-none";
 
-  const renderLink = () => (
-    <Link to={to} className={`${classes} ${className}`} {...props}>
-      <span className={spanClasses}>{children}</span>
-    </Link>
-  );
+    // Combine classes, with condition for disabled state
+    const classes = `${baseClasses} ${
+      disabled ? disabledClasses : variantClasses[finalVariant] || ""
+    } ${className}`;
 
-  return to ? renderLink() : renderButton();
-};
+    const spanClasses = "relative z-10";
 
-// Define prop types for better type checking
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(["primary", "error", "success", "info"]),
-  className: PropTypes.string,
-  to: PropTypes.string,
-  onClick: PropTypes.func,
-};
+    const renderButton = () => (
+      <motion.button
+        ref={ref}
+        className={classes}
+        onClick={onClick}
+        {...props}
+        disabled={disabled}
+        whileTap={{ scale: 0.95 }}
+      >
+        <span className={spanClasses}>{children}</span>
+      </motion.button>
+    );
+
+    const renderLink = () => (
+      <Link ref={ref} to={to} className={classes} {...props}>
+        <span className={spanClasses}>{children}</span>
+      </Link>
+    );
+
+    return to ? renderLink() : renderButton();
+  }
+);
+
+Button.displayName = "Button";
 
 export default Button;

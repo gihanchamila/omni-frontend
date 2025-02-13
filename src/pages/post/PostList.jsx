@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 
 // Custom Components
@@ -39,7 +40,10 @@ const PostList = () => {
   // User Info
   const [currentUser, setCurrentUser] = useState('');
 
-  const authorIds = useMemo(() => posts.map(post => post.author._id), [posts]);
+  const authorIds = useMemo(() => posts
+  .filter(post => post && post.author && post.author._id)
+  .map(post => post.author._id), [posts]);
+  
   const socket = useSocket()
 
   useEffect(() => {
@@ -108,7 +112,6 @@ const PostList = () => {
     }
   }, [posts]);
 
-
   useEffect(() => {
     const getLikedPosts = async () => {
       const response = await axios.get('/likes/posts/liked');
@@ -145,7 +148,6 @@ const PostList = () => {
 
         const response = await axios.get('/posts/features/popular-posts')
         const data = response.data.data
-
         setPopularPosts(data)
 
       }catch(error){
@@ -299,14 +301,18 @@ const PostList = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 md:px-[10rem] py-10">
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+    <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
+    className="mx-auto  md:px-[10rem] py-10">
+      <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4  md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
-        <div className="w-full md:w-2/3 space-y-4">
+        <div className="w-full md:w-2/3 space-y-4 ">
           {/* Dynamic Posts */}
           {loading ? (
-            Array.from({ length: 3 }).map((_, index) => (
+            Array.from({ length: 2}).map((_, index) => (
               <PostSkeleton key={index} />
             ))
           ) : (
@@ -330,7 +336,7 @@ const PostList = () => {
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
           <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
             {loading ? (
-              <Skeleton width='8rem' height='1.5rem' className='mb-4 border-none'/>
+              <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
               ) : (
               <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
               Latest Posts
@@ -389,7 +395,7 @@ const PostList = () => {
             <div className="space-y-4">
               {/* Popular Post Card */}
               {loading ? (
-                Array(2)
+                Array(3)
                   .fill(0)
                   .map((_, index) => (
                     <div
@@ -404,7 +410,7 @@ const PostList = () => {
                     </div>
                   ))
               ) : (
-                latestPosts.map((post) => (
+                popularPosts.map((post) => (
                   <div key={post._id} className="flex items-center space-x-4">
                     <img
                       className="cardImage"
@@ -431,7 +437,7 @@ const PostList = () => {
         </div>
       </div>
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
-    </div>
+    </motion.div >
   );
 };
 

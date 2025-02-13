@@ -1,69 +1,35 @@
 import React, { useState } from 'react';
-import axios from '../../utils/axiosInstance.js';
-import { toast } from 'sonner';
 
-const SearchBar = ({ currentPage, sortField, sortOrder, onSearchResults }) => {
-  const [searchValue, setSearchValue] = useState('');
 
-  const handleSearch = async (e) => {
-    const input = e.target.value;
-    setSearchValue(input);
+const SearchBar = ({ currentPage, sortField, sortOrder, onSearchResults, searchValue, handleSearch, placeholder }) => {
 
-    if (!input.trim()) {
-      onSearchResults({ categories: [], pages: 1 });
-      return;
-    }
-
-    try {
-      const response = await axios.get(`/category`, {
-        params: {
-          q: input,
-          page: currentPage,
-          sortField: sortField,
-          sortOrder: sortOrder,
-        },
-      });
-
-      const data = response.data.data;
-      onSearchResults(data);
-    } catch (error) {
-      const response = error.response;
-      const data = response?.data;
-      toast.error(data?.message || "An error occurred while searching.");
-    }
-  };
 
   return (
-    <form className="max-w-md mx-auto">
-      <div className="relative">
-        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
-        <input
-          type="search"
-          id="default-search"
-          className="block ps-10 text-sm border border-gray-300 opacity-80 hover:opacity-100 focus:opacity-100 rounded-full outline-none px-5 py-2 transition-opacity duration-200 ease-in-out"
-          placeholder="Search categories"
-          onChange={handleSearch}
-          value={searchValue}
-          required
-        />
-      </div>
-    </form>
+          <form className="flex justify-start items-center max-w-sm mx-auto">
+            <label htmlFor="simple-search" className="sr-only">Search</label>
+            <div className="relative lg:w-[20rem] w-full">
+                {/* <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"/>
+                    </svg>
+                </div> */}
+                <input 
+                    type="text" 
+                    id="simple-search" 
+                    className="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2 pl-3 px-2.5" 
+                    placeholder={placeholder}
+                    value={searchValue}
+                    onChange={handleSearch}
+                    required 
+                />
+            </div>
+            <button type="submit" className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-500 rounded-lg ">
+                <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                </svg>
+                <span className="sr-only" onClick={handleSearch}>Search</span>
+            </button>
+          </form>
   );
 };
 

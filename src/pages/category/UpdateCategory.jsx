@@ -41,7 +41,7 @@ const UpdateCategory = () => {
             getCategory()
         }
 
-    }, [categoryId])
+    }, [categoryId, formData])
 
     const handleChange = (e) => {
         setFormData((prev) => ({...prev, [e.target.name] : e.target.value}))
@@ -75,7 +75,6 @@ const UpdateCategory = () => {
             
         }
     }
-    
 
   return (
     <section className="bg-white">

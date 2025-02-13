@@ -15,13 +15,12 @@ export const SocketProvider = ({ children }) => {
     
         // Listen for a response from the server
         socket.on('serverToClient', (data) => {
-            console.log('Received from server:', data);
         });
     
         return () => {
             socket.off('serverToClient'); // Cleanup event listener
         };
-    }, []);
+    }, [socket]);
      
     useEffect(() => {
         return () => {

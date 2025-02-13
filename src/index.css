@@ -8,9 +8,7 @@
 @tailwind utilities;
 
 @layer base {
-
     :root {
-
       --font-Inter:"Inter",sans-serif;
       --font-DMSans:"DM Sans", sans-serif;
       --font-Lexend:"Lexend Deca", DM Sans, sans-serif;
@@ -20,15 +18,12 @@
       --color-accent: #D65A31;
       --color-light: #EEEEEE;
       --color-blue: #98ABEE;
-      color-scheme: dark, light;
+        color-scheme: dark, light;
     }
-  
     * {
       scroll-behavior: smooth;
     }
   };
-
-{/* Do not add commas to seperate components */} 
 
 @layer components  {
 
@@ -36,176 +31,105 @@
       @apply h5 font-bold pb-4
     }
 
-    .subTitle {
-
-      @apply h6 pb-4
-      
+    .paraText {
+      @apply text-lg leading-relaxed text-gray-700
     }
 
-    .button {
-
-      @apply font-medium rounded-lg text-sm px-4 py-2 focus:outline-none tracking-wider 
-
+    .subTitle {
+      @apply h6 pb-4
     }
 
     .navlink {
-
-      @apply tracking-wider text-slate-800 hover:bg-slate-100 hover:rounded-lg px-2  leading-6 py-2 text-sm active:rounded-lg  active:bg-slate-100 font-semibold;
-
+      @apply tracking-wider text-slate-800 hover:bg-slate-100 hover:rounded-lg px-2 leading-6 py-2 text-sm active:rounded-lg  active:bg-slate-100 font-semibold;
     }
 
     .activeNavLink {
-
       @apply bg-slate-100 rounded-lg
-
     }
 
     .navGroup {
-
       @apply flex space-x-2
-
     }
 
     .icon {
-
       @apply w-auto h-5 mr-2 text-slate-800 
-
     }
 
     .input-wrapper {
-
       @apply relative flex items-center justify-center
-
     }
 
     .input-icon {
-
       @apply icon absolute left-4 
-
     }
 
     .mobile-nav-link {
-
       @apply block py-4 text-sm px-4 font-semibold hover:bg-slate-100 hover:rounded-lg
-
     }
 
     .dropdown {
-
       @apply block px-2 py-2 text-color-s text-sm  hover:bg-slate-100 hover:rounded-lg font-semibold
-      
     }
 
     .grid-background{
-
       @apply absolute bg-slate-100 w-full;
-
     }
 
-    {/* Toast */}
-
     .toast {
-
       @apply relative w-[22rem] h-[4rem] rounded-xl inline-flex items-center p-5 border font-bold
-
     }
 
     .error {
-
       @apply bg-red-50  border-red-200 text-red-500 
-
     }
 
     .success {
-
       @apply  bg-green-50  border-green-200 text-green-500 
-
     }
 
     .warning {
-
       @apply  bg-yellow-50  border-yellow-200 text-yellow-500 
-
     }
 
     .info {
-
       @apply  bg-blue-50 border-blue-200 text-blue-500 
-
     }
 
     .toastTitle {
-
       @apply pl-2
-
     }
 
     .iconSize {
-
       @apply w-5 h-5
-
     }
 
     .closeButton {
-
       @apply absolute left-[20rem] top-4 w-10 h-10 hover:font-bold  hover:bg-none 
-
     }
 
-    {/*Form*/}
 
     .groupBox {
-
       @apply flex flex-col space-y-2
-
     }
 
     .validateError {
-
       @apply text-[0.75rem] text-red-500
-
     }
 
     .input {
-
       @apply focus:border-2 focus:border-blue-500 outline-none
-
     }
-
-    {/*Page pagination*/}
 
     .pageButton {
-
       @apply flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700
-
     }
-
-    {/*Like unlike*/}
 
     .iconSize {
-
       @apply w-4 h-4 mr-1
-
     }
-
-    {/*Card*/}
 
     .cardImage {
-
       @apply w-[4rem] h-[4rem]  object-cover rounded-lg
-
-    }
-
-    .ql-container {
-      @apply bg-white border  border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
-    }
-    
-    .ql-toolbar {
-      @apply bg-gray-100 border-b border-gray-300 rounded-lg;
-    }
-    
-    .ql-editor {
-      @apply h-48 p-0 text-sm text-gray-900;
     }
 
     .social {
@@ -217,11 +141,44 @@
     }
 
     .spanLabel {
-
       @apply  px-2 py-1 text-xs inset-1 ring-offset-4 inline-block  bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full font-medium
-
     }
 
+    .step {
+      @apply bg-blue-50 font-bold text-blue-500 rounded-lg p-4 mb-4
+    }
+
+    p {
+      @apply text-slate-700 font-light
+    }
+
+    .tableTh {
+      @apply border  text-left border-slate-300 px-2 lg:px-4 py-2 cursor-pointer hover:bg-gray-200
+    }
+    
+    .tableTd {
+      @apply border border-slate-300 px-2 lg:px-4 
+    }
+
+    td {
+      @apply lg:py-2 lg:px-1
+    }
+
+    table {
+      @apply table-auto w-full border-collapse border border-slate-200 rounded-lg lg:text-sm sm:text-xs;
+    }
+    
+    tr {
+      @apply border border-slate-200;
+    }
+
+    .ql-editor {
+      @apply p-0 font-sans  text-slate-700 font-light  text-lg
+    }
+
+    .notification-bottom {
+      @apply text-gray-700 text-xs font-light hover:underline justify-self-end mt-1 pt-4 pr-2
+    }
   }
   
   

@@ -7,10 +7,6 @@ import { HiExclamationCircle } from "react-icons/hi";
 import { HiExclamation } from "react-icons/hi";
 import { HiOutlineXMark } from "react-icons/hi2";
 
-{/*import "react-toastify/ReactToastify.css"
-import { ToastContainer } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';*/}
-
 import './index.css'
 
 import PrivateLayout from "./component/layout/PrivateLayout.jsx";
@@ -33,8 +29,12 @@ import Setting from "./pages/Setting.jsx"
 import Signup from "./pages/Signup.jsx"
 import Login from "./pages/Login.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
+import UserProfile from "./pages/UserProfile.jsx";
+import Users from "./pages/Users.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import AdminList from "./pages/AdminList.jsx";
 
-
+import NotificationList from "./pages/NotificationList.jsx";
 
 function App() {
   
@@ -44,21 +44,28 @@ function App() {
       <div className="relative container">
         <Routes>
             <Route element={<PrivateLayout />}>
-              <Route path="/" element={<Home />} />
+              {/* <Route path="/" element={<Home />} /> */}
               <Route path="categories" element={<CategoryList />} />
               <Route path="categories/new-category" element={<NewCategory />} />
               <Route path="categories/update-category/:id" element={<UpdateCategory />} />
-              <Route path="posts" element={<PostList />} />
+              <Route path="users" element={<Users />} />
+              <Route path="/" element={<PostList />} />
               <Route path="posts/:id" element={<SinglePost />} />
               <Route path="posts/new-post" element={<NewPost />} />
               <Route path="posts/update-post/:id" element={<UpdatePost/>} />
               <Route path="/:id" element={<Profile />} />
+              <Route path="user-profile/:id" element={<UserProfile/>} />
               <Route path="settings" element={<Setting />} />
+              <Route path="dashboard" element={<Home/>} />
+              <Route path="admin-list" element={<AdminList/>} />
+              <Route path="notifications" element={<NotificationList/>} />
             </Route>
             <Route element={<PublicLayout />}>
               <Route path="signup" element={<Signup />} />
               <Route path="login" element={<Login />} />
               <Route path="forgot-password" element={<ForgotPassword />}/>
+              {/* <Route path="/" element={< />} /> */}
+              <Route path="our-story" element={<HomePage />} />
             </Route>
         </Routes>
         <Toaster  closeButton={<HiOutlineXMark />} description

@@ -1,13 +1,11 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useRef, useEffect } from "react"
 import axios from "../utils/axiosInstance.js"
-import { Link, useNavigate } from 'react-router-dom'
-import { ProfileContext } from "../component/context/ProfileContext.jsx"
-import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
-
-import { toast } from 'sonner'
 import Button from '../component/button/Button.jsx'
+import { Link, useNavigate } from 'react-router-dom'
+import { HiOutlineMail, HiLockClosed, HiEye, HiEyeOff  } from "react-icons/hi";
+import { toast } from 'sonner'
 import { useProfile } from "../component/context/useProfilePic.jsx"
-import { useSocket } from "../hooks/useSocket.jsx"
+import { motion } from "framer-motion";
 
 import loginValidator from "../validators/LoginValidator.js"
 
@@ -16,18 +14,26 @@ const initialFormError = {email : "", password : ""}
 
 const Login = () => {
   
-  const socket = useSocket()
   const [isEmailTyping, setIsEmailTyping] = useState(false);
   const [isPasswordTyping, setIsPasswordTyping] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const [formData, setFormData] = useState(initialFormData)
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
-  const { profilePicUrl, setProfilePicUrl } = useProfile()
-  const { getCurrentUser } = useContext(ProfileContext);
-
+  const {fetchProfilePic} = useProfile()
 
   const navigate = useNavigate()
+  const inputRef = useRef(null)
+  const passwordRef = useRef(null)
+  const password = formData.password
+
+  useEffect(() => {
+    if(inputRef.current){
+      inputRef.current.focus()
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,6 +43,13 @@ const Login = () => {
       setIsEmailTyping(value !== '');
     } else if (name === 'password') {
       setIsPasswordTyping(value!== '');
+    }
+  };
+
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter" && nextRef && nextRef.current) {
+      e.preventDefault(); 
+      nextRef.current.focus();
     }
   };
 
@@ -73,16 +86,15 @@ const Login = () => {
         if(data.data.user.profilePic?.key){
           const profilePicKey = data.data.user.profilePic.key;
           window.localStorage.setItem('profilePicKey', profilePicKey);
-          setProfilePicUrl(profilePicKey);
+          fetchProfilePic(profilePicKey);
         }
-        
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
         toast.success(data.message);
-        getCurrentUser();
   
         setFormData(initialFormData);
         setFormError(initialFormError);
         setLoading(false);
+
         navigate('/');
       } catch (error) {
         console.error("Error occurred:", error);
@@ -136,50 +148,86 @@ const Login = () => {
 };
 
   return (
-    <div className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl'>
+    <motion.div
+      className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl'
+      initial={{ opacity: 0, scale : 0.8 }} 
+      animate={{ opacity: 1, scale : 1 }} 
+      transition={{ duration: 0.6 }}
+    >
       <div className="body-1">
           <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
       </div>
 
       <form action="" className="space-y-4" onSubmit={handleSubmit}>
-        <div className="groupBox">
+        <motion.div
+          className="groupBox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.4, duration: 0.6 }}
+        >
           <label htmlFor="email" className="label">Email address</label>
           <div className="relative input-wrapper">
-            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : ''}`}/>
+            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
+              ref={inputRef}
               id="email"
               name="email"
               type="email"
               autoComplete="email"
               placeholder="someone@gmail.com"
-              required
               value={formData.email}
               onChange={handleChange}
-              className="appearance-none input-box"
+              className="appearance-none input-box-2"
+              onKeyDown={(e) => {handleKeyDown(e, passwordRef)}}
             />
           </div>
-        </div>
-        <div className="groupBox">
-          <label htmlFor="email" className="label">
+          {formError.email && <p className="validateError">{formError.email}</p>}
+        </motion.div>
+
+        <motion.div
+          className="groupBox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.6, duration: 0.6 }}
+        >
+          <label htmlFor="password" className="label">
             Password
           </label>
           <div className="relative input-wrapper">
-          <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : ''}`}/>
+            <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
             <input
+              ref={passwordRef}
               id="password"
               name="password"
-              type="password"
+              type={isPasswordVisible ? 'text' : 'password'} 
               placeholder="password"
-              required
               value={formData.password}
               onChange={handleChange}
-              className="appearance-none input-box"
+              className="appearance-none input-box-2"
+              autoComplete="new-password"
+              onKeyDown={(e) => {handleKeyDown(e, null, formData.password)}}
+              onFocus={() => setPasswordTouched(true)}
+              onBlur={() => setPasswordTouched(false)}
             />
+
+            {password.length > 1 && (
+              <div
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
+                >
+                {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+              </div>
+            )}
           </div>
-          
-        </div>
+          {formError.password && <p className="validateError">{formError.password}</p>}
+        </motion.div>
+
         <div className='flex items-center justify-between'>
-          <div className="flex items-center">
+          <motion.div 
+            className="flex items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{delay : 0.8, duration: 0.6 }}>
             <input
               id="remember-me"
               type="checkbox"
@@ -188,21 +236,42 @@ const Login = () => {
             <label htmlFor="remember-me" className="ml-2 text-sm text-color-s ">
               Remember Me
             </label>
-          </div>
+          </motion.div >
 
-          <div className="text-sm">
-            <Link className="font-base text-sm text-blue-500 hover:underline">
+          <motion.div
+            className="text-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{delay : 0.8, duration: 0.6 }}
+          >
+            <Link className="font-base text-sm text-blue-500 hover:underline" to="/forgot-password">
               Forgot Password?
             </Link>
-          </div>
+          </motion.div>
+        </div>
 
-        </div>
-        <Button variant="info" className={`w-full py-2.5`} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</Button>
-        <div>
-          <span className='font-base text-sm text-color-s center'>Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link></span>
-        </div>
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 0.8, duration: 0.6 }}
+        >
+          <Button variant="info" className={`w-full py-2.5`} disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </Button>
+        </motion.div>
+
+        <motion.div 
+          className="flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{delay : 1, duration: 0.6 }}>
+          <span className='font-base text-sm text-color-s center'>
+            Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link>
+          </span>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   )
 }
 

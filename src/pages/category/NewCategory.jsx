@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from '../../utils/axiosInstance.js';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { motion } from "framer-motion";
 
 import Button from '../../component/button/Button.jsx';
 import BackButton from "../../component/button/BackButton.jsx";
@@ -28,6 +29,7 @@ const NewCategory = () => {
     const errors = addCategoryValidator({ title: formData.title });
     if (errors.title) {
       setFormError(errors);
+      return
     } else {
       try {
         setLoading(true);
@@ -49,8 +51,13 @@ const NewCategory = () => {
   };
 
   return (
-    <section className="bg-white">
-      <div className="py-12 px-12 mx-auto max-w-2xl lg:py-16">
+    <section className="bg-gray-50 rounded-lg py-12">
+      <motion.div 
+        className="py-12 px-12 mx-auto w-3/4 lg:py-16 bg-white rounded-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        >
         <BackButton/> 
         <h4 className="h4 mb-4 font-bold text-slate-800">Add a new category</h4>
         <form onSubmit={handleSubmit}>
@@ -65,7 +72,6 @@ const NewCategory = () => {
                 id="title"
                 className="input-box mt-2"
                 placeholder="Type category name"
-                required
                 value={formData.title}
                 onChange={handleChange}
               />
@@ -84,13 +90,14 @@ const NewCategory = () => {
                 value={formData.description}
                 onChange={handleChange}
               ></textarea>
+              {formError.description&& <p className="validateError">{formError.description}</p>}
             </div>
           </div>
           <Button variant="info" className="mt-5" loading={true}>
             Add Category
           </Button>
         </form>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
-import { useSocket } from '../../hooks/useSocket.jsx';
+import React, { createContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { useSocket } from './useSocket.jsx';
 import { toast } from 'sonner';
 import axios from "../../utils/axiosInstance.js";
 
@@ -10,44 +10,58 @@ export const ProfileProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState(null);
 
-
-    const getCurrentUser = async () => {
-        try {
-            resetProfileState(); 
-            const response = await axios.get(`/auth/current-user`);
-            const user = response.data.data.user;
-
-            if (user && user._id) {
-                setCurrentUser(user);
-                await fetchProfilePic(user.profilePic?.key);
-            } else {
-                toast.error('User data is incomplete');
-            }
-        } catch (error) {
-            toast.error('Error getting user');
-        }
-    };
-
-    const resetProfileState = () => {
+    const resetProfileState = useCallback(() => {
         setProfilePicUrl(null);
         setCurrentUser(null);
-    };
+    }, []);
 
-    const fetchProfilePic = async (key) => {
-        if (!key) return; 
+    const fetchProfilePic = useCallback(async (key) => {
+        if (!key) return;
         try {
             const response = await axios.get(`/file/signed-url?key=${key}`);
             setProfilePicUrl(response.data.data.url);
         } catch (error) {
             toast.error('Error fetching profile picture');
         }
-    };
-
-    useEffect(() => {
-        getCurrentUser();
     }, []);
 
-    // Handle socket events for profile picture updates
+    const getCurrentUser = useCallback(() => {
+        let isMounted = true; // Flag to prevent state update if unmounted
+
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`/auth/current-user`);
+                const user = response.data.data.user;
+
+                if (user && user._id && isMounted) {
+                    setCurrentUser(user);
+                    if (user.profilePic?.key) {
+                        await fetchProfilePic(user.profilePic.key);
+                    } else {
+                        setProfilePicUrl(`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&font-size=0.33`);
+                    }
+                } else if (isMounted) {
+                    toast.error('User data is incomplete');
+                }
+            } catch (error) {
+                if (isMounted) {
+                    toast.error(error.response?.data?.message || 'Error getting user');
+                }
+            }
+        };
+
+        fetchUser();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchProfilePic]);
+
+    useEffect(() => {
+        const cleanup = getCurrentUser();
+        return cleanup;
+    }, [getCurrentUser]);
+
     useEffect(() => {
         if (!currentUser) return;
 
@@ -58,8 +72,8 @@ export const ProfileProvider = ({ children }) => {
         };
 
         const handleProfilePicRemoved = ({ userId }) => {
-            if (userId === currentUser._id) {
-                setProfilePicUrl(null);
+            if (userId === currentUser._id && profilePicUrl !== null) {
+                setProfilePicUrl(`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&font-size=0.33`);
             }
         };
 
@@ -70,13 +84,14 @@ export const ProfileProvider = ({ children }) => {
             socket.off('profilePicUpdated', handleProfilePicUpdated);
             socket.off('profilePicRemoved', handleProfilePicRemoved);
         };
-    }, [currentUser, socket]);
+    }, [currentUser, socket, profilePicUrl]);
 
     const value = useMemo(() => ({
         profilePicUrl,
         setProfilePicUrl,
-        getCurrentUser,
-    }), [profilePicUrl]);
+        fetchProfilePic,
+        getCurrentUser
+    }), [profilePicUrl, fetchProfilePic, getCurrentUser]);
 
     return (
         <ProfileContext.Provider value={value}>
