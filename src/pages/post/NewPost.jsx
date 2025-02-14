@@ -263,7 +263,7 @@ const NewPost = () => {
                 <div className="rounded-lg space-y-4">
                   <h4 className="h4 font-bold w-full">{formData.title}</h4>
                   {formData.file && (
-                    <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full h-[50rem] object-cover mb-2 rounded-lg" />
+                    <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" />
                   )}
                   <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
                 </div>

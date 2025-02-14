@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { useNotification } from '../component/context/useNotification.jsx';
@@ -24,6 +24,8 @@ const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 const Setting = () => {
   const navigate = useNavigate()
   const socket = useSocket()
+  const lastFocusedElement = useRef(null)
+
   const { setNotifications } = useNotification()
   const { profilePicUrl, setProfilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
@@ -346,7 +348,7 @@ const Setting = () => {
         </div>
       </div>
 
-      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 lg:bg-gray-50 sm:bg-white lg:p-8 sm:p-0 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <motion.div 
           initial={{ opacity: 0 }}
@@ -375,8 +377,7 @@ const Setting = () => {
                           accept="image/*"
                           className="hidden"
                         />
-                      </div>
-                      
+                      </div>   
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
                       <h2 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h2>
@@ -540,7 +541,7 @@ const Setting = () => {
               </div> */}
 
                 {/* Account Deactivation/Deletion Section */}
-                <div className="bg-white p-8 rounded-lg  space-y-8">
+                <div className="flex flex-col bg-white lg:p-8 sm:p-0 rounded-lg space-y-4">
                   <h2 className="h6">Account Management</h2>
 
                   {/* Account Deletion Section */}
@@ -555,7 +556,7 @@ const Setting = () => {
                   </div>
 
                   {showModal && (
-                    <Modal showModal={showModal} title={"Are you sure want tp delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
+                    <Modal showModal={showModal} title={"Are you sure want to delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
                   )}
 
 

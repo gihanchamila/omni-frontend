@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
   const modalRef = useRef(null)
+  const lastFocusedElement = useRef(null)
 
   useClickOutside(modalRef, onCancel);
 
@@ -25,16 +26,20 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
 
   useEffect(() => {
     if (showModal) {
-      document.body.classList.add('overflow-hidden'); // Lock body scroll
-      modalRef.current?.focus(); // Focus on the modal container itself
+      lastFocusedElement.current = document.activeElement;
+      document.body.style.overflow = 'hidden';
+      modalRef.current?.focus();
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.style.overflow = 'auto';
+      lastFocusedElement.current?.focus();
     }
 
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.style.overflow = 'auto';
+      lastFocusedElement.current?.focus();
     };
   }, [showModal]);
+
 
   if (!showModal) return null;
 
@@ -45,14 +50,14 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
       aria-modal="true"
       id="popup-modal"
       tabIndex="-1"
-      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50 min-h-screen overflow-hidden"
+      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50  overflow-hidden"
     >
-      <div ref={modalRef} className="relative p-4 w-full max-w-md overflow-scroll">
+      <div ref={modalRef} className="relative p-4 w-full max-w-md">
         <motion.div 
           className="relative bg-white rounded-lg shadow">
           <button
             type="button"
-            className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+            className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center overflow-hidden"
             onClick={onCancel}
           >
             <svg
