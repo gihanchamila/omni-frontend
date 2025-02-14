@@ -89,7 +89,7 @@ const Login = () => {
           fetchProfilePic(profilePicKey);
         }
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
-        toast.success(data.message);
+        // toast.success(data.message);
   
         setFormData(initialFormData);
         setFormError(initialFormError);
@@ -108,7 +108,7 @@ const Login = () => {
           errorMessage = "Network error. Please check your connection and try again.";
         }
   
-        toast.error(errorMessage);
+        // toast.error(errorMessage);
       }
     }
   };

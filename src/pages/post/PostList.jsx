@@ -59,7 +59,7 @@ const PostList = () => {
         setLoading(false);
         const response = error.response;
         const data = response.data;
-        toast.error(data.message);
+        // toast.error(data.message);
       }
     };
     getPosts();
@@ -74,10 +74,10 @@ const PostList = () => {
       if (user && user._id) {
           setCurrentUser(user); 
       } else {
-          toast.error('User data is incomplete');
+          // toast.error('User data is incomplete');
       }
     }catch(error){
-      toast.error('Error getting user');
+      // toast.error('Error getting user');
     }
     };
 
@@ -99,7 +99,7 @@ const PostList = () => {
             } catch (error) {
               const response = error.response;
               const data = response?.data;
-              toast.error(data?.message || "Failed to fetch file URL");
+              // toast.error(data?.message || "Failed to fetch file URL");
             }
           }
         })
@@ -135,7 +135,7 @@ const PostList = () => {
         setLoading(false)
         const response = error.response;
         const data = response.data;
-        toast.error(data.message)          
+        // toast.error(data.message)          
       }
     }
     latestPosts()
@@ -153,7 +153,7 @@ const PostList = () => {
       }catch(error){
         const response = error.response
         const data = response.data
-        toast.error(data.message)
+        // toast.error(data.message)
       }
     }
     popularPosts()
@@ -203,7 +203,7 @@ const PostList = () => {
 
         setFollowStatuses(statuses);
       } catch (error) {
-        toast.error('Error fetching follow statuses');
+        // toast.error('Error fetching follow statuses');
       }
     };
 
@@ -234,7 +234,7 @@ const PostList = () => {
         ? await axios.delete(`/user/follow/${authorId}`) 
         : await axios.post(`/user/follow/${authorId}`);
   
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
       setFollowStatuses(prev => ({
         ...prev,
         [authorId]: !isFollowing
@@ -245,7 +245,7 @@ const PostList = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -281,7 +281,7 @@ const PostList = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -296,7 +296,7 @@ const PostList = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 

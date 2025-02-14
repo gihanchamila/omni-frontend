@@ -73,10 +73,10 @@ const Setting = () => {
             gender : user.gender
           });
         } else {
-          toast.error('User data is incomplete');
+          // toast.error('User data is incomplete');
         }
       } catch (error) {
-        toast.error('Error getting user');
+        // toast.error('Error getting user');
       }
     };
   
@@ -93,7 +93,7 @@ const Setting = () => {
       }catch(error){
         const response = error.response
         const data = response.data.data
-        toast.error(data.message)
+        // toast.error(data.message)
       }
     }
 
@@ -171,7 +171,7 @@ const Setting = () => {
               _id : notificationId
             }]);
 
-            toast.success(data.message)
+            // toast.success(data.message)
             setFormData(initialFormData)
             setFormError(initialFormError)
             setLoading(false)
@@ -180,14 +180,14 @@ const Setting = () => {
             setFormError(initialFormError)
             const response = error.response
             const data = response.data
-            toast.error(data.message)
+            // toast.error(data.message)
         }
   };
 
   const handleChangePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmNewPassword) {
-      toast.error("New password and confirm password do not match");
+      // toast.error("New password and confirm password do not match");
       return;
     }
 
@@ -208,13 +208,13 @@ const Setting = () => {
         _id : notificationId
       }]);
 
-      toast.success(data.message);
+      // toast.success(data.message);
       setPasswordData(initialPasswordData);
     } catch (error) {
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data.message || "Something went wrong");
+      // toast.error(data.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -226,13 +226,13 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/security-question', securityQuestionData)
       const data = response.data;
-      toast.success(data.message)
+      // toast.success(data.message)
       setSecurityQuestionData(initialQuestionData)
     }catch(error){
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data?.message || "Something went wrong");
+      // toast.error(data?.message || "Something went wrong");
     }
   };
 
@@ -254,12 +254,12 @@ const Setting = () => {
         _id : notificationId
       }]);
 
-      toast.success(data.message)
+      // toast.success(data.message)
     }catch(error){
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -268,7 +268,7 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post(`/auth/verify-user`, {email , code : verificationCode})
       const data = response.data;
-      toast.success(data.message)
+      // toast.success(data.message)
     }catch(error){
       setLoading(false);
       console.error('Verification error:', error);
@@ -288,13 +288,13 @@ const Setting = () => {
       const data = response.data;window.localStorage.removeItem('blogData');
       setCurrentUser(null)
       setProfilePicUrl(null)
-      toast.success(data.message)
+      // toast.success(data.message)
       handleCloseModal()
       navigate("/login")
     }catch(error){
       const response = error.response;
       const data = response.data;
-      toast.error(data.message)
+      // toast.error(data.message)
     }
   }
 

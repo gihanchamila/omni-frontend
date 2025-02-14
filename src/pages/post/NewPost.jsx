@@ -37,9 +37,9 @@ const NewPost = () => {
         const response = await axios.get('/category');
         setCategories(response.data.data.categories);
 
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
       } catch (error) {
-        toast.error(error.response?.data?.message || "Failed to fetch categories");
+        // toast.error(error.response?.data?.message || "Failed to fetch categories");
       } finally {
         setLoading(false);
       }
@@ -113,12 +113,12 @@ const NewPost = () => {
 
         const fileResponse = await axios.post("/file/upload", imageFormData);
         formInput.file = fileResponse.data.data.id;
-        toast.success(fileResponse.data.message);
+        // toast.success(fileResponse.data.message);
       }
 
       const response = await axios.post('/posts', formInput);
       const notificationId = response.data.data.notificationId;
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
 
       if (socket) {
         socket.emit("postAddedNotification", {notificationId});
@@ -127,7 +127,7 @@ const NewPost = () => {
       setFormError(initialFormError);
       navigate('/');
     } catch (error) {
-      toast.error(error.response?.data?.message || "Unexpected Error");
+      // toast.error(error.response?.data?.message || "Unexpected Error");
     } finally {
       setLoading(false);
     }

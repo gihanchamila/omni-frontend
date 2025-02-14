@@ -41,7 +41,7 @@ const Profile = () => {
           setProfileKey(user.profilePic.key);
         }
       } catch {
-        toast.error("Error getting user");
+        // toast.error("Error getting user");
       } finally {
         setLoadingProfile(false);
       }
@@ -55,9 +55,9 @@ const Profile = () => {
       const fetchProfilePic = async () => {
         try {
           const response = await axios.get(`/file/signed-url?key=${profileKey}`);
-          toast.success(response.data.message);
+          // toast.success(response.data.message);
         } catch {
-          toast.error("Failed to fetch profile picture");
+          // toast.error("Failed to fetch profile picture");
         }
       };
       fetchProfilePic();
@@ -72,7 +72,7 @@ const Profile = () => {
         const response = await axios.get(`/user/user-posts/${id}`);
         setUserPosts(response.data.data);
       } catch {
-        toast.error("Failed to fetch user posts");
+        // toast.error("Failed to fetch user posts");
       } finally {
         setLoadingPosts(false);
       }
@@ -87,7 +87,7 @@ const Profile = () => {
       const response = await axios.get(`/user/${endpoint}/${id}`);
       setState(response.data.data[`${endpoint}Count`]);
     } catch {
-      toast.error("Failed to fetch data");
+      // toast.error("Failed to fetch data");
     } finally {
       setLoadingState(false);
     }
@@ -109,7 +109,7 @@ const Profile = () => {
               const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
               files[post._id] = response.data.data.url;
             } catch {
-              toast.error("Failed to fetch file URL");
+              // toast.error("Failed to fetch file URL");
             }
           }
         })
@@ -132,7 +132,7 @@ const Profile = () => {
         }, {});
         setLikedPosts(likedPostsData);
       } catch {
-        toast.error("Failed to fetch liked posts");
+        // toast.error("Failed to fetch liked posts");
       }
     };
     fetchLikedPosts();
@@ -159,7 +159,7 @@ const Profile = () => {
         )
       );
     } catch {
-      toast.error("Failed to update like");
+      // toast.error("Failed to update like");
     }
   };
 

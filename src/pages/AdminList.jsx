@@ -43,7 +43,7 @@ const AdminList = () => {
             setAdmins(data.admins);
             setTotalPage(data.pages || 1);
           } catch (error) {
-            toast.error('Failed to fetch users');
+            // toast.error('Failed to fetch users');
           } finally {
             setLoading(false);
           }
@@ -82,7 +82,7 @@ const AdminList = () => {
 
         const response = await axios.put(`/admin/remove-privilages/${userId}`)
         const data = response.data;
-        toast.success(data.message)
+        // toast.success(data.message)
         if(socket){
           socket.emit('Admin-previlages-changed', {id : userId})
         }else {
@@ -94,7 +94,7 @@ const AdminList = () => {
       }catch(error){
         const response = error.response
         const data = response.data
-        toast.error(data.message)
+        // toast.error(data.message)
       }
     };
 
