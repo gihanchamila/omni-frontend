@@ -144,7 +144,7 @@ const Signup = () => {
       transition={{ duration: 0.6 }}
     >
       <motion.div 
-        className='border-2 border-slate-800 lg:w-[38rem] sm:m-5 sm:w-6/6 bg-white px-12 py-12 mt-[3rem] mb-[5rem] rounded-2xl'
+        className='border-2 border-slate-800 lg:w-[38rem] bg-white lg:px-12 lg:py-12 sm:px-8 sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col'
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.6 }}
@@ -324,17 +324,17 @@ const Signup = () => {
 
           {/* Sign Up button */}
           <motion.div 
-            className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 sm:space-y-2"
+            className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            <div className="flex-grow sm:text-center lg:text-left">
+            <div className="flex-grow lg:block  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
               <span className='font-base text-sm text-color-s'>
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button ref={signUpRef} type="submit" className="w-full sm:w-auto" variant='info' primary={false}>
+            <Button ref={signUpRef} type="submit" className=" w-full " variant='info' primary={false}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </motion.div>
