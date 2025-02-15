@@ -395,11 +395,9 @@ const Setting = () => {
               <div className="grid gap-6 md:grid-cols-2">
 
                 <div className="bg-white p-6 rounded-lg">
-
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">First Name</label>
@@ -414,7 +412,6 @@ const Setting = () => {
                         />
                       </div>
                     </div>
-
                     <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
                       <div className="groupBox">
                         <label className="label">Last Name</label>
@@ -540,51 +537,33 @@ const Setting = () => {
                 </div>
               </div> */}
 
-                {/* Account Deactivation/Deletion Section */}
-                <div className="flex flex-col bg-white lg:p-8 sm:p-0 rounded-lg space-y-4">
-                  <h2 className="h6">Account Management</h2>
+                <div className="">
+                  <div className='flex flex-col bg-white lg:p-8 sm:p-0 rounded-lg space-y-4'>
+                    <h2 className="h6">Account Management</h2>
+                    <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                      <h3 className="text-xl font-semibold mb-3  pb-2">Account Report</h3>
+                      <div className="">
+                          <p>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
+                          <p>For any concerns, contact support.</p>
+                        <Button variant="info" className="mt-4">Get report</Button>
+                      </div>
+                    </div>
 
-                  {/* Account Deletion Section */}
-                  <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                    <h3 className="text-xl font-semibold mb-3 text-red-600 pb-7">Account Deletion</h3>
-                    <div className="space-y-3">
-                      <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
-                      <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
-                      <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
-                      <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
+                    <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                      <h3 className="text-xl font-semibold mb-3 text-red-600 pb-2">Account Deletion</h3>
+                      <div className="">
+                        <p className="text-gray-700 space-y-2" >Deleting your Omni account is a permanent action.</p>
+                        <p className="text-gray-700">You are about to delete your Omni account. This action is permanent and cannot be undone. </p>
+                        <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
+                      </div>
                     </div>
                   </div>
+                  
 
                   {showModal && (
                     <Modal showModal={showModal} title={"Are you sure want to delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
                   )}
 
-
-                 {/*  <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-                    <h3 className="text-xl font-semibold mb-3 text-yellow-600">Account Deactivation</h3>
-                    <p className="text-gray-700 mb-4">
-                      Temporarily deactivate your account to hide your profile and information. Your data will be preserved, and you can reactivate it at any time by logging back in.
-                    </p>
-                    <Button variant="warning">Deactivate Account</Button>
-                  </div> */}
-
-
-                  {/* <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-xl font-semibold mb-3 text-blue-600">Download Your Data</h3>
-                    <p className="text-gray-700 mb-4">
-                      It's a good idea to download a copy of your account data before proceeding with deactivation or deletion. This file will include your profile, posts, and activity.
-                    </p>
-                    <Button variant="primary">Export Data</Button>
-                  </div> */}
-
-
-                  {/* <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                    <h3 className="text-xl font-semibold mb-3 text-green-600">Account Recovery</h3>
-                    <p className="text-gray-700 mb-4">
-                      If you deactivate your account, you can easily recover it at any time by logging back in. All your data will be restored automatically.
-                    </p>
-                    <Button variant="info">Learn More</Button>
-                  </div> */}
                 </div>
               </div>
             </div>

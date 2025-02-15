@@ -50,7 +50,7 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
       aria-modal="true"
       id="popup-modal"
       tabIndex="-1"
-      className="m-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50  overflow-hidden"
+      className="m-0 mt-0 fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full backdrop-brightness-50  overflow-hidden min-h-screen"
     >
       <div ref={modalRef} className="relative p-4 w-full max-w-md">
         <motion.div 
