@@ -22,7 +22,7 @@ export const NotificationProvider = ({ children }) => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -38,7 +38,7 @@ export const NotificationProvider = ({ children }) => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   }, []) 
 

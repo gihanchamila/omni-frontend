@@ -56,7 +56,7 @@ export const ProfileProvider = ({ children }) => {
             }
         } catch (error) {
             if (isMounted.current) {
-                toast.error(error.response?.data?.message || 'Error getting user');
+                // toast.error(error.response?.data?.message || 'Error getting user');
             }
         }
     }, [fetchProfilePic]);
@@ -95,7 +95,7 @@ export const ProfileProvider = ({ children }) => {
         fetchProfilePic,
         getCurrentUser,
         resetProfileState
-    }), [profilePicUrl, fetchProfilePic, getCurrentUser]);
+    }), [profilePicUrl, fetchProfilePic, getCurrentUser,resetProfileState]);
 
     return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 };

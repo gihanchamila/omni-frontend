@@ -68,7 +68,7 @@ function App() {
               <Route path="our-story" element={<HomePage />} />
             </Route>
         </Routes>
-        {/* <Toaster  closeButton={<HiOutlineXMark />} description
+        <Toaster  closeButton={<HiOutlineXMark />} description
         toastOptions={{
           unstyled: true,
           classNames: {
@@ -87,7 +87,7 @@ function App() {
           info: <HiInformationCircle className="iconSize" />,
           error: <HiExclamationCircle className="iconSize" />,
           warning: <HiExclamation className="iconSize" /> 
-        }}/> */}
+        }}/>
       </div>
     </div>
       
