@@ -9,8 +9,8 @@ import UserIcon from '../component/icons/UserIcon.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
 
-const initialFormData = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
-const initialFormError = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
+const initialFormData = { firstName: "", lastName: "", email: "", confirmEmail : "", password: "", confirmPassword: "" };
+const initialFormError = { firstName: "", lastName: "", email: "", confirmEmail : "", password: "", confirmPassword: "" };
 
 const Signup = () => {
   const [formData, setFormData] = useState(initialFormData);
@@ -95,12 +95,12 @@ const Signup = () => {
         firstName :formData.firstName,
         lastName : formData.lastName,
         email: formData.email, 
+        confirmEmail : formData.confirmEmail,
         password: formData.password, 
         confirmPassword: formData.confirmPassword
       }
     )
 
-    
     console.log(formData)
 
     if(errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword){
@@ -110,7 +110,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await axios.post('/auth/signup', formData);
-      // toast.success(response.data.message);
+      toast.success(response.data.message);
       setFormData(initialFormData);
       setFormError(initialFormError);
       setLoading(false);
@@ -122,7 +122,7 @@ const Signup = () => {
     } catch (error) {
       setLoading(false);
       setFormError(initialFormError);
-      // toast.error(error.response?.data?.message || "An unexpected error occurred.");
+      toast.error(error.response?.data?.message || "An unexpected error occurred.");
     }
   };
   
