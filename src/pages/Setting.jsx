@@ -171,7 +171,7 @@ const Setting = () => {
               _id : notificationId
             }]);
 
-            // toast.success(data.message)
+            // toast.success(data.data.message)
             setFormData(initialFormData)
             setFormError(initialFormError)
             setLoading(false)
