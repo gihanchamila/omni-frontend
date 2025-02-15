@@ -541,7 +541,7 @@ const Setting = () => {
                   <div className='flex flex-col bg-white lg:p-8 sm:p-0 rounded-lg space-y-4'>
                     <h2 className="h6">Account Management</h2>
                     <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                      <h3 className="text-xl font-semibold mb-3  pb-2">Account Report</h3>
+                      <h3 className="text-xl font-semibold mb-3  pb-2">Account Report (Under construction)</h3>
                       <div className="">
                           <p>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
                           <p>For any concerns, contact support.</p>
