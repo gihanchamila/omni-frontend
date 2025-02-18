@@ -8,7 +8,7 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-    const socket = io('http://localhost:8000');
+    const socket = io('https://omni-backend-production.up.railway.app:8080');
     useEffect(() => {
         // Emit an event to the server
         socket.emit('clientToServer', { message: 'Hello from client!' });
