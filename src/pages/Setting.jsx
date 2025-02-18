@@ -42,6 +42,8 @@ const Setting = () => {
   const [loading, setLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState()
 
+  const [disable, setDisable] = useState(true)
+
   const tabs = [
     { icon: <FaUserCircle />, label: 'General' },
     { icon: <FaShieldAlt />, label: 'Security' },
@@ -154,34 +156,41 @@ const Setting = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
+    if (!isFormValid) {
+      setDisable(true);
+      return;
+    }else {
         try{
-            setLoading(true)
-            const response = await axios.put(`/user/update-profile`, formData)
-            const data = response.data
-            const { notificationId, message } = response.data;
+          setLoading(true)
+          setDisable(false)
+          const response = await axios.put(`/user/update-profile`, formData)
+          const data = response.data
+          const { notificationId, message } = response.data;
+          if (socket) {
+            socket.emit("update-user", {notificationId});
+          }
 
-            if (socket) {
-              socket.emit("update-user", {notificationId});
-            }
-    
-            setNotifications(prev => [...prev, {
-              type: "comment",
-              message,
-              isRead: false,
-              _id : notificationId
-            }]);
+          setNotifications(prev => [...prev, {
+            type: "comment",
+            message,
+            isRead: false,
+            _id : notificationId
+          }]);
 
-            // toast.success(data.data.message)
-            setFormData(initialFormData)
-            setFormError(initialFormError)
-            setLoading(false)
-        }catch(error){
-            setLoading(false)
-            setFormError(initialFormError)
-            const response = error.response
-            const data = response.data
-            // toast.error(data.message)
-        }
+          // toast.success(data.data.message)
+          setFormData(initialFormData)
+          setFormError(initialFormError)
+          setLoading(false)
+          
+      }catch(error){
+          setLoading(false)
+          setFormError(initialFormError)
+          const response = error.response
+          const data = response.data
+          // toast.error(data.message)
+      }
+    }   
   };
 
   const handleChangePasswordSubmit = async (e) => {
@@ -301,6 +310,8 @@ const Setting = () => {
   const handleCloseModal = () => {
     setShowModal(false);
 };
+
+const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -491,7 +502,7 @@ const Setting = () => {
                     </div>
                   </div>
                   <div className='flex justify-end pt-6'>
-                    <Button variant='info'>Update Details</Button>
+                    <Button variant="info" disabled={!isFormValid}>Update Details</Button>
                   </div>
                   </form>
                 </div>
