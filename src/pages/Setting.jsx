@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { useNotification } from '../component/context/useNotification.jsx';
@@ -24,6 +24,8 @@ const initialQuestionData = {securityQuestion : "", securityAnswer : ""}
 const Setting = () => {
   const navigate = useNavigate()
   const socket = useSocket()
+  const lastFocusedElement = useRef(null)
+
   const { setNotifications } = useNotification()
   const { profilePicUrl, setProfilePicUrl } = useProfile();
   const [formData, setFormData] = useState(initialFormData)
@@ -39,6 +41,8 @@ const Setting = () => {
   const [devices, setDevices] = useState([])
   const [loading, setLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState()
+
+  const [disable, setDisable] = useState(true)
 
   const tabs = [
     { icon: <FaUserCircle />, label: 'General' },
@@ -71,10 +75,10 @@ const Setting = () => {
             gender : user.gender
           });
         } else {
-          toast.error('User data is incomplete');
+          // toast.error('User data is incomplete');
         }
       } catch (error) {
-        toast.error('Error getting user');
+        // toast.error('Error getting user');
       }
     };
   
@@ -91,7 +95,7 @@ const Setting = () => {
       }catch(error){
         const response = error.response
         const data = response.data.data
-        toast.error(data.message)
+        // toast.error(data.message)
       }
     }
 
@@ -152,40 +156,47 @@ const Setting = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
+    if (!isFormValid) {
+      setDisable(true);
+      return;
+    }else {
         try{
-            setLoading(true)
-            const response = await axios.put(`/user/update-profile`, formData)
-            const data = response.data
-            const { notificationId, message } = response.data;
+          setLoading(true)
+          setDisable(false)
+          const response = await axios.put(`/user/update-profile`, formData)
+          const data = response.data
+          const { notificationId, message } = response.data;
+          if (socket) {
+            socket.emit("update-user", {notificationId});
+          }
 
-            if (socket) {
-              socket.emit("update-user", {notificationId});
-            }
-    
-            setNotifications(prev => [...prev, {
-              type: "comment",
-              message,
-              isRead: false,
-              _id : notificationId
-            }]);
+          setNotifications(prev => [...prev, {
+            type: "comment",
+            message,
+            isRead: false,
+            _id : notificationId
+          }]);
 
-            toast.success(data.message)
-            setFormData(initialFormData)
-            setFormError(initialFormError)
-            setLoading(false)
-        }catch(error){
-            setLoading(false)
-            setFormError(initialFormError)
-            const response = error.response
-            const data = response.data
-            toast.error(data.message)
-        }
+          // toast.success(data.data.message)
+          setFormData(initialFormData)
+          setFormError(initialFormError)
+          setLoading(false)
+          
+      }catch(error){
+          setLoading(false)
+          setFormError(initialFormError)
+          const response = error.response
+          const data = response.data
+          // toast.error(data.message)
+      }
+    }   
   };
 
   const handleChangePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmNewPassword) {
-      toast.error("New password and confirm password do not match");
+      // toast.error("New password and confirm password do not match");
       return;
     }
 
@@ -206,13 +217,13 @@ const Setting = () => {
         _id : notificationId
       }]);
 
-      toast.success(data.message);
+      // toast.success(data.message);
       setPasswordData(initialPasswordData);
     } catch (error) {
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data.message || "Something went wrong");
+      // toast.error(data.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -224,13 +235,13 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/security-question', securityQuestionData)
       const data = response.data;
-      toast.success(data.message)
+      // toast.success(data.message)
       setSecurityQuestionData(initialQuestionData)
     }catch(error){
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data?.message || "Something went wrong");
+      // toast.error(data?.message || "Something went wrong");
     }
   };
 
@@ -252,12 +263,12 @@ const Setting = () => {
         _id : notificationId
       }]);
 
-      toast.success(data.message)
+      // toast.success(data.message)
     }catch(error){
       setLoading(false);
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -266,7 +277,7 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post(`/auth/verify-user`, {email , code : verificationCode})
       const data = response.data;
-      toast.success(data.message)
+      // toast.success(data.message)
     }catch(error){
       setLoading(false);
       console.error('Verification error:', error);
@@ -286,19 +297,21 @@ const Setting = () => {
       const data = response.data;window.localStorage.removeItem('blogData');
       setCurrentUser(null)
       setProfilePicUrl(null)
-      toast.success(data.message)
+      // toast.success(data.message)
       handleCloseModal()
       navigate("/login")
     }catch(error){
       const response = error.response;
       const data = response.data;
-      toast.error(data.message)
+      // toast.error(data.message)
     }
   }
 
   const handleCloseModal = () => {
     setShowModal(false);
 };
+
+const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -346,7 +359,7 @@ const Setting = () => {
         </div>
       </div>
 
-      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 bg-gray-50 p-8 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 lg:bg-gray-50 sm:bg-white lg:p-8 sm:p-0 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <motion.div 
           initial={{ opacity: 0 }}
@@ -355,10 +368,10 @@ const Setting = () => {
             <h2 className="title">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
-              <div className="bg-white p-6 rounded-lg">
+              <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h2 className="h6">Profile Picture</h2>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
-                  <div className="relative flex flex-col items-center md:flex-row bg-white p-4 rounded-lg">
+                  <div className="relative flex flex-col items-center md:flex-row lg:bg-white sm:bg-gray-50 p-4 rounded-lg">
                     <div>
                       <img
                         src={profilePicUrl}
@@ -375,8 +388,7 @@ const Setting = () => {
                           accept="image/*"
                           className="hidden"
                         />
-                      </div>
-                      
+                      </div>   
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
                       <h2 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h2>
@@ -393,12 +405,10 @@ const Setting = () => {
               
               <div className="grid gap-6 md:grid-cols-2">
 
-                <div className="bg-white p-6 rounded-lg">
-
+                <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
-
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
                       <div className="groupBox">
                         <label className="label">First Name</label>
@@ -413,7 +423,6 @@ const Setting = () => {
                         />
                       </div>
                     </div>
-
                     <div className="col-span-full md:col-start-5 md:col-end-9 space-y-4">
                       <div className="groupBox">
                         <label className="label">Last Name</label>
@@ -493,7 +502,7 @@ const Setting = () => {
                     </div>
                   </div>
                   <div className='flex justify-end pt-6'>
-                    <Button variant='info'>Update Details</Button>
+                    <Button variant="info" disabled={!isFormValid}>Update Details</Button>
                   </div>
                   </form>
                 </div>
@@ -539,51 +548,33 @@ const Setting = () => {
                 </div>
               </div> */}
 
-                {/* Account Deactivation/Deletion Section */}
-                <div className="bg-white p-8 rounded-lg  space-y-8">
-                  <h2 className="h6">Account Management</h2>
+                <div className="">
+                  <div className='flex flex-col bg-white lg:p-8 sm:p-0 rounded-lg space-y-4'>
+                    <h2 className="h6">Account Management</h2>
+                    <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                      <h3 className="text-xl font-semibold mb-3  pb-2">Account Report (Under construction)</h3>
+                      <div className="">
+                          <p>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
+                          <p>For any concerns, contact support.</p>
+                        <Button variant="info" className="mt-4">Get report</Button>
+                      </div>
+                    </div>
 
-                  {/* Account Deletion Section */}
-                  <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                    <h3 className="text-xl font-semibold mb-3 text-red-600 pb-7">Account Deletion</h3>
-                    <div className="space-y-3">
-                      <p className="text-gray-700 space-y-2" >Deleting your Omi account is a permanent action.</p>
-                      <p className="text-gray-700">You're about to delete your Omi account, which grants you access to all our services. Once you proceed, you will lose access to your account, and all your data will be permanently deleted.</p>
-                      <p className="text-gray-700 pb-10 mb-2">Additionally, if you've used your Omi account email for other services outside of Omi, you might lose access to them as well. For example, if your Omi email is linked as a recovery option for other accounts, you may face challenges in resetting passwords or managing those services. Before you continue, make sure to update your email details wherever you use it outside of Omi.</p>
-                      <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
+                    <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                      <h3 className="text-xl font-semibold mb-3 text-red-600 pb-2">Account Deletion</h3>
+                      <div className="">
+                        <p className="text-gray-700 space-y-2" >Deleting your Omni account is a permanent action.</p>
+                        <p className="text-gray-700">You are about to delete your Omni account. This action is permanent and cannot be undone. </p>
+                        <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
+                      </div>
                     </div>
                   </div>
+                  
 
                   {showModal && (
-                    <Modal showModal={showModal} title={"Are you sure want tp delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
+                    <Modal showModal={showModal} title={"Are you sure want to delete your account?"} onConfirm={() => handleDeleteAccount()} onCancel={() => handleCloseModal()} />
                   )}
 
-
-                 {/*  <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-                    <h3 className="text-xl font-semibold mb-3 text-yellow-600">Account Deactivation</h3>
-                    <p className="text-gray-700 mb-4">
-                      Temporarily deactivate your account to hide your profile and information. Your data will be preserved, and you can reactivate it at any time by logging back in.
-                    </p>
-                    <Button variant="warning">Deactivate Account</Button>
-                  </div> */}
-
-
-                  {/* <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-xl font-semibold mb-3 text-blue-600">Download Your Data</h3>
-                    <p className="text-gray-700 mb-4">
-                      It's a good idea to download a copy of your account data before proceeding with deactivation or deletion. This file will include your profile, posts, and activity.
-                    </p>
-                    <Button variant="primary">Export Data</Button>
-                  </div> */}
-
-
-                  {/* <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                    <h3 className="text-xl font-semibold mb-3 text-green-600">Account Recovery</h3>
-                    <p className="text-gray-700 mb-4">
-                      If you deactivate your account, you can easily recover it at any time by logging back in. All your data will be restored automatically.
-                    </p>
-                    <Button variant="info">Learn More</Button>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -599,7 +590,7 @@ const Setting = () => {
             <h2 className="text-2xl font-bold mb-6">Security Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Change Password</h3>
                 <form className='' onSubmit={handleChangePasswordSubmit}>
                   <div className="flex flex-col space-y-6">
@@ -651,7 +642,7 @@ const Setting = () => {
               </div>
 
               {/* Additional Security Settings Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
                 <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>

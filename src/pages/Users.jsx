@@ -41,7 +41,7 @@ const Users = () => {
           setUsers(data.users);
           setTotalPage(data.pages || 1);
         } catch (error) {
-          toast.error('Failed to fetch users');
+          // toast.error('Failed to fetch users');
         } finally {
           setLoading(false);
         }
@@ -77,7 +77,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`/user/delete-single-user/${id}`);
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
       setShowModal(false);
 
       if(socket){
@@ -89,7 +89,7 @@ const Users = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data
-      toast.error(data.message || 'Failed to delete user');
+      // toast.error(data.message || 'Failed to delete user');
     }
   };
 

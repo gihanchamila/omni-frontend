@@ -32,7 +32,7 @@ const Home = () => {
           setRoleText(user.role === 1 ? "Super admin" : user.role === 2 ? "Admin" : "User");
   
         } catch {
-          toast.error("Error getting user");
+          // toast.error("Error getting user");
         } finally {
           setLoadingProfile(false);
         }

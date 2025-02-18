@@ -89,7 +89,7 @@ const SinglePost = () => {
             } catch (error) {
                 const response = error.response;
                 const data = response?.data?.data || {};
-                toast.error(data.message || 'Failed to fetch post');
+                // toast.error(data.message || 'Failed to fetch post');
             }
         };
 
@@ -117,10 +117,10 @@ const SinglePost = () => {
                 if (user && user._id) {
                     setCurrentUser(user._id);
                 } else {
-                    toast.error('User data is incomplete');
+                    // toast.error('User data is incomplete');
                 }
             } catch (error) {
-                toast.error('Error getting user');
+                // toast.error('Error getting user');
             }
         };
 
@@ -130,11 +130,11 @@ const SinglePost = () => {
                   const response = await axios.get(`/file/signed-url?key=${profileUrl}`);
                   const data = response.data.data;
                   setProfilePic(response.data.data.url)
-                  toast.success(data.message);
+                  // toast.success(data.message);
               } catch (error) {
                   const response = error.response;
                   const data = response.data;
-                  toast.error(data.message || "Failed to fetch profile picture");
+                  // toast.error(data.message || "Failed to fetch profile picture");
               }
           }
         };
@@ -165,7 +165,7 @@ const SinglePost = () => {
             } catch (error) {
                 const response = error.response;
                 const data = response.data;
-                toast.error(data.message || "Failed to fetch file");
+                // toast.error(data.message || "Failed to fetch file");
             } finally {
                 setLoading(false);  // Always stop loading
             }
@@ -191,7 +191,7 @@ const SinglePost = () => {
           setLoading(false)
           const response = error.response
           const data = response.data
-          toast.error(data.message)
+          // toast.error(data.message)
         }
       }
     }
@@ -214,7 +214,7 @@ const SinglePost = () => {
         } catch (error) {
           setLoading(false)
           console.error(`Error fetching follow status for author ${post.author._id}:`, error);
-          toast.error(`Error fetching follow status for author ${post.author._id}:`, error)
+          // toast.error(`Error fetching follow status for author ${post.author._id}:`, error)
         }
       }
       
@@ -227,7 +227,7 @@ const SinglePost = () => {
       const response = await axios.get(`/file/signed-url?key=${key}`);
       return response.data.data.url;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to get signed URL');
+      // toast.error(error.response?.data?.message || 'Failed to get signed URL');
       return null; // Return null if failed to get URL
     }
   },[])
@@ -297,7 +297,7 @@ const SinglePost = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message || 'Failed to fetch comments');
+      // toast.error(data.message || 'Failed to fetch comments');
     } finally {
       setLoading(false);
     }
@@ -397,7 +397,7 @@ const SinglePost = () => {
         ? await axios.delete(`/user/follow/${authorId}`) 
         : await axios.post(`/user/follow/${authorId}`);
   
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
       setFollowStatuses(prev => ({
         ...prev,
         [authorId]: !isFollowing
@@ -409,7 +409,7 @@ const SinglePost = () => {
       setLoading(false)
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -710,9 +710,7 @@ const SinglePost = () => {
               {!isLoaded ? (
                 <Skeleton circle={true} height="3rem" width="3rem" />
               ) : (
-                <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={authorProfilePic} alt="Image" />
-              )}
-              </div>
+                <img className='w-[3rem] h-[3rem]  rounded-full object-cover' src={authorProfilePic} alt="Image" />)}</div>
               <Link to={`/user-profile/${post?.author?._id}`}>
               <span className='m-0 px-4'>
                 {!isLoaded ? (
@@ -749,14 +747,14 @@ const SinglePost = () => {
             />
           )}
             <img
-            className={`rounded-xl w-full h-[50rem] mb-24 object-cover ${isLoaded ? 'block' : 'hidden'}`}
+            className={`rounded-xl w-full lg:h-[50rem] sm:h-[25rem] lg:mb-24 sm:mb-12 object-cover ${isLoaded ? 'block' : 'hidden'}`}
             src={fileUrl}
             alt="Post Image"
             onLoad={() => setIsLoaded(true)} 
             />
             </div>
             <div>
-              <p className='text-lg space-y-4'>
+              <p className='text-lg space-y-4 sm:mb-12'>
                 {!isLoaded ? (
                   <Skeleton height="2rem" width='full' />
                   ) : (

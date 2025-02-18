@@ -37,9 +37,9 @@ const NewPost = () => {
         const response = await axios.get('/category');
         setCategories(response.data.data.categories);
 
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
       } catch (error) {
-        toast.error(error.response?.data?.message || "Failed to fetch categories");
+        // toast.error(error.response?.data?.message || "Failed to fetch categories");
       } finally {
         setLoading(false);
       }
@@ -113,12 +113,12 @@ const NewPost = () => {
 
         const fileResponse = await axios.post("/file/upload", imageFormData);
         formInput.file = fileResponse.data.data.id;
-        toast.success(fileResponse.data.message);
+        // toast.success(fileResponse.data.message);
       }
 
       const response = await axios.post('/posts', formInput);
       const notificationId = response.data.data.notificationId;
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
 
       if (socket) {
         socket.emit("postAddedNotification", {notificationId});
@@ -127,7 +127,7 @@ const NewPost = () => {
       setFormError(initialFormError);
       navigate('/');
     } catch (error) {
-      toast.error(error.response?.data?.message || "Unexpected Error");
+      // toast.error(error.response?.data?.message || "Unexpected Error");
     } finally {
       setLoading(false);
     }
@@ -263,7 +263,7 @@ const NewPost = () => {
                 <div className="rounded-lg space-y-4">
                   <h4 className="h4 font-bold w-full">{formData.title}</h4>
                   {formData.file && (
-                    <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full h-[50rem] object-cover mb-2 rounded-lg" />
+                    <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" />
                   )}
                   <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
                 </div>

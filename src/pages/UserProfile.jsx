@@ -37,9 +37,9 @@ const UserProfile = () => {
         try {
           const response = await axios.get(`/file/signed-url?key=${profileKey}`);
           setProfilePic(response.data.data.url);
-          toast.success(response.data.message);
+          // toast.success(response.data.message);
         } catch (error) {
-          toast.error(error.response?.data?.message || "Error loading profile picture");
+          // toast.error(error.response?.data?.message || "Error loading profile picture");
         }
       }
     };
@@ -52,7 +52,7 @@ const UserProfile = () => {
         const response = await axios.get(`/user/followers/${id}`);
         setFollowers(response.data.data.followersCount);
       } catch (error) {
-        toast.error(error.response?.data?.message || "Error loading followers");
+        // toast.error(error.response?.data?.message || "Error loading followers");
       }
     };
     getFollowers();
@@ -64,7 +64,7 @@ const UserProfile = () => {
         const response = await axios.get(`/user/following/${id}`);
         setFollowing(response.data.data.followingCount);
       } catch (error) {
-        toast.error(error.response?.data?.message || "Error loading following count");
+        // toast.error(error.response?.data?.message || "Error loading following count");
       }
     };
     getFollowing();

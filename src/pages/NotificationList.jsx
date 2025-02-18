@@ -1,11 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNotification } from '../component/context/useNotification'
 import Button from '../component/button/Button';
+import { useSocket } from '../component/context/useSocket';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
 
 const NotificationList = () => {
 
   const { notifications, setNotifications, markAsRead, deleteNotification, clearNotifications } = useNotification();
+  const [loading, setLoading] = useState(false)
+  const socket = useSocket()
 
+  const handleDelete = useCallback(async (e, id) => {
+    e.stopPropagation(); 
+    setLoading(true);
+    try {
+
+      if (!id) {
+        console.error("Notification ID is missing");
+        return;
+      }
+      if (socket) {
+        socket.emit('notification-deleted', { notificationId: id });
+      }
+
+      await deleteNotification(id); 
+      await setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification._id !== id)
+      );
+
+    } catch (error) {
+      console.error("Failed to delete notification", error);
+      toast.error("Failed to delete notification");
+    } finally {
+      setLoading(false);
+    }
+  }, [deleteNotification, socket, setNotifications]);
+  
   return (
     <div className="">
       <div>
@@ -39,14 +70,14 @@ const NotificationList = () => {
                     <div className="flex space-x-3">
                         <Button
                         variant={'info'}
-                        onClick={() => markAsRead(notification.id)}
+                        onClick={(e) => markAsRead(e, notification._id)}
                         className="sm:px-2 sm:py-1 sm:rounded-md sm:text-xs"
                         >
                         Mark as Read
                         </Button>
                         <Button
                         variant={'error'}
-                        onClick={() => deleteNotification(notification.id)}
+                        onClick={(e) => handleDelete(e, notification._id)}
                         className="sm:px-2 sm:py-1 sm:rounded-md sm:text-xs"
                         >
                         Delete

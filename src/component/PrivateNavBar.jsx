@@ -118,20 +118,18 @@ const PrivateNavBar = () => {
     }, 0);
   };
 
+  const handleViewAll = () => {
+    navigate('/notifications');
+    setNotificationDropdownOpen(false);
+  }
+
   const toggleDropdown = () => setDropdownOpen(prev => !prev);
 
   const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
 
   const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
-    useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
-  //useClickOutside(profileRef, () => setDropdownOpen(false));
-
-
-  const handleViewAll = () => {
-    navigate('/notifications');
-    setNotificationDropdownOpen(false);
-  }
+  useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
 
 
   return (

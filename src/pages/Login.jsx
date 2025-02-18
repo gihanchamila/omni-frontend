@@ -22,7 +22,7 @@ const Login = () => {
   const [formError, setFormError] = useState(initialFormError)
   const [deviceType, setDeviceType] = useState('');
   const [loading, setLoading] = useState(false)
-  const {fetchProfilePic} = useProfile()
+  const {fetchProfilePic, getCurrentUser} = useProfile()
 
   const navigate = useNavigate()
   const inputRef = useRef(null)
@@ -82,6 +82,7 @@ const Login = () => {
         const response = await axios.post('/auth/signin', requestBody);
         const data = response.data;
         setDeviceType(data.data.deviceType);
+        getCurrentUser()
 
         if(data.data.user.profilePic?.key){
           const profilePicKey = data.data.user.profilePic.key;
@@ -89,7 +90,7 @@ const Login = () => {
           fetchProfilePic(profilePicKey);
         }
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
-        toast.success(data.message);
+        // toast.success(data.message);
   
         setFormData(initialFormData);
         setFormError(initialFormError);
@@ -108,7 +109,7 @@ const Login = () => {
           errorMessage = "Network error. Please check your connection and try again.";
         }
   
-        toast.error(errorMessage);
+        // toast.error(errorMessage);
       }
     }
   };

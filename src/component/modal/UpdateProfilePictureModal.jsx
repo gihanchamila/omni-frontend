@@ -13,6 +13,7 @@ function UpdateProfilePictureModal() {
 
     const socket = useSocket();
     const modalRef = useRef(null);
+    const lastFocusedElement = useRef(null)
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [removeModal, setRemoveModal] = useState(false);
@@ -51,6 +52,22 @@ function UpdateProfilePictureModal() {
 
         return () => setCurrentUser(null); 
     }, []);
+
+    useEffect(() => {
+        if (removeModal || showModal) {
+          lastFocusedElement.current = document.activeElement;
+          document.body.style.overflow = 'hidden';
+          modalRef.current?.focus();
+        } else {
+          document.body.style.overflow = 'auto';
+          lastFocusedElement.current?.focus();
+        }
+    
+        return () => {
+          document.body.style.overflow = 'auto';
+          lastFocusedElement.current?.focus();
+        };
+      }, [removeModal, showModal]);
 
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length === 0) {
@@ -160,7 +177,7 @@ function UpdateProfilePictureModal() {
 
             {/* Remove Modal */}
             {removeModal && (
-                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
+                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-hidden'>
                     <div className="relative bg-white rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
                             onClick={handleCloseRemoveModal}

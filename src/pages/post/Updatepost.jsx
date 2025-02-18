@@ -53,7 +53,7 @@ const UpdatePost = () => {
         }
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message || "An error occurred while fetching post data";
-        toast.error(errorMessage); // Display the error message
+        // toast.error(errorMessage); // Display the error message
       }
     };
 
@@ -63,11 +63,11 @@ const UpdatePost = () => {
               const response = await axios.get(`/file/signed-url?key=${fileKey}`);
               const data = response.data.data;
               setFile(response.data.data.url)
-              toast.success(data.message);
+              // toast.success(data.message);
           } catch (error) {
               const response = error.response;
               const data = response.data;
-              toast.error(data.message || "Failed to fetch existing file");
+              // toast.error(data.message || "Failed to fetch existing file");
           }
       }
     };
@@ -83,7 +83,7 @@ const UpdatePost = () => {
         const response = await axios.get('/category');
         setCategories(response.data.data.categories);
       } catch (error) {
-        toast.error(error.response.data.message);
+        // toast.error(error.response.data.message);
       } finally {
         setLoading(false);
       }
@@ -94,7 +94,7 @@ const UpdatePost = () => {
 
   useEffect(() => {
     socket.on('postUpdated', (updatedPost) => {
-      toast.success(`Post Updated: ${updatedPost.title}`);
+      // toast.success(`Post Updated: ${updatedPost.title}`);
     });
 
     return () => {
@@ -141,19 +141,19 @@ const UpdatePost = () => {
           const imageFormData = new FormData();
           imageFormData.append("image", formData.file);
           const fileResponse = await axios.post("/file/upload", imageFormData);
-          input.file = fileResponse.data.data.id; // Use the uploaded file's ID
-          toast.success(fileResponse.data.message);
+          input.file = fileResponse.data.data.id;
+          // toast.success(fileResponse.data.message);
         } 
 
         const response = await axios.put(`/posts/${postId}`, input);
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
         setFormData(initialFormData);
         setFormError(initialFormError);
         navigate('/');
       } catch (error) {
         console.error("Error updating post:", error);
         const errorMessage = error.response?.data?.message || "Couldn't update post";
-        toast.error(errorMessage);
+        // toast.error(errorMessage);
       }
     
   };
