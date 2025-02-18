@@ -710,9 +710,7 @@ const SinglePost = () => {
               {!isLoaded ? (
                 <Skeleton circle={true} height="3rem" width="3rem" />
               ) : (
-                <img className='w-[3rem] h-[3rem] rounded-full object-cover' src={authorProfilePic} alt="Image" />
-              )}
-              </div>
+                <img className='w-[3rem] h-[3rem]  rounded-full object-cover' src={authorProfilePic} alt="Image" />)}</div>
               <Link to={`/user-profile/${post?.author?._id}`}>
               <span className='m-0 px-4'>
                 {!isLoaded ? (
@@ -749,14 +747,14 @@ const SinglePost = () => {
             />
           )}
             <img
-            className={`rounded-xl w-full h-[50rem] mb-24 object-cover ${isLoaded ? 'block' : 'hidden'}`}
+            className={`rounded-xl w-full lg:h-[50rem] sm:h-[25rem] lg:mb-24 sm:mb-12 object-cover ${isLoaded ? 'block' : 'hidden'}`}
             src={fileUrl}
             alt="Post Image"
             onLoad={() => setIsLoaded(true)} 
             />
             </div>
             <div>
-              <p className='text-lg space-y-4'>
+              <p className='text-lg space-y-4 sm:mb-12'>
                 {!isLoaded ? (
                   <Skeleton height="2rem" width='full' />
                   ) : (
