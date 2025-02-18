@@ -16,7 +16,6 @@ export const NotificationProvider = ({ children }) => {
     try {
       const response = await axios.get("/notification/get-notifications");
       const data = response.data.data;
-      console.log(data)
       setNotifications(data);
       setUnreadCount(data.filter((n) => !n.isRead).length);
     } catch (error) {
@@ -49,12 +48,9 @@ export const NotificationProvider = ({ children }) => {
   const deleteNotification = async (id) => {
     try {
     await axios.delete(`/notification/delete-notification/${id}`);
-      // Emit socket event for notification deletion
       if (socket) {
         socket.emit('notification-deleted', { notificationId: id });
       }
-
-      // Update state
       setNotifications((prev) => prev.filter((n) => n.id !== id));
       setUnreadCount((prev) => prev - 1);
       toast.success("Notification deleted successfully");
