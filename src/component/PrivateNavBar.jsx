@@ -172,6 +172,7 @@ const PrivateNavBar = () => {
             </NavLink>
           )}
 
+
           <div className="relative">
           <button onClick={toggleDropdownNotification} className="navGroup flex items-center relative">
               <IoMdNotificationsOutline className="relative w-6 h-6" />

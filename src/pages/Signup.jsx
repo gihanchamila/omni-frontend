@@ -138,13 +138,13 @@ const Signup = () => {
 
   return (
     <motion.div 
-      className='lg:flex lg:items-center lg:justify-center sm:block' 
+      className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white sm:bg-gray-50 sm:rounded-2xl' 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       transition={{ duration: 0.6 }}
     >
       <motion.div 
-        className='border-2 border-slate-800 lg:w-[38rem] bg-white lg:px-12 lg:py-12 sm:px-8 sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col'
+        className='md:border-2 md:border-slate-800 lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.6 }}
@@ -329,7 +329,7 @@ const Signup = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            <div className="flex-grow lg:block  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
+            <div className="flex-grow lg:block sm:mt-5 lg:mt-0  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
               <span className='font-base text-sm text-color-s'>
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
