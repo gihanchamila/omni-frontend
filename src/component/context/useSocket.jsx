@@ -8,7 +8,10 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-    const socket = io('https://omni-backend-production.up.railway.app:8080');
+    const socket = io('https://omni-backend-production.up.railway.app', {
+        transports: ["websocket", "polling"]
+      });
+      
     useEffect(() => {
         // Emit an event to the server
         socket.emit('clientToServer', { message: 'Hello from client!' });
