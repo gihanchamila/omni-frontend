@@ -357,10 +357,10 @@ const Setting = () => {
             <h2 className="title">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
-              <div className="bg-white p-6 rounded-lg">
+              <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h2 className="h6">Profile Picture</h2>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
-                  <div className="relative flex flex-col items-center md:flex-row bg-white p-4 rounded-lg">
+                  <div className="relative flex flex-col items-center md:flex-row lg:bg-white sm:bg-gray-50 p-4 rounded-lg">
                     <div>
                       <img
                         src={profilePicUrl}
@@ -394,7 +394,7 @@ const Setting = () => {
               
               <div className="grid gap-6 md:grid-cols-2">
 
-                <div className="bg-white p-6 rounded-lg">
+                <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                   <h2 className="subTitle">User Information</h2>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
@@ -579,7 +579,7 @@ const Setting = () => {
             <h2 className="text-2xl font-bold mb-6">Security Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Change Password</h3>
                 <form className='' onSubmit={handleChangePasswordSubmit}>
                   <div className="flex flex-col space-y-6">
@@ -631,7 +631,7 @@ const Setting = () => {
               </div>
 
               {/* Additional Security Settings Section */}
-              <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
                 <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>
