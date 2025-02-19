@@ -7,7 +7,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center min-h-[80vh] justify-center rounded-lg">
+    <div className="flex items-center lg:min-h-[90.6vh] sm:min-h-[93vh] justify-center rounded-lg">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         {/* Animated Heading */}
         <motion.h2

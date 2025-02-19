@@ -28,7 +28,7 @@ const PublicNavBar = () => {
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-        <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-gray-500 dark:text-white hover:cursor-pointer">Omniblogs</p>
+        <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
 
           {/* <img src={logo} className="w-20 h-20" alt="Logo" /> */}
         </div>
@@ -89,7 +89,7 @@ const PublicNavBar = () => {
                 Sign In
               </NavLink>
               <NavLink
-                className="mobile-nav-link"
+                className="block py-4 text-sm px-4 font-semibold hover:bg-slate-100 hover:rounded-lg dark:hover:bg-white dark:hover:text-slate-800 sm:bg-slate-800 sm:text-white sm:rounded-lg sm:hover:bg-slate-500 dark:bg-white dark:text-slate-700"
                 to="/signup"
                 onClick={toggleMobileMenu}
               >
