@@ -22,7 +22,7 @@ const Table = ({ data, columns, onSort, onAction }) => {
       </thead>
       <tbody>
         {data.map((item) => (
-          <tr key={item._id} className="border border-slate-300 hover:bg-gray-50">
+          <tr key={item._id} className="border border-slate-300 hover:bg-gray-50 dark:sm:hover:text-white dark:sm:hover:bg-slate-900">
             {columns.map((column) => (
               <td key={column.key} className="tableTd">
                 {column.key === "createdAt"

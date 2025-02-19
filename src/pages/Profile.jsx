@@ -252,8 +252,8 @@ const Profile = () => {
             <Skeleton width="100%" height={20} className="mb-4" />
           ) : (
             <div>
-              <h2 className="text-lg font-semibold text-gray-700 mb-2">About me</h2>
-              <p>{currentUser?.about}</p>
+              <h2 className="text-lg font-semibold text-gray-700 dark:text- mb-2">About me</h2>
+              <p className="dark:text-gray-700">{currentUser?.about}</p>
             </div>
           )}
         </div>

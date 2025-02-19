@@ -7,7 +7,7 @@ const DescriptionEditor = ({ formData, handleChange }) => {
 
   return (
     <div className="sm:col-span-2">
-      <label htmlFor="description" className="label">
+      <label htmlFor="description " className="label dark:text-white  dark:lg:text-slate-700">
         Description
       </label>
       <ReactQuill

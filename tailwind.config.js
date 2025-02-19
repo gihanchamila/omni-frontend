@@ -88,7 +88,7 @@ export default {
       },
 
       ".label": {
-        "@apply text-gray-700 font-medium":
+        "@apply text-gray-700 font-medium dark:lg:text-slate-700":
         {},
       },
 
@@ -126,6 +126,8 @@ export default {
       ".body-2": {
         "@apply font-light text-[0.875rem] leading-6 md:text-base": {},
       },
+
+      
     })
     addUtilities({})
   }),],

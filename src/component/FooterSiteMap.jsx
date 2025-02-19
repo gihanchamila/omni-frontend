@@ -21,7 +21,7 @@ const FooterSiteMap = () => {
   ];
 
   return (
-    <footer className="sticky bg-gray-50 text-gray-500 py-8 mt-10 rounded-t-xl">
+    <footer className="sticky bg-gray-50 text-slate-700 py-4 mt-10 rounded-t-xl">
       {/* <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-[240px] gap-y-8">
           {sections.map((section, index) => (

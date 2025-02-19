@@ -7,7 +7,7 @@ const Button = forwardRef(
     const finalVariant = primary ? "primary" : variant;
 
     const baseClasses =
-      "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-3 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
+      "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-2.5 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
 
     // Variant-based classes
     const variantClasses = {
@@ -16,7 +16,7 @@ const Button = forwardRef(
       success: "bg-green-500 text-white hover:bg-green-500",
       info: "bg-blue-500 text-white hover:bg-blue-600",
       back: "bg-gray-300 rounded-full",
-      outline: "border border-gray-200 hover:bg-gray-50 text-gray-800",
+      outline: "border border-gray-200 hover:bg-gray-50 text-gray-800 dark:sm:text-slate-700 dark:lg:text-slate-700",
     };
 
     // Custom disabled color

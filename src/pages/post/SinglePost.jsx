@@ -698,7 +698,7 @@ const SinglePost = () => {
                 ) : null}
               </div>
             </div>
-            <div className='h2 font-bold w-full'>
+            <div className='h2 font-bold w-full dark:text-white'>
               {!isLoaded ? (
                 <Skeleton height="2rem" width="80%" />
               ) : (
@@ -712,7 +712,7 @@ const SinglePost = () => {
               ) : (
                 <img className='w-[3rem] h-[3rem]  rounded-full object-cover' src={authorProfilePic} alt="Image" />)}</div>
               <Link to={`/user-profile/${post?.author?._id}`}>
-              <span className='m-0 px-4'>
+              <span className='m-0 px-4 dark:text-white'>
                 {!isLoaded ? (
                   <Skeleton height="1.5rem" width="8rem" />
                 ) : (
@@ -754,24 +754,24 @@ const SinglePost = () => {
             />
             </div>
             <div>
-              <p className='text-lg space-y-4 sm:mb-12'>
+              <article className='text-lg sm:mb-12 '>
                 {!isLoaded ? (
                   <Skeleton height="2rem" width='full' />
                   ) : (
                   <SanitizedContent htmlContent={post?.description} />
                   )}
-              </p>
+              </article>
             </div>
 
             {/* Post comment */}
 
-            <section className="bg-white pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
+            <section className="bg-white dark:bg-slate-900 pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
               <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
                   {!isLoaded ? (
                     <Skeleton width="15rem" height="2rem" />
                   ) : (
-                    <h2 className="text-lg lg:text-2xl font-bold text-gray-900">Discussion ({commentCount})</h2>
+                    <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion ({commentCount})</h2>
                   )}
                 </div>
 
@@ -802,7 +802,7 @@ const SinglePost = () => {
                   </div>
                 ) : (
                   comments.map((comment) => (
-                    <article key={comment._id} className="relative pt-4 px-0 text-base bg-white rounded-lg">
+                    <article key={comment._id} className="relative pt-4 px-0 text-base bg-white dark:bg-slate-900 dark:text-white rounded-lg">
                       <CommentFooter
                         author={comment.author}
                         authorId={comment.author._id}
@@ -812,11 +812,11 @@ const SinglePost = () => {
                         currentUser ={currentUser._id}
                         imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                       />
-                      <p className="text-gray-500">{comment.content}</p>
+                      <p className="text-gray-500 dark:text-white">{comment.content}</p>
                       <div className="flex items-center mt-4 space-x-4">
                         <button
                           type="button"
-                          className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                          className="flex items-center text-sm text-gray-500 dark:text-white hover:underline font-medium"
                           onClick={() => {
                             handleClick(comment._id);
                           }}
@@ -841,7 +841,7 @@ const SinglePost = () => {
                       {visibleReplies[comment._id] &&
                         comment.replies &&
                         comment.replies.map((reply) => (
-                          <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
+                          <article key={reply._id} className="p-6 pr-0 pb-0 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:sm:bg-slate-900">
                             {reply && reply.author && (
                               <>
                                 <CommentFooter
@@ -851,11 +851,11 @@ const SinglePost = () => {
                                   actionHandlers={actionHandlers}
                                   imageUrl={reply.author._id === currentUser? profilePicUrl : reply.author.profilePic}
                                 />
-                                <p className="text-gray-500">{reply.content}</p>
+                                <p className="text-gray-500 dark:sm:text-white">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
                                 <button
                                   type="button"
-                                  className="flex items-center text-sm text-gray-500 hover:underline font-medium"
+                                  className="flex items-center text-sm text-gray-500 hover:underline font-medium dark:sm:text-white"
                                   onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id)}}
                                   >
                                   <IoChatbubblesOutline className='iconSize' />
@@ -881,7 +881,7 @@ const SinglePost = () => {
                             {visibleNestedReplies[comment._id] &&
                               reply.replies &&
                               reply.replies.map((nestedReply) => (
-                                <article key={nestedReply._id} className="ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white rounded-lg">
+                                <article key={nestedReply._id} className="ml-6 p-6 pr-0 pb-0 mb-3 lg:ml-12 text-base bg-white dark:sm:bg-slate-900 rounded-lg">
                                   <CommentFooter
                                     author={nestedReply.author}
                                     createdAt={nestedReply.createdAt}
@@ -889,7 +889,7 @@ const SinglePost = () => {
                                     actionHandlers={actionHandlers}
                                     imageUrl={nestedReply.author._id === currentUser? profilePicUrl : nestedReply.author.profilePic}
                                   />
-                                  <p className="text-gray-500 pb-4">{nestedReply.content}</p>
+                                  <p className="text-gray-500 pb-4 dark:sm:text-white">{nestedReply.content}</p>
                                 </article>
                               ))}
                           </article>

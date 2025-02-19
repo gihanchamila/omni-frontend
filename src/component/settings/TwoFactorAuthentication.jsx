@@ -87,7 +87,7 @@ const TwoFactorAuthentication = ({
   return (
     <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
       <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
-      <p className="pb-4">
+      <p className="pb-4 dark:text-gray-700">
         {step === 'email' && (
           <>
             Two-Factor Authentication (2FA) enhances your account's security by requiring both your password and a unique code sent to your email. This extra layer of protection helps prevent unauthorized access, even if your password is compromised.
@@ -97,9 +97,9 @@ const TwoFactorAuthentication = ({
         {step === 'success' && (
           <>
           <div className='pb-6'>
-          <p>Your account is protected with 2-Step Verification.</p><br/>
-          <p>Prevent hackers from accessing your account with an additional layer of security.</p><br/>
-          <p>Unless you’re signing in with a passkey, you’ll be asked to complete the most secure second step available on your account.</p>
+          <p className='dark:text-gray-700'>Your account is protected with 2-Step Verification.</p><br/>
+          <p className='dark:text-gray-700'>Prevent hackers from accessing your account with an additional layer of security.</p><br/>
+          <p className='dark:text-gray-700'>Unless you’re signing in with a passkey, you’ll be asked to complete the most secure second step available on your account.</p>
           </div>
             
           </>
@@ -170,7 +170,7 @@ const TwoFactorAuthentication = ({
         }} 
         onCancel={() => setShowModal(false)}
       >
-        <p>Are you sure you want to update your 2-step verification email?</p>
+        <p className='dark:text-gray-700'>Are you sure you want to update your 2-step verification email?</p>
       </Modal>
     </div>
   );
