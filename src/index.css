@@ -173,7 +173,7 @@
     }
 
     .ql-editor {
-      @apply p-0 font-sans  text-slate-700 font-light  text-lg
+      @apply p-0 font-sans  text-slate-700 font-light text-lg
     }
 
     .notification-bottom {
