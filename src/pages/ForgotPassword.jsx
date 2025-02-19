@@ -84,7 +84,7 @@ const ForgotPassword = () => {
   return (
     <motion.div className='flex items-center justify-center min-h-[70vh]'>
       <motion.div 
-      className='container border-2 border-slate-800 w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl space-y-4'
+      className='container lg:bg-white sm:bg-gray-50 lg:border-2 lg:border-slate-800 sm:border-hidden w-[25rem] px-12 py-12 my-4 mt-[3rem] rounded-2xl space-y-4'
       initial={{ opacity: 0, scale : 0.8 }}
       animate={{ opacity: 1, scale : 1 }}
       transition={{ duration: 0.6 }}

@@ -56,14 +56,14 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:transition-colors duration-100">
+    <div className="bg-white border  border-gray-200 rounded-lg dark:border-none hover:bg-gray-50 hover:transition-colors duration-100">
       <div className="flex flex-col md:flex-row">
         <div
           onClick={() => navigate(`/posts/${post._id}`)}
-          className="flex-shrink-0 w-full md:w-[10rem] h-[11rem] hover:cursor-pointer"
+          className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] hover:cursor-pointer"
         >
           <img
-            className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
+            className="object-cover lg:w-full lg:h-full sm:w-full sm:h-[20rem] rounded-t-lg md:rounded-l-lg"
             src={postFile || post.file}
             alt={post.title}
             loading="lazy"

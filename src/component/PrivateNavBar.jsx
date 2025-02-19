@@ -139,7 +139,8 @@ const PrivateNavBar = () => {
         {/* Logo */}
 
         <div className="flex-shrink-0 flex items-center">
-          <img onClick={() => navigate("/")} src={logo} className="h-16 w-20 text-gray-500 hover:cursor-pointer"  alt="logo"/>
+          <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-gray-500 dark:text-white hover:cursor-pointer">Omniblogs</p>
+          {/* <img onClick={() => navigate("/")} src={logo} className="h-16 w-20 text-gray-500 dark:text-white hover:cursor-pointer"  alt="logo"/> */}
         </div>
         
         {/* Mobile Menu Toggle Button */}
@@ -150,7 +151,7 @@ const PrivateNavBar = () => {
               animate={{ rotate: mobileMenuOpen ? 180 : 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              {mobileMenuOpen ? <AiOutlineClose className="w-6 h-6 font-bold" /> : <AiOutlineMenu className="w-6 h-6" />}
+              {mobileMenuOpen ? <AiOutlineClose className="w-6 h-6 font-bold dark:text-white" /> : <AiOutlineMenu className="w-6 h-6 dark:text-white" />}
             </motion.div>
           </button>
         </div>
@@ -175,10 +176,10 @@ const PrivateNavBar = () => {
 
           <div className="relative">
           <button onClick={toggleDropdownNotification} className="navGroup flex items-center relative">
-              <IoMdNotificationsOutline className="relative w-6 h-6" />
+              <IoMdNotificationsOutline className="relative w-6 h-6 dark:text-white" />
               {unreadCount > 0 && (
                 <motion.span
-                  className="absolute bg-red-500 left-1.5 top-3 text-white text-xs w-2 h-2 rounded-full font-semibold"
+                  className="absolute bg-red-500 left-1.5 top-3 text-white  text-xs w-2 h-2 rounded-full font-semibold"
                   animate={{
                     scale: [1, 1.3, 1],  // Pulse effect
                     opacity: [1, 0.7, 1], // Fading effect
@@ -302,14 +303,14 @@ const PrivateNavBar = () => {
         {/* Mobile Menu */}
 
         {mobileMenuOpen && (
-            <div className="md:hidden fixed inset-0 z-50 bg-white flex flex-col px-5 text-black transition-transform duration-300 ease-in-out transform">
+            <div className="md:hidden fixed inset-0 z-50 bg-white dark:bg-slate-900 dark:text-white flex flex-col px-5 text-slate-800 transition-transform duration-300 ease-in-out transform">
               <div className="absolute flex justify-between mt-3 top-4 left-5 right-5">
                 <div className="flex items-center">
                   <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover ml-3" />
-                  <span className="text-md pl-3 font-semibold">Hey, {currentUser?.firstName} {currentUser?.lastName}</span>
+                  <span className="text-md pl-3 font-semibold dark:text-white">Hey, {currentUser?.firstName} {currentUser?.lastName}</span>
                 </div>
                 <button onClick={toggleMobileMenu} className="text-slate-400">
-                  <AiOutlineClose className="w-5 h-5" />
+                  <AiOutlineClose className="w-5 h-5 dark:text-white" />
                 </button>
               </div>
               <div className="pt-[5rem] mt-[2rem]">

@@ -318,7 +318,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
 
       <div className="relative w-full">
 
-        <div className="flex justify-start text-black">
+        <div className="flex justify-start text-black dark:text-white">
           <button
             className="text-3xl focus:outline-none"
             onClick={() => setSidebarOpen(true)}
@@ -335,7 +335,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
 
           <div className="flex justify-end">
             <button className="text-3xl focus:outline-none" onClick={() => setSidebarOpen(false)}>
-              <RiCloseLargeFill className="w-5 h-5 transition-colors duration-200" />
+              <RiCloseLargeFill className="w-5 h-5  transition-colors duration-200" />
             </button>
           </div>
 
@@ -365,7 +365,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}>
-            <h2 className="title">General Settings</h2>
+            <h2 className="text-2xl font-bold mb-6">General Settings</h2>
             <div className="grid gap-y-7 md:grid-cols-1">
               
               <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">

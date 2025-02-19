@@ -28,15 +28,17 @@ const PublicNavBar = () => {
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-          <img src={logo} className="w-20 h-20" alt="Logo" />
+        <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-gray-500 dark:text-white hover:cursor-pointer">Omniblogs</p>
+
+          {/* <img src={logo} className="w-20 h-20" alt="Logo" /> */}
         </div>
         
         {/* Toggle Button */}
         <button
           onClick={toggleMobileMenu}
-          className="lg:hidden absolute top-1/2 right-0 transform -translate-y-1/2 flex items-center p-2 text-gray-500 z-50"
+          className="lg:hidden absolute top-1/2 right-0 transform -translate-y-1/2 flex items-center p-2 text-gray-500 z-50 dark:text-white"
         >
-          {mobileMenuOpen ? <HiOutlineXMark className="w-6 h-6" /> : <HiBars3 className="w-6 h-6" />}
+          {mobileMenuOpen ? <HiOutlineXMark className="w-6 h-6 dark:text-white" /> : <HiBars3 className="w-6 h-6 dark:text-white" />}
         </button>
          
         {/* Navigation Links */}
@@ -61,13 +63,13 @@ const PublicNavBar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-50 pt-10 mr-2 bg-white flex flex-col p-5 text-black transition-transform duration-300 ease-in-out transform">
+          <div className="md:hidden fixed inset-0 z-50  bg-white dark:text-white dark:bg-slate-900 dark:hover:text-slate-800 dark:hover:bg-white flex flex-col py-5 px-6 text-black transition-transform duration-300 ease-in-out transform">
             {/* Close Menu Button */}
             <button
               onClick={toggleMobileMenu}
               className="self-end text-gray-500"
             >
-              <HiOutlineXMark className="w-6 h-6" />
+              <HiOutlineXMark className="w-6 h-6 dark:text-white" />
             </button>
 
             {/* Menu Links */}
