@@ -138,13 +138,13 @@ const Signup = () => {
 
   return (
     <motion.div 
-      className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white sm:bg-gray-50 sm:rounded-2xl' 
+      className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  sm:bg-gray-50 sm:rounded-2xl' 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       transition={{ duration: 0.6 }}
     >
       <motion.div 
-        className='md:border-2 md:border-slate-800 lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
+        className='md:border-2 md:border-slate-800 dark:bg-white lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.6 }}

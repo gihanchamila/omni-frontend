@@ -11,7 +11,7 @@ const HomePage = () => {
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         {/* Animated Heading */}
         <motion.h2
-          className="lg:text-[4rem] sm:text-3xl font-bold lg:leading-[64px]"
+          className="lg:text-[4rem] sm:text-3xl font-bold lg:leading-[64px] dark:text-white"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -21,7 +21,7 @@ const HomePage = () => {
 
         {/* Animated Description Text */}
         <motion.span
-          className="lg:text-xl sm:text-md font-light text-center block mb-4 w-3/4"
+          className="lg:text-xl sm:text-md font-light text-center block mb-4 w-3/4 dark:text-white"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}

@@ -40,7 +40,7 @@ function App() {
   
   return (
     <>
-    <div className="dark:bg-slate-900 bg-white">
+    <div className="dark:bg-slate-900 bg-white min-h-screen">
       <div className="relative container ">
         <Routes>
             <Route element={<PrivateLayout />}>

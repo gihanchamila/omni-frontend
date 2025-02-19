@@ -11,7 +11,7 @@ const Button = forwardRef(
 
     // Variant-based classes
     const variantClasses = {
-      primary: "bg-slate-900 text-white hover:bg-slate-600 focus:bg-slate-900",
+      primary: "bg-slate-900 text-white hover:bg-slate-600 focus:bg-slate-800 dark:bg-gray-100 dark:text-slate-800 dark:hover:bg-white dark:hover-text-slate-500",
       error: "bg-red-500 text-white hover:bg-red-600",
       success: "bg-green-500 text-white hover:bg-green-500",
       info: "bg-blue-500 text-white hover:bg-blue-600",

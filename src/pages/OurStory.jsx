@@ -2,8 +2,8 @@ import React from 'react'
 
 const OurStory = () => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 space-y-6 text-gray-800">
-      <h2 className="text-[4rem] text-center font-bold text-gray-900">
+    <div className="max-w-4xl mx-auto px-6 py-12 space-y-6 text-gray-800 ">
+      <h2 className="text-[4rem] text-center font-bold text-gray-900 ">
         Share Your Voice with the World
       </h2>
       <p className="text-lg leading-relaxed text-gray-700">
