@@ -56,7 +56,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:transition-colors duration-100">
+    <div className="bg-white border  border-gray-200 rounded-lg dark:border-none hover:bg-gray-50 hover:transition-colors duration-100">
       <div className="flex flex-col md:flex-row">
         <div
           onClick={() => navigate(`/posts/${post._id}`)}
