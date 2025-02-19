@@ -258,13 +258,13 @@ const UpdatePost = () => {
                     <img 
                       src={URL.createObjectURL(formData.file)} 
                       alt="Uploaded" 
-                      className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" 
+                      className="w-full lg:h-[50rem] sm:h-[15rem] object-cover mb-2 rounded-lg" 
                     />
                   ) : formData.file ? (
                     <img 
                       src={file} 
                       alt="Existing" 
-                      className="w-full h-[50rem] object-cover mb-2 rounded-lg" 
+                      className="w-full lg:h-[50rem] sm:h-[25rem]  object-cover mb-2 rounded-lg" 
                     />
                   ) : null}
                 <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
