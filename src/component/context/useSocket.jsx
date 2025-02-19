@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }) => {
     }); */
 
     // This is used for localhost
-    
+    const socket = io('http://localhost:8000');
       
     useEffect(() => {
         // Emit an event to the server
