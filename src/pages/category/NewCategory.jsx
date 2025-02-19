@@ -51,9 +51,9 @@ const NewCategory = () => {
   };
 
   return (
-    <section className="bg-gray-50 rounded-lg py-12">
+    <section className="flex items-center justify-center sm:h-[93vh]  rounded-lg sm:py-0 lg:py-12">
       <motion.div 
-        className="py-12 px-12 mx-auto w-3/4 lg:py-16 bg-white rounded-lg"
+        className="sm:py-6 sm:px-6 mx-auto lg:w-3/4 sm:w-full lg:py-16 bg-white rounded-lg"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

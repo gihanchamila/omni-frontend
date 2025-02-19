@@ -149,19 +149,19 @@
     }
 
     p {
-      @apply text-slate-700 font-light
+      @apply lg:text-slate-700 font-light dark:lg:text-white dark:sm:text-white
     }
 
     .tableTh {
-      @apply border  text-left border-slate-300 px-2 lg:px-4 py-2 cursor-pointer hover:bg-gray-200
+      @apply border  text-left border-slate-300 px-2 lg:px-4 py-2 cursor-pointer hover:bg-gray-200 dark:sm:hover:text-slate-700
     }
     
     .tableTd {
-      @apply border border-slate-300 px-2 lg:px-4 
+      @apply border border-slate-300 px-2 lg:px-4 dark:sm:text-white
     }
 
     td {
-      @apply lg:py-2 lg:px-1
+      @apply lg:py-2 lg:px-1 dark:sm:text-white 
     }
 
     table {
@@ -173,7 +173,11 @@
     }
 
     .ql-editor {
-      @apply p-0 font-sans  text-slate-700 font-light text-lg
+      @apply p-0 font-sans  text-slate-700 dark:sm:text-slate-700 font-light text-lg
+    }
+
+    .ql-editor p {
+      @apply dark:sm:text-slate-700  dark:lg:text-slate-700
     }
 
     .notification-bottom {
@@ -183,6 +187,8 @@
     .no-scroll{
       @apply overflow-hidden 
     }
+
+    
   }
   
   

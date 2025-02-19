@@ -133,7 +133,7 @@ const CategoryList = () => {
       {loading ? "Loading" : (
         <div className="overflow-x-auto mt-5">
           <table className="table-auto w-full border-collapse border border-slate-400 lg:text-sm sm:text-xs">
-            <thead className="sticky top-0 bg-gray-100 z-10">
+            <thead className="sticky top-0 bg-gray-100  z-10">
               <tr className="mb-5">
                 <th className="border text-left border-slate-300 px-2 lg:px-4 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-150 ease-in-out" onClick={() => handleSort("title")}>
                   Title 
@@ -159,7 +159,7 @@ const CategoryList = () => {
             </thead>
             <tbody>
               {categories.map((category) => (
-                <tr key={category._id} className="border border-slate-300 hover:bg-gray-50 transition-colors duration-150 ease-in-out">
+                <tr key={category._id} className="border border-slate-300 sm:hover:bg-gray-50 dark:hover:bg-slate-700 even:bg-slate-800transition-colors duration-150 ease-in-out">
                   <td className="border border-slate-300 px-2 lg:px-4 py-2">{category.title}</td>
                   <td className="border border-slate-300 px-2 lg:px-4 py-2">{category.description}</td>
                   <td className="border border-slate-300 px-2 lg:px-4 py-2">{moment(category.createdAt).format("YYYY-MM-DD HH:mm:ss")}</td>

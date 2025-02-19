@@ -149,131 +149,133 @@ const Login = () => {
 };
 
   return (
-
-    <motion.div
-      className='container lg:border-2 lg:bg-white  sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-auto lg:px-12 lg:py-12 my-4 mt-[3rem] rounded-2xl'
-      initial={{ opacity: 0, scale : 0.8 }} 
-      animate={{ opacity: 1, scale : 1 }} 
-      transition={{ duration: 0.6 }}
-    >
-      <div className="body-1">
-          <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
-      </div>
-
-      <form action="" className="space-y-4" onSubmit={handleSubmit}>
-        <motion.div
-          className="groupBox"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{delay : 0.4, duration: 0.6 }}
-        >
-          <label htmlFor="email" className="label">Email address</label>
-          <div className="relative input-wrapper">
-            <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
-            <input
-              ref={inputRef}
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="someone@gmail.com"
-              value={formData.email}
-              onChange={handleChange}
-              className="appearance-none input-box-2"
-              onKeyDown={(e) => {handleKeyDown(e, passwordRef)}}
-            />
-          </div>
-          {formError.email && <p className="validateError">{formError.email}</p>}
-        </motion.div>
-
-        <motion.div
-          className="groupBox"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{delay : 0.6, duration: 0.6 }}
-        >
-          <label htmlFor="password" className="label">
-            Password
-          </label>
-          <div className="relative input-wrapper">
-            <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
-            <input
-              ref={passwordRef}
-              id="password"
-              name="password"
-              type={isPasswordVisible ? 'text' : 'password'} 
-              placeholder="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="appearance-none input-box-2"
-              autoComplete="new-password"
-              onKeyDown={(e) => {handleKeyDown(e, null, formData.password)}}
-              onFocus={() => setPasswordTouched(true)}
-              onBlur={() => setPasswordTouched(false)}
-            />
-
-            {password.length > 1 && (
-              <div
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
-                >
-                {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
-              </div>
-            )}
-          </div>
-          {formError.password && <p className="validateError">{formError.password}</p>}
-        </motion.div>
-
-        <div className='flex items-center justify-between'>
-          <motion.div 
-            className="flex items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{delay : 0.8, duration: 0.6 }}>
-            <input
-              id="remember-me"
-              type="checkbox"
-              className="w-4 h-4 text-primary border-color-s accent-color-s border-2 checked:bg-color-s rounded focus:ring-primary"
-            />
-            <label htmlFor="remember-me" className="ml-2 text-sm text-color-s ">
-              Remember Me
-            </label>
-          </motion.div >
-
+    <div className="flex justify-center items-center sm:h-[93vh]">
           <motion.div
-            className="text-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{delay : 0.8, duration: 0.6 }}
+            className='lg:border-2 lg:bg-white  sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-[25rem] lg:px-12 lg:py-12 rounded-2xl'
+            initial={{ opacity: 0, scale : 0.8 }} 
+            animate={{ opacity: 1, scale : 1 }} 
+            transition={{ duration: 0.6 }}
           >
-            <Link className="font-base text-sm text-blue-500 hover:underline" to="/forgot-password">
-              Forgot Password?
-            </Link>
+            <div className="body-1">
+                <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
+            </div>
+
+            <form action="" className="space-y-4" onSubmit={handleSubmit}>
+              <motion.div
+                className="groupBox"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{delay : 0.4, duration: 0.6 }}
+              >
+                <label htmlFor="email" className="label">Email address</label>
+                <div className="relative input-wrapper">
+                  <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+                  <input
+                    ref={inputRef}
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="someone@gmail.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="appearance-none input-box-2"
+                    onKeyDown={(e) => {handleKeyDown(e, passwordRef)}}
+                  />
+                </div>
+                {formError.email && <p className="validateError">{formError.email}</p>}
+              </motion.div>
+
+              <motion.div
+                className="groupBox"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{delay : 0.6, duration: 0.6 }}
+              >
+                <label htmlFor="password" className="label">
+                  Password
+                </label>
+                <div className="relative input-wrapper">
+                  <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+                  <input
+                    ref={passwordRef}
+                    id="password"
+                    name="password"
+                    type={isPasswordVisible ? 'text' : 'password'} 
+                    placeholder="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="appearance-none input-box-2"
+                    autoComplete="new-password"
+                    onKeyDown={(e) => {handleKeyDown(e, null, formData.password)}}
+                    onFocus={() => setPasswordTouched(true)}
+                    onBlur={() => setPasswordTouched(false)}
+                  />
+
+                  {password.length > 1 && (
+                    <div
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                      onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
+                      >
+                      {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                    </div>
+                  )}
+                </div>
+                {formError.password && <p className="validateError">{formError.password}</p>}
+              </motion.div>
+
+              <div className='flex items-center justify-between'>
+                <motion.div 
+                  className="flex items-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{delay : 0.8, duration: 0.6 }}>
+                  <input
+                    id="remember-me"
+                    type="checkbox"
+                    className="w-4 h-4 text-primary border-color-s accent-color-s border-2 checked:bg-color-s rounded focus:ring-primary"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 text-sm text-color-s ">
+                    Remember Me
+                  </label>
+                </motion.div >
+
+                <motion.div
+                  className="text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{delay : 0.8, duration: 0.6 }}
+                >
+                  <Link className="font-base text-sm text-blue-500 hover:underline" to="/forgot-password">
+                    Forgot Password?
+                  </Link>
+                </motion.div>
+              </div>
+
+              <motion.div
+                className="flex justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{delay : 0.8, duration: 0.6 }}
+              >
+                <Button variant="info" className={`w-full py-2.5`} disabled={loading}>
+                  {loading ? 'Signing In...' : 'Sign In'}
+                </Button>
+              </motion.div>
+
+              <motion.div 
+                className="flex justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{delay : 1, duration: 0.6 }}>
+                <span className='font-base text-sm text-color-s center'>
+                  Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link>
+                </span>
+              </motion.div>
+            </form>
           </motion.div>
-        </div>
-
-        <motion.div
-          className="flex justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{delay : 0.8, duration: 0.6 }}
-        >
-          <Button variant="info" className={`w-full py-2.5`} disabled={loading}>
-            {loading ? 'Signing In...' : 'Sign In'}
-          </Button>
-        </motion.div>
-
-        <motion.div 
-          className="flex justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{delay : 1, duration: 0.6 }}>
-          <span className='font-base text-sm text-color-s center'>
-            Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link>
-          </span>
-        </motion.div>
-      </form>
-    </motion.div>
+    </div>
+   
   )
 }
 

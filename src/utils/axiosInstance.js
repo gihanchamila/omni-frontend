@@ -2,6 +2,7 @@ import axios from "axios";
 
 // Create an axios instance
 // For the vercel
+
 const axiosInstance = axios.create({baseURL: import.meta.env.VITE_API_URL })
 
 // For the localhost

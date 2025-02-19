@@ -156,7 +156,7 @@ const NewPost = () => {
   return (
     <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
       <motion.div 
-        className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
+        className="lg:bg-white sm:bg-slate-900 rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -192,7 +192,7 @@ const NewPost = () => {
             {step === 1 && (
               <form onSubmit={handleNext} className="space-y-6">
                 <div className='space-y-2'>
-                  <label htmlFor="title" className="label">Title</label>
+                  <label htmlFor="title" className="label  dark:sm:text-white dark:lg:text-slate-700">Title</label>
                   <input
                     ref={inputRef}
                     type="text"
@@ -208,14 +208,14 @@ const NewPost = () => {
                 </div>
 
                 <div className='space-y-4'>
-                  <h3 className="label">Upload an Image</h3>
+                  <h3 className="label dark:text-white dark:lg:text-slate-700">Upload an Image</h3>
                   <ImageUploader onUpload={handleImageUpload} file={formData.file} />
 
                   {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
                 </div>
 
                 <div className="flex justify-end">
-                  <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                  <Button variant="info" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
                     Next Step
                   </Button>
                 </div>
@@ -230,7 +230,7 @@ const NewPost = () => {
                 </div>
 
                 <div className="w-full mt-4">
-                  <label htmlFor="category" className="label">Select a category</label>
+                  <label htmlFor="category" className="label dark:text-white dark:lg:text-slate-700">Select a category</label>
                   <select
                     id="category"
                     className="mt-2 block w-full px-4 py-3 text-gray-900 rounded-lg border border-gray-200"
@@ -251,7 +251,7 @@ const NewPost = () => {
 
                 <div className="flex justify-end">
                   <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(1)}>Back</Button>
-                  <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                  <Button variant="info" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
                     Next Step
                   </Button>
                 </div>
@@ -260,12 +260,12 @@ const NewPost = () => {
 
             {step === 3 && (
               <div className="space-y-6">
-                <div className="rounded-lg space-y-4">
-                  <h4 className="h4 font-bold w-full">{formData.title}</h4>
+                <div className="rounded-lg space-y-4 ">
+                  <h4 className="h4 font-bold w-full dark:sm:text-white dark:lg:text-slate-700">{formData.title}</h4>
                   {formData.file && (
                     <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" />
                   )}
-                  <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
+                  <ReactQuill className='p-0 m-0 dark:sm:text-white dark:sm:bg-white dark:sm:rounded-lg dark:lg:text-slate-700' value={formData.description} readOnly={true} theme="bubble" />
                 </div>
 
                 <div className="flex justify-end">

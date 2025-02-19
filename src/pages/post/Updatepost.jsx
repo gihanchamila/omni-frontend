@@ -168,11 +168,11 @@ const UpdatePost = () => {
   };
 
   return (
-    <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl">
+    <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl ">
       <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 sm:p-0">
         
         {/* Form Section */}
-        <div className="bg-white rounded-lg ">
+        <div className="bg-white rounded-lg sm:p-6 lg:p-0">
           <BackButton />
           <h4 className="step">{getTitle()}</h4>
           {loading && <div className="text-center">Loading...</div>}
@@ -206,7 +206,7 @@ const UpdatePost = () => {
               </div>
 
               <div className="flex justify-end">
-                <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                <Button variant="info" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
                   Next Step
                 </Button>
               </div>
@@ -243,7 +243,7 @@ const UpdatePost = () => {
 
               <div className="flex justify-end">
                 <Button variant="outline" className="mt-4 mr-4" onClick={() => setStep(1)}>Back</Button>
-                <Button variant="primary" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
+                <Button variant="info" type="submit" className="mt-4 px-4 py-1 text-sm bg-blue-500 text-white font-medium rounded-lg">
                   Next Step
                 </Button>
               </div>

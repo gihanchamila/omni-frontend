@@ -194,7 +194,7 @@ const AdminList = () => {
                 </thead>
                 <tbody>
                 {admins.map((admin) => (
-                    <tr key={admin._id} className="border border-slate-300 hover:bg-gray-50">
+                    <tr key={admin._id} className="border border-slate-300  sm:hover:bg-gray-50 dark:hover:bg-slate-700 even:bg-slate-800 ">
                         {/* <td className="border border-slate-300 px-2 lg:px-4 py-2">{user._id}</td> */}
                         <td className="tableTd">{admin.firstName} {admin.lastName}</td>
                         <td className="tableTd">{admin.email}</td>

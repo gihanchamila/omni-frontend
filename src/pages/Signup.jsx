@@ -137,210 +137,213 @@ const Signup = () => {
   const { label, color } = getPasswordStrength();
 
   return (
-    <motion.div 
-      className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  sm:bg-gray-50 sm:rounded-2xl' 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      transition={{ duration: 0.6 }}
-    >
-      <motion.div 
-        className='md:border-2 md:border-slate-800 dark:bg-white lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
-        initial={{ scale: 0.8 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="body-1">
-          <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome</h1>
-        </div>
-
-        {/* Sign up form */}
-        <form onSubmit={handleSubmit}>
-          {/* Name fields */}
+    <div className='sm:h-[90.6vh]'>
           <motion.div 
-            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  sm:bg-gray-50 sm:rounded-2xl' 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ duration: 0.6 }}
           >
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="firstName" className="label" >First Name</label>
-              <div className='relative input-wrapper'>
-                <HiOutlineUserCircle className={`input-icon ${isFirstNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
-                <input
-                  ref={inputRef}
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="e.g.John"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  onKeyDown={(e) => {handleKeyDown(e, lastNameRef, formData.firstName)}}
-                />
+            <motion.div 
+              className='md:border-2 md:border-slate-800 dark:bg-white lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="body-1">
+                <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome</h1>
               </div>
-              {formError.firstName && <p className="validateError">{formError.firstName}</p>}
-            </div>
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="lastName" className="label">Last Name</label>
-              <div className='relative input-wrapper'>
-                <HiOutlineUserCircle className={`input-icon ${isLastNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
-                <input
-                  ref={lastNameRef}
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  autoComplete="family-name"
-                  placeholder="e.g.Doe"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  onKeyDown={(e) => {handleKeyDown(e, emailRef, formData.lastName)}}
-                />
-              </div>
-              {formError.lastName && <p className="validateError">{formError.lastName}</p>}
-            </div>
-          </motion.div>
 
-          {/* Email and Confirm Email fields */}
-          <motion.div 
-            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="email" className="label">Email</label>
-              <div className='relative input-wrapper'>
-                <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
-                <input
-                  ref={emailRef}
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="e.g. johndoe@gmail.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  autoComplete='email'
-                  onKeyDown={(e) => {handleKeyDown(e, confirmEmailRef, formData.email)}}
-                />
-              </div>
-              {formError.email && <p className="validateError">{formError.email}</p>}
-            </div>
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="confirmEmail" className="label">Confirm Email</label>
-              <div className='relative input-wrapper'>
-                <HiOutlineMail className={`input-icon ${isConfirmEmailTyping ? 'text-blue-500' : 'text-gray-300'}`} />
-                <input
-                  ref={confirmEmailRef}
-                  id="confirmEmail"
-                  name="confirmEmail"
-                  type="email"
-                  placeholder="e.g. johndoe@gmail.com"
-                  value={formData.confirmEmail}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  onKeyDown={(e) => {handleKeyDown(e, passwordRef, formData.confirmEmail)}}
-                />
-              </div>
-              {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
-            </div>
-          </motion.div>
-
-          {/* Password and Confirm Password fields */}
-          <motion.div 
-            className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-          >
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="password" className="label">Password</label>
-              <div className='relative input-wrapper'>
-                <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
-                <input
-                  ref={passwordRef}
-                  id="password"
-                  name="password"
-                  type={isPasswordVisible ? 'text' : 'password'} 
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  autoComplete='new-password'
-                  onKeyDown={(e) => {handleKeyDown(e, confirmPasswordRef, formData.password)}}
-                  onFocus={() => setPasswordTouched(true)}
-                  onBlur={() => setPasswordTouched(false)}
-                  
-                />
-                {password.length > 1 && (
-                  <div
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
-                    >
-                    {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+              {/* Sign up form */}
+              <form onSubmit={handleSubmit}>
+                {/* Name fields */}
+                <motion.div 
+                  className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                >
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="firstName" className="label" >First Name</label>
+                    <div className='relative input-wrapper'>
+                      <HiOutlineUserCircle className={`input-icon ${isFirstNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+                      <input
+                        ref={inputRef}
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        autoComplete="given-name"
+                        placeholder="e.g.John"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        onKeyDown={(e) => {handleKeyDown(e, lastNameRef, formData.firstName)}}
+                      />
+                    </div>
+                    {formError.firstName && <p className="validateError">{formError.firstName}</p>}
                   </div>
-                )}
-                
-              </div>
-              {passwordTouched && password.length > 0 && (
-                <p className={`text-xs font-light ${color}`}>
-                  Password Strength: {label}
-                </p>
-              )}
-              {formError.password && <p className="validateError">{formError.password}</p>}
-            </div>
-            <div className="groupBox lg:w-[35rem]">
-              <label htmlFor="confirmPassword" className="label">Confirm Password</label>
-              <div className='relative input-wrapper'>
-                <HiLockClosed className={`input-icon ${isConfirmPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
-                <input
-                  ref={confirmPasswordRef}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={isConfirmPasswordVisible ? 'text' : 'password'} 
-                  placeholder="Re-enter your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="appearance-none input-box-2"
-                  autoComplete='current-password'
-                  onKeyDown={(e) => {handleKeyDown(e, signUpRef, formData.confirmPassword)}}
-                  onFocus={() => setconfirmPasswordTouched(true)}
-                  onBlur={() => setconfirmPasswordTouched(false)}
-                />
-                {confirmPassword.length > 1 && (
-                  <div
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-                    >
-                    {isConfirmPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="lastName" className="label">Last Name</label>
+                    <div className='relative input-wrapper'>
+                      <HiOutlineUserCircle className={`input-icon ${isLastNameTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+                      <input
+                        ref={lastNameRef}
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        autoComplete="family-name"
+                        placeholder="e.g.Doe"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        onKeyDown={(e) => {handleKeyDown(e, emailRef, formData.lastName)}}
+                      />
+                    </div>
+                    {formError.lastName && <p className="validateError">{formError.lastName}</p>}
                   </div>
-                )}
-              </div>
-              {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
-            </div>
-          </motion.div>
+                </motion.div>
 
-          {/* Sign Up button */}
-          <motion.div 
-            className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 "
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            <div className="flex-grow lg:block sm:mt-5 lg:mt-0  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
-              <span className='font-base text-sm text-color-s'>
-                Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
-              </span>
-            </div>
-            <Button ref={signUpRef} type="submit" className=" lg:w-[5rem] sm:w-full" variant='info' primary={false}>
-              {loading ? 'Signing up...' : 'Sign Up'}
-            </Button>
+                {/* Email and Confirm Email fields */}
+                <motion.div 
+                  className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
+                >
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="email" className="label">Email</label>
+                    <div className='relative input-wrapper'>
+                      <HiOutlineMail className={`input-icon ${isEmailTyping ? 'text-blue-500' : 'text-gray-300'}`}/>
+                      <input
+                        ref={emailRef}
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="e.g. johndoe@gmail.com"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        autoComplete='email'
+                        onKeyDown={(e) => {handleKeyDown(e, confirmEmailRef, formData.email)}}
+                      />
+                    </div>
+                    {formError.email && <p className="validateError">{formError.email}</p>}
+                  </div>
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="confirmEmail" className="label">Confirm Email</label>
+                    <div className='relative input-wrapper'>
+                      <HiOutlineMail className={`input-icon ${isConfirmEmailTyping ? 'text-blue-500' : 'text-gray-300'}`} />
+                      <input
+                        ref={confirmEmailRef}
+                        id="confirmEmail"
+                        name="confirmEmail"
+                        type="email"
+                        placeholder="e.g. johndoe@gmail.com"
+                        value={formData.confirmEmail}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        onKeyDown={(e) => {handleKeyDown(e, passwordRef, formData.confirmEmail)}}
+                      />
+                    </div>
+                    {formError.confirmEmail && <p className="validateError">{formError.confirmEmail}</p>}
+                  </div>
+                </motion.div>
+
+                {/* Password and Confirm Password fields */}
+                <motion.div 
+                  className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 0.6 }}
+                >
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="password" className="label">Password</label>
+                    <div className='relative input-wrapper'>
+                      <HiLockClosed className={`input-icon ${isPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
+                      <input
+                        ref={passwordRef}
+                        id="password"
+                        name="password"
+                        type={isPasswordVisible ? 'text' : 'password'} 
+                        placeholder="Create a password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        autoComplete='new-password'
+                        onKeyDown={(e) => {handleKeyDown(e, confirmPasswordRef, formData.password)}}
+                        onFocus={() => setPasswordTouched(true)}
+                        onBlur={() => setPasswordTouched(false)}
+                        
+                      />
+                      {password.length > 1 && (
+                        <div
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                          onClick={() => setIsPasswordVisible(!isPasswordVisible)} // Toggle password visibility
+                          >
+                          {isPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                        </div>
+                      )}
+                      
+                    </div>
+                    {passwordTouched && password.length > 0 && (
+                      <p className={`text-xs font-light ${color}`}>
+                        Password Strength: {label}
+                      </p>
+                    )}
+                    {formError.password && <p className="validateError">{formError.password}</p>}
+                  </div>
+                  <div className="groupBox lg:w-[35rem]">
+                    <label htmlFor="confirmPassword" className="label">Confirm Password</label>
+                    <div className='relative input-wrapper'>
+                      <HiLockClosed className={`input-icon ${isConfirmPasswordTyping ? 'text-blue-500' : 'text-gray-300'}`} />
+                      <input
+                        ref={confirmPasswordRef}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={isConfirmPasswordVisible ? 'text' : 'password'} 
+                        placeholder="Re-enter your password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className="appearance-none input-box-2"
+                        autoComplete='current-password'
+                        onKeyDown={(e) => {handleKeyDown(e, signUpRef, formData.confirmPassword)}}
+                        onFocus={() => setconfirmPasswordTouched(true)}
+                        onBlur={() => setconfirmPasswordTouched(false)}
+                      />
+                      {confirmPassword.length > 1 && (
+                        <div
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                          onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                          >
+                          {isConfirmPasswordVisible ? <HiEyeOff className="text-gray-500" /> : <HiEye className="text-gray-500" />}
+                        </div>
+                      )}
+                    </div>
+                    {formError.confirmPassword && <p className="validateError">{formError.confirmPassword}</p>}
+                  </div>
+                </motion.div>
+
+                {/* Sign Up button */}
+                <motion.div 
+                  className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 "
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
+                >
+                  <div className="flex-grow lg:block sm:mt-5 lg:mt-0  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
+                    <span className='font-base text-sm text-color-s'>
+                      Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
+                    </span>
+                  </div>
+                  <Button ref={signUpRef} type="submit" className=" lg:w-[5rem] sm:w-full" variant='info' primary={false}>
+                    {loading ? 'Signing up...' : 'Sign Up'}
+                  </Button>
+                </motion.div>
+              </form>
+            </motion.div>
           </motion.div>
-        </form>
-      </motion.div>
-    </motion.div>
+    </div>
+    
   );
 }
 
