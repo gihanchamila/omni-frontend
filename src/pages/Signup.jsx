@@ -334,7 +334,7 @@ const Signup = () => {
                 Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
               </span>
             </div>
-            <Button ref={signUpRef} type="submit" className=" w-full " variant='info' primary={false}>
+            <Button ref={signUpRef} type="submit" className=" lg:w-[5rem] sm:w-full" variant='info' primary={false}>
               {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
           </motion.div>
