@@ -149,8 +149,9 @@ const Login = () => {
 };
 
   return (
+
     <motion.div
-      className='container lg:border-2 lg:bg-white sm:bg-gray-50 sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-auto lg:px-12 lg:py-12 my-4 mt-[3rem] rounded-2xl'
+      className='container lg:border-2 lg:bg-white  sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-auto lg:px-12 lg:py-12 my-4 mt-[3rem] rounded-2xl'
       initial={{ opacity: 0, scale : 0.8 }} 
       animate={{ opacity: 1, scale : 1 }} 
       transition={{ duration: 0.6 }}

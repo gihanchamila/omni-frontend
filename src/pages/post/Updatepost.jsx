@@ -169,7 +169,7 @@ const UpdatePost = () => {
 
   return (
     <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl">
-      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full p-10">
+      <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 sm:p-0">
         
         {/* Form Section */}
         <div className="bg-white rounded-lg ">
