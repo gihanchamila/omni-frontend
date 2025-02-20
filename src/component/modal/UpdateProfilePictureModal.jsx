@@ -178,7 +178,7 @@ function UpdateProfilePictureModal() {
             {/* Remove Modal */}
             {removeModal && (
                 <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-hidden'>
-                    <div className="relative bg-white rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
+                    <div className="relative bg-white sm:m-5 rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
                             onClick={handleCloseRemoveModal}
                             className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
@@ -197,14 +197,14 @@ function UpdateProfilePictureModal() {
             {/* Add/Edit Profile Picture Modal */}
             {showModal && (
                 <div ref={modalRef} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="relative bg-white rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
+                    <div className="relative bg-white sm:m-5 rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
                             onClick={handleCloseModal}
                             className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
                         >
                             <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
-                        <p className="text-2xl font-bold m-0">Update Profile Picture</p>
+                        <span className="text-2xl font-bold m-0 sm:text-slate-800 dark:lg:text-slate-800">Update Profile Picture</span>
 
                         <div className="flex flex-col items-center justify-center flex-grow">
                             {!image && !croppedImage && (
