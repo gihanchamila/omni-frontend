@@ -185,7 +185,7 @@ function UpdateProfilePictureModal() {
                         >
                             <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
                         </button>
-                        <p>Are you sure to remove profile picture?</p>
+                        <span className='sm:text-gray-500 dark:lg:text-gray-500'>Are you sure to remove profile picture?</span>
                         <div className='flex justify-end space-x-4'>
                             <Button variant='outline' onClick={handleCloseRemoveModal}>No</Button>
                             <Button variant='error' onClick={handleDeleteFile}>Yes</Button>  
