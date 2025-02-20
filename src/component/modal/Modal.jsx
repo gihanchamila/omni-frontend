@@ -54,7 +54,7 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
     >
       <div ref={modalRef} className="relative p-4 w-full max-w-md">
         <motion.div 
-          className="relative bg-white rounded-lg shadow">
+          className="relative bg-white sm:m-5  rounded-lg shadow">
           <button
             type="button"
             className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center overflow-hidden"

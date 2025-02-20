@@ -137,7 +137,7 @@ const Signup = () => {
   const { label, color } = getPasswordStrength();
 
   return (
-    <div className='sm:h-[90.6vh]'>
+    <div className='sm:h-[90.6vh] dark:sm:min-h-screen'>
           <motion.div 
             className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  sm:bg-gray-50 sm:rounded-2xl' 
             initial={{ opacity: 0 }} 

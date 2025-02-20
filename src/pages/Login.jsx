@@ -149,9 +149,9 @@ const Login = () => {
 };
 
   return (
-    <div className="flex justify-center items-center sm:h-[93vh]">
+    <div className="flex justify-center items-center sm:h-[93vh] lg:h-screen ">
           <motion.div
-            className='lg:border-2 lg:bg-white  sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-[25rem] lg:px-12 lg:py-12 rounded-2xl'
+            className='lg:border-2 lg:bg-white sm:mb-10 sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-[25rem] lg:px-12 lg:py-12 rounded-2xl'
             initial={{ opacity: 0, scale : 0.8 }} 
             animate={{ opacity: 1, scale : 1 }} 
             transition={{ duration: 0.6 }}
