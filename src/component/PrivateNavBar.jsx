@@ -8,12 +8,11 @@ import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
-import useClickOutside from "./context/useClickOutside.jsx";
 import { motion } from "framer-motion";
 import { logo } from "../assets/index.js";
 
 const PrivateNavBar = () => {
-  const location = useLocation();
+
   const navigate = useNavigate();
   const auth = useAuth();
   const socket = useSocket();
@@ -29,50 +28,29 @@ const PrivateNavBar = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [profileKey, setProfileKey] = useState(null);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
-  const [showAnimation, setShowAnimation] = useState(false);
 
-  useEffect(() => {
-    setDropdownOpen(false);
-    setMobileMenuOpen(false);
-    document.body.classList.remove('backdrop-blur');
-  }, [location]);
-
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      try {
-        const response = await axios.get(`/auth/current-user`);
-        const user = response.data.data.user;
-        if (user && user._id) {
-          setCurrentUser(user);
-          if (user.profilePic && user.profilePic.key) {
-            setProfileKey(user.profilePic.key);
-          }
-        } else {
-          toast.error('User data is incomplete');
+  const getCurrentUser = useCallback(async () => {
+    try {
+      const response = await axios.get(`/auth/current-user`);
+      const user = response.data.data.user;
+      if (user && user._id) {
+        setCurrentUser(user);
+        if (user.profilePic && user.profilePic.key) {
+          setProfileKey(user.profilePic.key);
         }
-      } catch (error) {
-        const response = error.response;
-        const data = response.data;
-        toast.error(data.message);
+      } else {
+        toast.error('User data is incomplete');
       }
-    };
-    getCurrentUser();
+    } catch (error) {
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
   }, []);
 
   useEffect(() => {
-    if (unreadCount > 0) {
-      // Start animation every 5 seconds
-      const interval = setInterval(() => {
-        setShowAnimation(true);
-
-        setTimeout(() => {
-          setShowAnimation(false);
-        }, 2000); // Animation duration (2 seconds)
-      }, 5000);  // Trigger animation every 5 seconds
-
-      return () => clearInterval(interval);
-    }
-  }, [unreadCount]);
+    getCurrentUser();
+  }, [getCurrentUser]);
 
   const handleMarkAsRead = async (id) => {
     try {
@@ -129,9 +107,6 @@ const PrivateNavBar = () => {
 
   const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
-  useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
-
-
   return (
     <div>
       <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
@@ -140,7 +115,6 @@ const PrivateNavBar = () => {
 
         <div className="flex-shrink-0 flex items-center">
           <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
-          {/* <img onClick={() => navigate("/")} src={logo} className="h-16 w-20 text-gray-500 dark:text-white hover:cursor-pointer"  alt="logo"/> */}
         </div>
         
         {/* Mobile Menu Toggle Button */}
@@ -282,7 +256,7 @@ const PrivateNavBar = () => {
 
           <div className="relative">
             <button onClick={toggleDropdown} ref={profileRef} className="flex items-center">
-              <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+              <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" loading="lazy"/>
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[12rem] h-[10rem] rounded-lg border border-slate-200 z-50">

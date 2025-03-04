@@ -93,7 +93,7 @@ const PublicNavBar = () => {
                 to="/signup"
                 onClick={toggleMobileMenu}
               >
-                Get Started
+                Sign Up
               </NavLink>
 
             </div>
