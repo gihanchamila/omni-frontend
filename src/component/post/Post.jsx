@@ -7,15 +7,12 @@ import { profile } from '../../assets/index.js';
 import moment from 'moment';
 import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
-import PropTypes from 'prop-types';
-import ProfilePicSkeleton from './ProfilePicSkeleton'; // Import your skeleton loader component
-import AuthorProfilePic from './AuthorProfilePic.jsx';
 import { motion } from 'framer-motion';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState();
-  const [loading, setLoading] = useState(true); // Loading state for profile picture
+  const [loading, setLoading] = useState(true);
   const { profilePicUrl } = useProfile();
   const profilePicCache = useRef({});
 
@@ -124,31 +121,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   );
 
 };
-
-/* Post.propTypes = {
-  post: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
-    author: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      profilePic: PropTypes.shape({
-        key: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-    likesCount: PropTypes.number.isRequired,
-    commentCount: PropTypes.number.isRequired,
-    file: PropTypes.string,
-  }).isRequired,
-  postFile: PropTypes.string,
-  liked: PropTypes.bool.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  followStatuses: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
-  handleFollow: PropTypes.func.isRequired,
-}; */
 
 
 export default Post;
