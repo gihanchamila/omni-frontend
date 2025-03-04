@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
@@ -11,11 +11,25 @@ import { motion } from 'framer-motion';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
   const navigate = useNavigate();
+  const { profilePicUrl } = useProfile();
   const [profilePic, setProfilePic] = useState();
   const [loading, setLoading] = useState(true);
-  const { profilePicUrl } = useProfile();
   const profilePicCache = useRef({});
 
+  // Memoize formatDate to avoid recalculating on every render
+  const formatDate = useMemo(() => (date) => {
+    const updatedDate = moment(date);
+    const now = moment();
+    const diffDays = now.diff(updatedDate, 'days');
+    return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
+  }, []);
+  
+  // Memoize authorProfilePic to avoid recalculating on every render
+  const authorProfilePic = useMemo(() => {
+    return post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
+  }, [post.author, profilePicUrl, profilePic]);
+
+  // Fetch profile picture if it's not cached
   useEffect(() => {
     const getProfilePic = async () => {
       setLoading(true);
@@ -31,7 +45,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         
         const response = await axios.get(`/file/signed-url?key=${key}`);
         const url = response.data.data.url;
-        profilePicCache.current[authorId] = url; 
+        profilePicCache.current[authorId] = url;
         setProfilePic(url);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
@@ -42,15 +56,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
     };
     getProfilePic();
   }, [post.author]);
-
-  const authorProfilePic = post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
-  
-  const formatDate = (date) => {
-    const updatedDate = moment(date);
-    const now = moment();
-    const diffDays = now.diff(updatedDate, 'days');
-    return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
-  };
 
   return (
     <div className="bg-white border  border-gray-200 rounded-lg dark:border-none hover:bg-gray-50 hover:transition-colors duration-100">
@@ -70,8 +75,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" />
-
-             {/*  <AuthorProfilePic author={post?.author} /> */}
               <span className="px-2 text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
               {currentUser && post?.author?._id !== currentUser._id && (
                 <span
@@ -119,8 +122,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       </div>
     </div>
   );
-
 };
-
 
 export default Post;
