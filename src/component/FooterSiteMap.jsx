@@ -21,7 +21,7 @@ const FooterSiteMap = () => {
   ];
 
   return (
-    <footer className="sticky bg-gray-50 text-slate-700 py-4 mt-10 rounded-t-xl">
+    <footer className="sticky  py-4 mt-10 rounded-t-xl">
       {/* <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-[240px] gap-y-8">
           {sections.map((section, index) => (
@@ -44,9 +44,15 @@ const FooterSiteMap = () => {
         </div>
         
       </div> */}
-          <p className="text-gray-500 text-sm flex items-center justify-center">
+      <hr className="h-px  bg-gray-200 border-0 dark:bg-gray-700" />
+      <div className="flex justify-between pt-4">
+          <p className="text-white text-sm">
             © {new Date().getFullYear()} Omni. All rights reserved.
           </p>
+          <p className="text-white text-sm">
+            Gihan Chamila
+          </p>
+      </div>
     </footer>
   );
 };
