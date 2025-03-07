@@ -42,8 +42,12 @@ export const NotificationProvider = ({ children }) => {
   }, []) 
 
   useEffect(() => {
-    markAsRead()
-  }, [markAsRead])
+    notifications.forEach((notification) => {
+      if (!notification.isRead) {
+        markAsRead(notification.id);
+      }
+    });
+  }, [markAsRead, notifications]);
 
   const deleteNotification = async (id) => {
     try {

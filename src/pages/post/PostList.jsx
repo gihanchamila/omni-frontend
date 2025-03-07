@@ -18,6 +18,7 @@ const PostList = () => {
 
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   // Posts Data
   const [posts, setPosts] = useState([]);
@@ -84,10 +85,13 @@ const PostList = () => {
     getCurrentUser();
   },[]);
 
+    // Memoizing filesToFetch to avoid unnecessary calculations
+    const filesToFetch = useMemo(() => {
+      return posts.filter(post => post.file && !postFiles[post._id]);
+    }, [posts, postFiles]);
+
   useEffect(() => {
     const getPostFiles = async () => {
-      const filesToFetch = posts.filter(post => post.file && !postFiles[post._id]);
-  
       if (filesToFetch.length === 0) return;
   
       const files = {};
@@ -97,17 +101,18 @@ const PostList = () => {
             const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
             files[post._id] = response.data.data.url;
           } catch (error) {
-            console.error("Failed to fetch file URL");
+            console.error("Failed to fetch file URL", error);
           }
         })
       );
+  
       setPostFiles(prevFiles => ({ ...prevFiles, ...files }));
     };
   
-    if (posts.length > 0) {
+    if (filesToFetch.length > 0) {
       getPostFiles();
     }
-  }, [posts, postFiles]);
+  }, [filesToFetch]);
 
   useEffect(() => {
     const getLikedPosts = async () => {
@@ -122,12 +127,29 @@ const PostList = () => {
   }, []);
 
   useEffect(() => {
+    if (posts.length > 0) {
+      let loadedImages = 0;
+      posts.forEach((post) => {
+        const img = new Image();
+        img.src = postFiles[post._id] || post.file;
+        img.onload = () => {
+          loadedImages += 1;
+          if (loadedImages === posts.length) {
+            setImagesLoaded(true);
+          }
+        };
+      });
+    }
+  }, [posts, postFiles]);
+
+  useEffect(() => {
     const latestPosts = async () => {
       try {
         setLoading(true)
         const response = await axios.get('/posts/features/latest-posts')
         const data = response.data.data
         setLatestPosts(data)
+        setLoading(false)
       } catch (error) {
         setLoading(false)
         const response = error.response;
@@ -142,11 +164,10 @@ const PostList = () => {
     const popularPosts = async () => {
       try{
         setLoading(true)
-
         const response = await axios.get('/posts/features/popular-posts')
         const data = response.data.data
         setPopularPosts(data)
-
+        setLoading(false)
       }catch(error){
         const response = error.response
         const data = response.data
@@ -302,14 +323,14 @@ const PostList = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="mx-auto  md:px-[10rem] py-10">
-      <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4  md:space-y-0 md:space-x-2">
+    className="mx-auto md:px-[10rem] py-10">
+      <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4 md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
-        <div className="w-full md:w-2/3 space-y-4 ">
-          {/* Dynamic Posts */}
-          {loading ? (
-            Array.from({ length: 2}).map((_, index) => (
+        <div className="w-full md:w-2/3 space-y-4">
+          {/* Skeletons until posts and images are loaded */}
+          {loading || !imagesLoaded ? (
+            Array.from({ length: 2 }).map((_, index) => (
               <PostSkeleton key={index} />
             ))
           ) : (
@@ -329,19 +350,15 @@ const PostList = () => {
         </div>
 
         {/* Right Section: Sidebar */}
-        
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
-          <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
-            {loading ? (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            {loading || !imagesLoaded ? (
               <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
-              ) : (
-              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
-              Latest Posts
-              </h5>)}
-            
-              <div className="space-y-4">
-              {loading ? (
-                // Render skeletons when loading
+            ) : (
+              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">Latest Posts</h5>
+            )}
+            <div className="space-y-4">
+              {loading || !imagesLoaded ? (
                 Array(2).fill(0).map((_, index) => (
                   <div key={index} className="flex items-center space-x-4">
                     <div className="h-14 w-14 bg-gray-200 rounded"></div>
@@ -352,13 +369,13 @@ const PostList = () => {
                   </div>
                 ))
               ) : (
-                // Render actual posts when data is available
                 latestPosts.map((post) => (
                   <div key={post._id} className="flex items-center space-x-4">
                     <img
                       className="cardImage"
                       src={postFiles[post._id] || post.file}
                       alt="Latest Post"
+                      onLoad={() => setImagesLoaded(true)}
                       onClick={() => navigate(`/posts/${post?._id}`)}
                     />
                     <div className="flex-1">
@@ -366,7 +383,6 @@ const PostList = () => {
                         <SanitizedContent
                           htmlContent={post.title}
                           allowedTags={['h1', 'strong', 'font']}
-
                         />
                       </h6>
                       <p className="text-xs text-gray-600 line-clamp-1">
@@ -382,37 +398,31 @@ const PostList = () => {
             </div>
           </div>
         
-          <div className={`bg-white ${!loading && 'border border-gray-200'} rounded-lg p-4`}>
-          {loading ? (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            {loading || !imagesLoaded  ? (
               <Skeleton width='8rem' height='1.5rem' className='mb-4'/>
-              ) : (
-              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">
-                Popular Posts
-              </h5>)}
+            ) : (
+              <h5 className="text-lg font-bold tracking-tight text-gray-900 mb-4">Popular Posts</h5>
+            )}
             <div className="space-y-4">
-              {/* Popular Post Card */}
-              {loading ? (
-                Array(3)
-                  .fill(0)
-                  .map((_, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-4"
-                    >
-                      <div className="h-14 w-14 bg-gray-200 rounded"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                        <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-                      </div>
+              {loading || !imagesLoaded ? (
+                Array(3).fill(0).map((_, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="h-14 w-14 bg-gray-200 rounded"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
                     </div>
-                  ))
+                  </div>
+                ))
               ) : (
                 popularPosts.map((post) => (
                   <div key={post._id} className="flex items-center space-x-4">
                     <img
                       className="cardImage"
                       src={postFiles[post._id] || post.file}
-                      alt="Latest Post"
+                      alt="Popular Post"
+                      onLoad={() => setImagesLoaded(true)}
                       onClick={() => navigate(`/posts/${post?._id}`)}
                     />
                     <div className="flex-1 w-full overflow-hidden">
@@ -434,8 +444,10 @@ const PostList = () => {
         </div>
       </div>
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
-    </motion.div >
+    </motion.div>
   );
+
+
 };
 
 export default PostList;

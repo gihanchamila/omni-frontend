@@ -18,10 +18,7 @@ export const SocketProvider = ({ children }) => {
     const socket = io('http://localhost:8000');
       
     useEffect(() => {
-        // Emit an event to the server
         socket.emit('clientToServer', { message: 'Hello from client!' });
-    
-        // Listen for a response from the server
         socket.on('serverToClient', (data) => {
         });
     

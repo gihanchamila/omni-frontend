@@ -281,7 +281,7 @@ const PrivateNavBar = () => {
 
           <div className="relative">
             <button onClick={toggleDropdown} ref={profileRef} className="flex items-center">
-              <img height={40} width={40}  src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+              <img height={40} width={40}  src={profilePicUrl} alt="Profile" className="w-[40px] h-[40px] rounded-full object-cover" />
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[12rem] h-[10rem] rounded-lg border border-slate-200 z-50">
