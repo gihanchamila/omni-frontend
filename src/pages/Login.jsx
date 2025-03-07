@@ -66,17 +66,9 @@ const Login = () => {
       try {
         setLoading(true);
   
-        const userAgent = navigator.userAgent;
-        const deviceType = getDeviceType(userAgent);
-        const browser = getBrowserName(userAgent);
-        const os = getOS(userAgent);
-  
         const requestBody = {
           email: formData.email,
           password: formData.password,
-          deviceType: deviceType || "Unknown Device",
-          browser: browser || "Unknown Browser",
-          os: os || "Unknown OS",
         };
   
         const response = await axios.post('/auth/signin', requestBody);
@@ -114,39 +106,6 @@ const Login = () => {
     }
   };
 
-  const getBrowserName = (userAgent) => {
-    if (userAgent.includes("Chrome")) {
-      return "Google Chrome";
-    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
-      return "Safari";
-    } else if (userAgent.includes("Firefox")) {
-      return "Firefox";
-    } else if (userAgent.includes("Edge")) {
-      return "Microsoft Edge";
-    } else {
-      return "Unknown Browser";
-    }
-  };
-
-  const getDeviceType = (userAgent) => {
-    if (/mobile/i.test(userAgent)) {
-      return 'Mobile';
-    } else if (/tablet/i.test(userAgent)) {
-      return 'Tablet';
-    } else {
-      return 'Laptop'; // Assuming all other cases are laptops
-    }
-  };
-
-  const getOS = (userAgent) => {
-    if (userAgent.includes("Windows")) return "Windows";
-    if (userAgent.includes("Mac")) return "macOS";
-    if (userAgent.includes("X11")) return "UNIX";
-    if (userAgent.includes("Linux")) return "Linux";
-    if (/android/i.test(userAgent)) return "Android";
-    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
-    return "Unknown OS";
-};
 
   return (
     <div className="flex justify-center items-center sm:h-[93vh] lg:h-screen ">

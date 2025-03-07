@@ -10,7 +10,6 @@ import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
 import useClickOutside from "./context/useClickOutside.jsx";
 import { motion } from "framer-motion";
-import { logo } from "../assets/index.js";
 
 const PrivateNavBar = () => {
   const location = useLocation();
@@ -139,7 +138,7 @@ const PrivateNavBar = () => {
         {/* Logo */}
 
         <div className="flex-shrink-0 flex items-center">
-          <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
+          <p onClick={() => navigate("/")} className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
           {/* <img onClick={() => navigate("/")} src={logo} className="h-16 w-20 text-gray-500 dark:text-white hover:cursor-pointer"  alt="logo"/> */}
         </div>
         

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
-import { profile } from '../../assets/index.js';
 import moment from 'moment';
 import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
@@ -12,7 +11,7 @@ import { motion } from 'framer-motion';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow }) => {
   const navigate = useNavigate();
-  const [profilePic, setProfilePic] = useState(profile);
+  const [profilePic, setProfilePic] = useState();
   const [loading, setLoading] = useState(true);
   const { profilePicUrl } = useProfile();
   const profilePicCache = useRef({});
@@ -57,7 +56,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         <img
           className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
           sizes="(max-width: 600px) 500px, (max-width: 1024px) 1000px, 2000px"
-          src={postFile || post.file || 'fallback-image.jpg'}  // Use a fallback image if postFile or post.file is not available
+          src={postFile || post.file || 'fallback-image.jpg'}  
           alt={post.title}
           loading="lazy"
         />

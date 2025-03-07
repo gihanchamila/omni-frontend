@@ -8,6 +8,7 @@ import axios from "../../utils/axiosInstance.js";
 import { toast } from "sonner";
 import { useSocket } from "../context/useSocket.jsx";
 import useClickOutside from "../context/useClickOutside.jsx";
+import imageCompression from "browser-image-compression";
 
 function UpdateProfilePictureModal() {
   const socket = useSocket();
@@ -63,16 +64,27 @@ function UpdateProfilePictureModal() {
     };
   }, [removeModal, showModal]);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback(async (acceptedFiles) => {
     if (!acceptedFiles.length) return toast.error("No file selected");
-
+  
     const file = acceptedFiles[0];
     if (!["image/png", "image/jpeg"].includes(file.type)) {
       return toast.error("Invalid file type");
     }
-
-    setFile(file);
-    setImage(URL.createObjectURL(file)); // Use Object URL instead of storing base64
+  
+    try {
+      const options = { 
+        maxSizeMB: 1, // Target max size (1MB)
+        maxWidthOrHeight: 800, // Resize if needed
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+      
+      setFile(compressedFile);
+      setImage(URL.createObjectURL(compressedFile));
+    } catch (error) {
+      toast.error("Image compression failed");
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

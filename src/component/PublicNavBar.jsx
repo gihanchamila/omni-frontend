@@ -1,19 +1,13 @@
 import { NavLink, useLocation } from "react-router-dom";
 import Button from "./button/Button.jsx";
 import { useState, useEffect } from "react";
-import { HiOutlineLogin } from "react-icons/hi";
+
 import { HiBars3, HiOutlineXMark } from "react-icons/hi2";
-import { FcAbout } from "react-icons/fc";
-import { logo } from "../assets/index.js";
 
 const PublicNavBar = () => {
   const [openNavigation, setOpenNavigation] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  const toggleNavigation = () => {
-    setOpenNavigation(prev => !prev);
-  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(prev => !prev);
@@ -28,7 +22,7 @@ const PublicNavBar = () => {
       <nav className="relative flex items-center justify-between w-full py-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-        <p onClick={() => navigate("/")} src={logo} className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
+        <p className="font-bold text-2xl text-slate-700 dark:text-white hover:cursor-pointer">Omniblogs</p>
 
           {/* <img src={logo} className="w-20 h-20" alt="Logo" /> */}
         </div>
