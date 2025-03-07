@@ -5,7 +5,6 @@ import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js'
 import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle,  HiEye, HiEyeOff } from "react-icons/hi";
 import { toast } from 'sonner';
-import UserIcon from '../component/icons/UserIcon.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
 

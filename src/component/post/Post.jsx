@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty, IoIosHeart } from 'react-icons/io';
 import { IoChatbubblesOutline } from 'react-icons/io5';
@@ -8,62 +8,54 @@ import moment from 'moment';
 import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
 import PropTypes from 'prop-types';
-import ProfilePicSkeleton from './ProfilePicSkeleton'; // Import your skeleton loader component
-import AuthorProfilePic from './AuthorProfilePic.jsx';
 import { motion } from 'framer-motion';
 
-const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow}) => {
+const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow }) => {
   const navigate = useNavigate();
-  const [profilePic, setProfilePic] = useState();
-  const [loading, setLoading] = useState(true); // Loading state for profile picture
+  const [profilePic, setProfilePic] = useState(profile);
+  const [loading, setLoading] = useState(true);
   const { profilePicUrl } = useProfile();
   const profilePicCache = useRef({});
 
   useEffect(() => {
-    const getProfilePic = async () => {
+    const fetchProfilePic = async () => {
+      const authorId = post?.author?._id;
+      const key = post?.author?.profilePic?.key;
+      if (!authorId || profilePicCache.current[authorId]) return;
+
       setLoading(true);
       try {
-        const authorId = post.author._id;
-        const key = post.author.profilePic.key;
-        if (!authorId) return;
-
-        if (profilePicCache.current[authorId]) {
-          setProfilePic(profilePicCache.current[authorId]);
-          return;
-        }
-        
         const response = await axios.get(`/file/signed-url?key=${key}`);
         const url = response.data.data.url;
-        profilePicCache.current[authorId] = url; 
+        profilePicCache.current[authorId] = url;
         setProfilePic(url);
-      } catch (error) {
-        console.error("Error fetching profile picture:", error);
+      } catch {
         setProfilePic(profile);
       } finally {
         setLoading(false);
       }
     };
-    getProfilePic();
-  }, [post.author]);
 
-  const authorProfilePic = post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
-  
-  const formatDate = (date) => {
-    const updatedDate = moment(date);
+    fetchProfilePic();
+  }, [post.author?._id]); // Only trigger if author ID changes
+
+  const authorProfilePic = useMemo(() => {
+    return post.author?._id === currentUser?._id ? profilePicUrl : profilePic;
+  }, [post.author?._id, currentUser?._id, profilePicUrl, profilePic]);
+
+  const formatDate = useMemo(() => {
+    const updatedDate = moment(post.createdAt);
     const now = moment();
     const diffDays = now.diff(updatedDate, 'days');
     return diffDays > 2 ? updatedDate.format('ll') : updatedDate.fromNow();
-  };
+  }, [post.createdAt]);
 
   return (
-    <div className="bg-white border  border-gray-200 rounded-lg dark:border-none hover:bg-gray-50 hover:transition-colors duration-100">
+    <div className="bg-white rounded-lg hover:bg-gray-50 transition-colors duration-100">
       <div className="flex flex-col md:flex-row">
-        <div
-          onClick={() => navigate(`/posts/${post._id}`)}
-          className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] hover:cursor-pointer"
-        >
+        <div onClick={() => navigate(`/posts/${post._id}`)} className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] cursor-pointer">
           <img
-            className="object-cover lg:w-full lg:h-full sm:w-full sm:h-[20rem] rounded-t-lg md:rounded-l-lg"
+            className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
             src={postFile || post.file}
             alt={post.title}
             loading="lazy"
@@ -72,13 +64,11 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
-              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" />
-
-             {/*  <AuthorProfilePic author={post?.author} /> */}
-              <span className="px-2 text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
+              <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" loading="lazy" />
+              <span className="px-2">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
               {currentUser && post?.author?._id !== currentUser._id && (
                 <span
-                  className={`text-blue-500 hover:underline hover:cursor-pointer ${
+                  className={`text-blue-500 hover:underline cursor-pointer ${
                     followStatuses[post?.author?._id] ? 'text-red-500' : ''
                   }`}
                   onClick={() => handleFollow(post?.author?._id)}
@@ -87,15 +77,12 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
                 </span>
               )}
             </div>
-            <span className="text-right text-xs text-gray-500">{formatDate(post.createdAt)}</span>
+            <span className="text-xs text-gray-500">{formatDate}</span>
           </div>
-          <h5
-            onClick={() => navigate(`/posts/${post._id}`)}
-            className="text-lg leading-6 sm:py-2 lg:pb-0 lg:pt-0 font-bold tracking-tight text-gray-900 hover:underline hover:cursor-pointer line-clamp-2"
-          >
+          <h5 onClick={() => navigate(`/posts/${post._id}`)} className="text-lg font-bold tracking-tight text-gray-900 hover:underline cursor-pointer line-clamp-2">
             {post.title}
           </h5>
-          <p className="text-gray-700 lg:mb-0 sm:mb-4 text-sm line-clamp-2">
+          <p className="text-gray-700 text-sm line-clamp-2">
             <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']} />
           </p>
           <div className="flex space-x-4">
@@ -106,11 +93,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
               animate={{ scale: liked ? [1, 1.2, 1] : 1, rotate: liked ? [0, 10, -10, 0] : 0 }}
               transition={{ duration: 0.3 }}
             >
-              {liked ? (
-                <IoIosHeart className="iconSize text-red-500" />
-              ) : (
-                <IoIosHeartEmpty className="iconSize" />
-              )}
+              {liked ? <IoIosHeart className="iconSize text-red-500" /> : <IoIosHeartEmpty className="iconSize" />}
               <span className="text-xs">{post.likesCount}</span>
             </motion.button>
             <button className="flex items-center text-gray-500 hover:text-gray-700">
@@ -122,9 +105,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       </div>
     </div>
   );
-
 };
-
-
 
 export default Post;
