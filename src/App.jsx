@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom"
+import { motion } from "framer-motion";
 
 import { Toaster } from "sonner";
 import { HiCheckCircle } from "react-icons/hi";
@@ -40,7 +41,7 @@ function App() {
   
   return (
     <>
-    <div className="dark:bg-slate-900 bg-white min-w-screen min-h-screen">
+    <div className="bg-white dark:bg-gradient-to-r dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:bg-[length:400%_400%] dark:animate-gradient-animation min-w-screen min-h-screen ">
       <div className="relative container">
         <Routes>
             <Route element={<PrivateLayout />}>

@@ -189,10 +189,12 @@ function UpdateProfilePictureModal() {
               {image && !croppedImage && <Cropper src={image} style={{ height: "300px", width: "100%" }} aspectRatio={1} ref={cropperRef} />}
               {croppedImage && <img src={croppedImage} alt="Cropped" className="w-[300px] h-[300px] rounded-full object-cover" />}
             </div>
-
+            <div className="flex justify-end">
             <Button variant="info" onClick={croppedImage ? handleSaveProfilePicture : handleCrop}>
               {croppedImage ? (isLoading ? "Saving..." : "Save Changes") : "Next"}
             </Button>
+            </div>
+            
           </div>
         </div>
       )}

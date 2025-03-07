@@ -61,6 +61,16 @@ export default {
       fontFamily : {
         sans:["var(--font-InterTight)", ...fontFamily.sans]
       },
+      animation: {
+        'gradient-animation': 'gradient 5s ease infinite',
+      },
+      keyframes: {
+        gradient: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+      },
     },
   },
   

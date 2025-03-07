@@ -51,15 +51,16 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
   }, [post.createdAt]);
 
   return (
-    <div className="bg-white rounded-lg hover:bg-gray-50 transition-colors duration-100">
+    <div className="bg-white border border-gray-300 dark:border-none rounded-lg hover:bg-gray-50 transition-colors duration-100">
       <div className="flex flex-col md:flex-row">
         <div onClick={() => navigate(`/posts/${post._id}`)} className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] cursor-pointer">
-          <img
-            className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
-            src={postFile || post.file}
-            alt={post.title}
-            loading="lazy"
-          />
+        <img
+          className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
+          sizes="(max-width: 600px) 500px, (max-width: 1024px) 1000px, 2000px"
+          src={postFile || post.file || 'fallback-image.jpg'}  // Use a fallback image if postFile or post.file is not available
+          alt={post.title}
+          loading="lazy"
+        />
         </div>
         <div className="flex flex-col justify-between p-3 w-full">
           <div className="flex items-center justify-between">

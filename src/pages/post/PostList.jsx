@@ -86,21 +86,18 @@ const PostList = () => {
 
   useEffect(() => {
     const getPostFiles = async () => {
+      const filesToFetch = posts.filter(post => post.file && !postFiles[post._id]);
+  
+      if (filesToFetch.length === 0) return;
+  
       const files = {};
       await Promise.all(
-        posts.map(async (post) => {
-          if (post.file && !files[post._id]) {
-            try {
-
-              const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-              const data = response.data.data
-              files[post._id] = data.url;
-              //toast.success(response.data.message)
-            } catch (error) {
-              const response = error.response;
-              const data = response?.data;
-              // toast.error(data?.message || "Failed to fetch file URL");
-            }
+        filesToFetch.map(async (post) => {
+          try {
+            const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
+            files[post._id] = response.data.data.url;
+          } catch (error) {
+            console.error("Failed to fetch file URL");
           }
         })
       );
@@ -110,7 +107,7 @@ const PostList = () => {
     if (posts.length > 0) {
       getPostFiles();
     }
-  }, [posts]);
+  }, [posts, postFiles]);
 
   useEffect(() => {
     const getLikedPosts = async () => {

@@ -44,12 +44,12 @@ const FooterSiteMap = () => {
         </div>
         
       </div> */}
-      <hr className="h-px  bg-gray-200 border-0 dark:bg-gray-700" />
+      <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
       <div className="flex justify-between pt-4">
-          <p className="text-white text-sm">
+          <p className="dark:text-white  text-sm">
             © {new Date().getFullYear()} Omni. All rights reserved.
           </p>
-          <p className="text-white text-sm">
+          <p className="dark:text-white  text-sm">
             Gihan Chamila
           </p>
       </div>
