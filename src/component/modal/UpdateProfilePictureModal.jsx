@@ -1,182 +1,159 @@
-import React, { useState, useRef, useEffect} from 'react';
-import Button from '../button/Button.jsx';
-import { useDropzone } from 'react-dropzone';
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import Button from "../button/Button.jsx";
+import { useDropzone } from "react-dropzone";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
-import { toast } from 'sonner';
-import { useSocket } from '../context/useSocket.jsx';
-import useClickOutside from '../context/useClickOutside.jsx';
+import { toast } from "sonner";
+import { useSocket } from "../context/useSocket.jsx";
+import useClickOutside from "../context/useClickOutside.jsx";
 
 function UpdateProfilePictureModal() {
+  const socket = useSocket();
+  const modalRef = useRef(null);
+  const lastFocusedElement = useRef(null);
+  const cropperRef = useRef(null);
 
-    const socket = useSocket();
-    const modalRef = useRef(null);
-    const lastFocusedElement = useRef(null)
-    const [isLoading, setIsLoading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [removeModal, setRemoveModal] = useState(false);
-    const [file, setFile] = useState(null);
-    const [profilePicId, setProfilePicId] = useState()
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [removeModal, setRemoveModal] = useState(false);
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
 
-    const [tempProfileKey, setTempProfileKey] = useState(null)
-    const [image, setImage] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
-    const [deleteProfileKey, setDeleteProfileKey] = useState(null);
-    const cropperRef = useRef(null);
-    const [currentUser, setCurrentUser] = useState();
+  const profilePicId = useRef(null);
+  const deleteProfileKey = useRef(null);
+  const tempProfileKey = useRef(null);
+  const currentUser = useRef(null);
 
-
-    useEffect(() => {
-        const getCurrentUser = async () => {
-            try {
-                const response = await axios.get('/auth/current-user');
-                const user = response.data.data.user;
-
-                if (user && user._id) {
-                    setCurrentUser(user);
-                    if (user.profilePic?.key) {
-                        setDeleteProfileKey(user.profilePic.key);
-                        setProfilePicId(user.profilePic._id)
-                    }
-                } else {
-                    toast.error('User data is incomplete');
-                }
-            } catch (error) {
-                toast.error('Error getting user');
-            }
-        };
-
-        getCurrentUser();
-
-        return () => setCurrentUser(null); 
-    }, []);
-
-    useEffect(() => {
-        if (removeModal || showModal) {
-          lastFocusedElement.current = document.activeElement;
-          document.body.style.overflow = 'hidden';
-          modalRef.current?.focus();
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        const { data } = await axios.get("/auth/current-user");
+        if (data?.data?.user) {
+          currentUser.current = data.data.user;
+          if (data.data.user.profilePic?.key) {
+            deleteProfileKey.current = data.data.user.profilePic.key;
+            profilePicId.current = data.data.user.profilePic._id;
+          }
         } else {
-          document.body.style.overflow = 'auto';
-          lastFocusedElement.current?.focus();
+          toast.error("User data is incomplete");
         }
-    
-        return () => {
-          document.body.style.overflow = 'auto';
-          lastFocusedElement.current?.focus();
-        };
-      }, [removeModal, showModal]);
-
-    const onDrop = (acceptedFiles) => {
-        if (acceptedFiles.length === 0) {
-            toast.error('No file selected');
-            return;
-        }
-
-        const file = acceptedFiles[0];
-        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
-            const reader = new FileReader();
-            reader.onload = () => setImage(reader.result);
-            reader.readAsDataURL(file);
-            setFile(file);
-        } else {
-            toast.error('Invalid file type');
-        }
+      } catch (error) {
+        toast.error("Error getting user");
+      }
     };
+    getCurrentUser();
+  }, []);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }
-    });
+  useEffect(() => {
+    if (removeModal || showModal) {
+      lastFocusedElement.current = document.activeElement;
+      document.body.style.overflow = "hidden";
+      modalRef.current?.focus();
+    } else {
+      document.body.style.overflow = "auto";
+      lastFocusedElement.current?.focus();
+    }
 
-    const handleCloseModal = () => {
-        setImage(null);
-        setFile(null);
-        setCroppedImage(null);
-        setShowModal(false);
+    return () => {
+      document.body.style.overflow = "auto";
+      lastFocusedElement.current?.focus();
     };
+  }, [removeModal, showModal]);
 
-    const handleRecrop = () => {
-        setCroppedImage(null)
-    };
+  const onDrop = useCallback((acceptedFiles) => {
+    if (!acceptedFiles.length) return toast.error("No file selected");
 
-    const handleCloseRemoveModal = () => {
-        setRemoveModal(false);
-    };
+    const file = acceptedFiles[0];
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
+      return toast.error("Invalid file type");
+    }
 
-    const handleCrop = () => {
-        const cropper = cropperRef.current?.cropper;
-        if (cropper) {
-            const croppedCanvas = cropper.getCroppedCanvas({ width: 500, height: 500, fillColor: '#fff' });
-            setCroppedImage(croppedCanvas.toDataURL());
-        }
-    };
+    setFile(file);
+    setImage(URL.createObjectURL(file)); // Use Object URL instead of storing base64
+  }, []);
 
-    const handleSaveProfilePicture = async () => {
-        if (croppedImage) {
-            setIsLoading(true);
-            try {
-                const uploadResponse = await axios.post("/file/upload", { base64Image: croppedImage });
-                if (uploadResponse.data?.data?.id) {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/jpeg": [".jpg", ".jpeg"], "image/png": [".png"] },
+  });
 
-                    const fileId = uploadResponse.data.data.id;
+  const handleCloseModal = () => {
+    setImage(null);
+    setFile(null);
+    setCroppedImage(null);
+    setShowModal(false);
+  };
 
-                    const profileKey = uploadResponse.data.data.key
-                    const profileResponse = await axios.post("/user/add-profilePic", { profilePic: fileId });
+  const handleCloseRemoveModal = () => {
+    setRemoveModal(false);
+};
 
-                    const response = await axios.get(`/file/signed-url?key=${profileKey}`) 
-                    const data = response.data.data
-                    const url = data.url
-                    setProfilePicId(fileId);
-                    setTempProfileKey(url)
+  const handleCrop = () => {
+    const cropper = cropperRef.current?.cropper;
+    if (cropper) {
+      setCroppedImage(cropper.getCroppedCanvas({ width: 500, height: 500 }).toDataURL());
+    }
+  };
 
-                    socket.emit('profilePicUpdated', { userId: currentUser._id, signedUrl: tempProfileKey});
-    
-                    toast.success(profileResponse.data.message);
-                    handleCloseModal();
-                } else {
-                    throw new Error("File ID missing");
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message || "An error occurred");
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
+  const handleSaveProfilePicture = async () => {
+    if (!croppedImage) return;
 
-    const handleDeleteFile = async () => {
-        if(profilePicId){
-            try {
-                const response = await axios.delete(`/user/remove-profilePic?id=${profilePicId}`);
-                const data = response.data
-                setProfilePicId(null);
-                setDeleteProfileKey(null);
-                setTempProfileKey(null);
-                toast.success(data.message)
-                setRemoveModal(false);
-                socket.emit('profilePicRemoved', { userId: currentUser._id });
-            } catch (error) {
-                const response = error.response;
-                const data = response.data
-                toast.error(data.message);
-            }
-        }
-    };
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post("/file/upload", { base64Image: croppedImage });
 
-    useClickOutside(modalRef, () => setShowModal(false));
+      if (!data?.data?.id) throw new Error("File ID missing");
 
-    return (
-        <div>
-            <div className='space-x-4'>
-                <Button variant='error' onClick={() => setRemoveModal(true)}>Remove</Button>
-                <Button variant='info' onClick={() => setShowModal(true)}>Change Profile Picture</Button>
-            </div>
+      profilePicId.current = data.data.id;
+      tempProfileKey.current = data.data.key;
 
-            {/* Remove Modal */}
-            {removeModal && (
+      await axios.post("/user/add-profilePic", { profilePic: data.data.id });
+
+      socket.emit("profilePicUpdated", { userId: currentUser.current._id, signedUrl: tempProfileKey.current });
+
+      toast.success("Profile picture updated successfully!");
+      handleCloseModal();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteFile = async () => {
+    if (!profilePicId.current) return;
+
+    try {
+      await axios.delete(`/user/remove-profilePic?id=${profilePicId.current}`);
+      profilePicId.current = null;
+      deleteProfileKey.current = null;
+      tempProfileKey.current = null;
+
+      toast.success("Profile picture removed successfully!");
+      setRemoveModal(false);
+      socket.emit("profilePicRemoved", { userId: currentUser.current._id });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete profile picture");
+    }
+  };
+
+  useClickOutside(modalRef, () => setShowModal(false));
+
+  return (
+    <div>
+      <div className="space-x-4">
+        <Button variant="error" onClick={() => setRemoveModal(true)}>
+          Remove
+        </Button>
+        <Button variant="info" onClick={() => setShowModal(true)}>
+          Change Profile Picture
+        </Button>
+      </div>
+
+      {removeModal && (
                 <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-hidden'>
                     <div className="relative bg-white sm:m-5 rounded-lg p-8 w-[25rem] max-w-full space-y-4 flex flex-col justify-between">
                         <button
@@ -194,65 +171,33 @@ function UpdateProfilePictureModal() {
                 </div>
             )}
 
-            {/* Add/Edit Profile Picture Modal */}
-            {showModal && (
-                <div ref={modalRef} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="relative bg-white sm:m-5 rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
-                        <button
-                            onClick={handleCloseModal}
-                            className="absolute top-5 right-5 text-gray-500 hover:text-gray-700"
-                        >
-                            <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
-                        </button>
-                        <span className="text-2xl font-bold m-0 sm:text-slate-800 dark:lg:text-slate-800">Update Profile Picture</span>
+      {showModal && (
+        <div ref={modalRef} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="relative bg-white sm:m-5 rounded-lg p-8 w-[50rem] h-[35rem] max-w-full space-y-4 flex flex-col justify-between">
+            <button onClick={handleCloseModal} className="absolute top-5 right-5 text-gray-500 hover:text-gray-700">
+              <RiCloseLargeFill className="w-4 h-4 transition-colors duration-200" />
+            </button>
+            <span className="text-2xl font-bold">Update Profile Picture</span>
 
-                        <div className="flex flex-col items-center justify-center flex-grow">
-                            {!image && !croppedImage && (
-                                <div
-                                    {...getRootProps()}
-                                    className={`flex items-center justify-center border-2 w-full h-[20rem] border-dashed p-6 text-center ${isDragActive ? 'bg-gray-100' : 'bg-gray-50'} rounded-lg`}
-                                >
-                                    <input {...getInputProps()} />
-                                    <p className="text-gray-500">
-                                        {isDragActive ? 'Drop the files here ...' : 'Drag & drop a picture here, or click to select a file'}
-                                    </p>
-                                </div>
-                            )}
-
-                            {image && !croppedImage && (
-                                <div>
-                                    <Cropper
-                                        src={image}
-                                        style={{ height: '300px', width: '100%' }}
-                                        aspectRatio={1}
-                                        guides={false}
-                                        ref={cropperRef}
-                                    />
-                                </div>
-                            )}
-
-                            {croppedImage && (
-                                <div className="w-[300px] h-[300px] rounded-full overflow-hidden bg-gray-200">
-                                    <img src={croppedImage} alt="Cropped" className="w-full h-full object-cover" />
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="flex justify-end space-x-4">
-                            <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
-                            {!croppedImage && image && <Button variant='info' onClick={handleCrop}>Next</Button>}
-                            {croppedImage && <Button variant='primary' onClick={handleRecrop}>Recrop</Button>}
-                            {croppedImage && (
-                                <Button variant='info' onClick={handleSaveProfilePicture} disabled={isLoading}>
-                                    {isLoading ? 'Saving changes...' : 'Save Changes'}
-                                </Button>
-                            )}
-                        </div>
-                    </div>
+            <div className="flex flex-col items-center justify-center flex-grow">
+              {!image && !croppedImage && (
+                <div {...getRootProps()} className={`border-2 w-full h-[20rem] border-dashed p-6 text-center ${isDragActive ? "bg-gray-100" : "bg-gray-50"} rounded-lg`}>
+                  <input {...getInputProps()} />
+                  <p className="text-gray-500">{isDragActive ? "Drop the files here..." : "Drag & drop or click to select a file"}</p>
                 </div>
-            )}
+              )}
+              {image && !croppedImage && <Cropper src={image} style={{ height: "300px", width: "100%" }} aspectRatio={1} ref={cropperRef} />}
+              {croppedImage && <img src={croppedImage} alt="Cropped" className="w-[300px] h-[300px] rounded-full object-cover" />}
+            </div>
+
+            <Button variant="info" onClick={croppedImage ? handleSaveProfilePicture : handleCrop}>
+              {croppedImage ? (isLoading ? "Saving..." : "Save Changes") : "Next"}
+            </Button>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default UpdateProfilePictureModal;
