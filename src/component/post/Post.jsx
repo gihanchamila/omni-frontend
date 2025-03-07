@@ -125,30 +125,6 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
 
 };
 
-/* Post.propTypes = {
-  post: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
-    author: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      profilePic: PropTypes.shape({
-        key: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-    likesCount: PropTypes.number.isRequired,
-    commentCount: PropTypes.number.isRequired,
-    file: PropTypes.string,
-  }).isRequired,
-  postFile: PropTypes.string,
-  liked: PropTypes.bool.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  followStatuses: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
-  handleFollow: PropTypes.func.isRequired,
-}; */
 
 
 export default Post;
