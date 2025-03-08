@@ -128,9 +128,6 @@ const PrivateNavBar = () => {
 
   const toggleDropdownNotification = () => setNotificationDropdownOpen((prev) => !prev);
 
-  useClickOutside(panelRef, () => setNotificationDropdownOpen(false));
-
-
   return (
     <div>
       <nav className="flex items-center justify-between w-full py-4 md:px-0 sm:px-0 sm:m-0 sm:w-full pr-0">
