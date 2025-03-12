@@ -25,6 +25,10 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    fetchNotifications();
+  }, [auth]);
+
   const markAsRead = useCallback(async (id) => {
     try {
       const response = await axios.put("/notification/mark-as-read", { notificationId: id });
@@ -71,10 +75,6 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const clearNotifications = () => setNotifications([]);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, [auth]);
 
   useEffect(() => {
     if (socket) {

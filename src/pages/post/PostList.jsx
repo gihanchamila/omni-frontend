@@ -17,6 +17,8 @@ import { useNavigate } from 'react-router-dom';
 const PostList = () => {
 
   const navigate = useNavigate()
+  const socket = useSocket()
+
   const [loading, setLoading] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -45,8 +47,6 @@ const PostList = () => {
   .filter(post => post && post.author && post.author._id)
   .map(post => post.author._id), [posts]);
   
-  const socket = useSocket()
-
   useEffect(() => {
     const getPosts = async () => {
       try {
@@ -378,6 +378,7 @@ const PostList = () => {
                       alt="Latest Post"
                       onClick={() => navigate(`/posts/${post?._id}`)}
                       onLoad={() => setImagesLoaded(true)}
+                      loading='lazy'
                     />
                     <div className="flex-1 w-full overflow-hidden">
                       <h6 className="text-sm font-semibold text-gray-900 line-clamp-2 hover:underline" onClick={() => navigate(`/posts/${post?._id}`)}>
@@ -426,6 +427,7 @@ const PostList = () => {
                       alt="Popular Post"
                       onLoad={() => setImagesLoaded(true)}
                       onClick={() => navigate(`/posts/${post?._id}`)}
+                      loading='lazy'
                     />
                     <div className="flex-1 w-full overflow-hidden">
                       <h6 className="text-sm font-semibold text-gray-900 line-clamp-2 hover:underline" onClick={() => navigate(`/posts/${post?._id}`)}>
