@@ -61,7 +61,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
           loading="lazy"
         />
         </div>
-        <div className="flex flex-col justify-between p-3 w-full">
+        <div className="flex flex-col justify-between p-3 w-full sm:space-y-2 lg:space-y-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" loading="lazy" />
@@ -79,7 +79,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
             </div>
             <span className="text-xs text-gray-500">{formatDate}</span>
           </div>
-          <h5 onClick={() => navigate(`/posts/${post._id}`)} className="text-lg font-bold tracking-tight text-gray-900 hover:underline cursor-pointer line-clamp-2">
+          <h5 onClick={() => navigate(`/posts/${post._id}`)} className="text-lg font-bold tracking-tight text-gray-900 hover:underline cursor-pointer line-clamp-2 leading-6">
             {post.title}
           </h5>
           <p className="text-gray-700 text-sm line-clamp-2">
