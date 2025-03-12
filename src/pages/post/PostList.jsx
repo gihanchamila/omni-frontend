@@ -306,7 +306,7 @@ const PostList = () => {
     }
   };
 
-  const handleSearch = async (e) => {
+/*   const handleSearch = async (e) => {
     try {
       const input = e.target.value;
       setSearchValue(input);
@@ -319,7 +319,7 @@ const PostList = () => {
       const data = response.data;
       // toast.error(data.message);
     }
-  };
+  }; */
 
   return (
     <motion.div 
