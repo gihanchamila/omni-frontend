@@ -36,27 +36,30 @@ const PrivateNavBar = () => {
     document.body.classList.remove('backdrop-blur');
   }, [location]);
 
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      try {
-        const response = await axios.get(`/auth/current-user`);
-        const user = response.data.data.user;
-        if (user && user._id) {
-          setCurrentUser(user);
-          if (user.profilePic && user.profilePic.key) {
-            setProfileKey(user.profilePic.key);
-          }
-        } else {
-          toast.error('User data is incomplete');
+  const getCurrentUser = async () => {
+    try {
+      const response = await axios.get(`/auth/current-user`);
+      const user = response.data.data.user;
+      if (user && user._id) {
+        setCurrentUser(user);
+        if (user.profilePic && user.profilePic.key) {
+          setProfileKey(user.profilePic.key);
         }
-      } catch (error) {
-        const response = error.response;
-        const data = response.data;
-        toast.error(data.message);
+      } else {
+        toast.error('User data is incomplete');
       }
-    };
-    getCurrentUser();
-  }, []);
+    } catch (error) {
+      const response = error.response;
+      const data = response.data;
+      toast.error(data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!currentUser) {
+      getCurrentUser();
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (unreadCount > 0) {
