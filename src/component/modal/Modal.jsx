@@ -1,6 +1,5 @@
 import React from 'react';
 import { useEffect, useRef } from 'react';
-import useClickOutside from '../context/useClickOutside';
 import { motion } from 'framer-motion';
 
 const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
