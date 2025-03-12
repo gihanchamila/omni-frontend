@@ -85,34 +85,35 @@ const PostList = () => {
     getCurrentUser();
   },[]);
 
-    // Memoizing filesToFetch to avoid unnecessary calculations
-    const filesToFetch = useMemo(() => {
-      return posts.filter(post => post.file && !postFiles[post._id]);
-    }, [posts, postFiles]);
+    const visiblePosts = useMemo(() => {
+      return posts.slice((currentPage - 1) * 10, currentPage * 10); // Assuming 10 posts per page
+    }, [posts, currentPage]);
 
-  useEffect(() => {
-    const getPostFiles = async () => {
-      if (filesToFetch.length === 0) return;
-  
-      const files = {};
-      await Promise.all(
-        filesToFetch.map(async (post) => {
-          try {
-            const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-            files[post._id] = response.data.data.url;
-          } catch (error) {
-            console.error("Failed to fetch file URL", error);
-          }
-        })
-      );
-  
-      setPostFiles(prevFiles => ({ ...prevFiles, ...files }));
-    };
-  
-    if (filesToFetch.length > 0) {
+    const filesToFetch = useMemo(() => {
+      return visiblePosts.filter(post => post.file && !postFiles[post._id]);
+    }, [visiblePosts, postFiles]);
+
+    useEffect(() => {
+      const getPostFiles = async () => {
+        if (filesToFetch.length === 0) return;
+    
+        const files = {};
+        await Promise.all(
+          filesToFetch.map(async (post) => {
+            try {
+              const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
+              files[post._id] = response.data.data.url;
+            } catch (error) {
+              console.error("Failed to fetch file URL", error);
+            }
+          })
+        );
+    
+        setPostFiles(prevFiles => ({ ...prevFiles, ...files }));
+      };
+    
       getPostFiles();
-    }
-  }, [filesToFetch]);
+    }, [filesToFetch]);
 
   useEffect(() => {
     const getLikedPosts = async () => {
