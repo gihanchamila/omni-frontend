@@ -188,6 +188,10 @@
       @apply overflow-hidden 
     }
 
+    h3, li, strong, h1, h2 {
+      @apply dark:text-white
+    }
+
     
   }
   

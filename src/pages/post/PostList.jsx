@@ -327,27 +327,24 @@ const PostList = () => {
       <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4 md:space-y-0 md:space-x-2">
 
         {/* Left Section: Post List */}
-        <div className="w-full md:w-2/3 space-y-4">
-          {/* Skeletons until posts and images are loaded */}
-          {loading || !imagesLoaded ? (
-            Array.from({ length: 2 }).map((_, index) => (
-              <PostSkeleton key={index} />
-            ))
-          ) : (
-            posts.map((post) => (
-              <Post
-                key={post._id}
-                post={post}
-                postFile={postFiles[post._id]}
-                liked={likedPosts[post._id]}
-                handleLike={handleLike}
-                followStatuses={followStatuses}
-                currentUser={currentUser}
-                handleFollow={handleFollow}
-              />
-            ))
-          )}
-        </div>
+        <div className="w-full space-y-4">
+        {posts.length > 0 && loading || !imagesLoaded ? (
+          Array.from({ length: 2 }).map((_, index) => <PostSkeleton key={index} />)
+        ) : posts.length > 0 ? (
+          posts.map((post) => (
+            <Post
+              key={post._id}
+              post={post}
+              postFile={postFiles[post._id]}
+              liked={likedPosts[post._id]}
+              currentUser={currentUser}
+              handleLike={handleLike}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 text-lg">No posts available</p>
+        )}
+      </div>
 
         {/* Right Section: Sidebar */}
         <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">

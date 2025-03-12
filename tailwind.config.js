@@ -113,7 +113,7 @@ export default {
       },
 
       ".h3": {
-        "@apply text-[2rem] leading-normal md:text-[2.5rem]": {},
+        "@apply text-[2rem] leading-normal md:text-[2.5rem] dark:text-white": {},
       },
 
       ".h4": {

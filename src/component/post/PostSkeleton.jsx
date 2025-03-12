@@ -4,7 +4,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const PostSkeleton = () => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg animate-pulse">
+    <div className="bg-white border border-gray-200 rounded-lg">
   <div className="flex flex-col md:flex-row">
     <div className="flex-shrink-0 w-full md:w-[10rem] h-[11rem] bg-gray-300 rounded-t-lg md:rounded-l-lg"></div>
     <div className="flex flex-col justify-between p-3 w-full">
