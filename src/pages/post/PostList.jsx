@@ -373,14 +373,15 @@ const PostList = () => {
                       className="cardImage"
                       src={postFiles[post._id] || post.file}
                       alt="Latest Post"
-                      onLoad={() => setImagesLoaded(true)}
                       onClick={() => navigate(`/posts/${post?._id}`)}
+                      onLoad={() => setImagesLoaded(true)}
                     />
                     <div className="flex-1">
                       <h6 className="text-sm font-semibold text-gray-900 line-clamp-2 hover:underline" onClick={() => navigate(`/posts/${post?._id}`)}>
                         <SanitizedContent
                           htmlContent={post.title}
                           allowedTags={['h1', 'strong', 'font']}
+
                         />
                       </h6>
                       <p className="text-xs text-gray-600 line-clamp-1">
