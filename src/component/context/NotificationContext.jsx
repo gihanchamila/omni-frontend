@@ -62,11 +62,11 @@ export const NotificationProvider = ({ children }) => {
       }
       setNotifications((prev) => prev.filter((n) => n.id !== id));
       setUnreadCount((prev) => prev - 1);
-      toast.success("Notification deleted successfully");
+      // toast.success("Notification deleted successfully");
     } catch (error) {
       const response = error.response;
       const data = response?.data;
-      toast.error(data?.message || "Failed to delete notification");
+      // toast.error(data?.message || "Failed to delete notification");
     }
   };
 
