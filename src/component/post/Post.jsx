@@ -57,7 +57,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
           className="object-cover lg:w-[160px] lg:h-[176px] sm:w-full sm:h-[250px] rounded-t-lg md:rounded-l-lg"
           sizes="(max-width: 600px) 500px, (max-width: 1024px) 1000px, 2000px"
           src={postFile || post.file || 'fallback-image.jpg'}  
-          alt={post.title}
+          alt={post.file || 'fallback-image.jpg'}
           loading="lazy"
         />
         </div>
