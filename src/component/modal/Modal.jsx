@@ -7,8 +7,6 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
   const modalRef = useRef(null)
   const lastFocusedElement = useRef(null)
 
-  useClickOutside(modalRef, onCancel);
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -39,7 +37,6 @@ const Modal = ({ showModal, title, children, onConfirm, onCancel }) => {
       lastFocusedElement.current?.focus();
     };
   }, [showModal]);
-
 
   if (!showModal) return null;
 
