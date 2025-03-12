@@ -107,7 +107,6 @@ const DescriptionEditor = ({ formData, handleChange }) => {
 
         /* List styling */
         .ql-editor li {
-          list-style-type: disc !important;
           margin-left: 1.5rem;
         }
 

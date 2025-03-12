@@ -108,9 +108,9 @@ const DropdownMenu = forwardRef(({ dropdownId, actionHandlers, currentUser, auth
               <li
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                className="block py-1 px-4 hover:bg-gray-100 w-full text-left cursor-pointer"
+                className="block py-1 px-4 dark:text-slate-900  hover:bg-gray-100 w-full text-left cursor-pointer"
               >
-                {option.label}
+                <span>{option.label}</span>
               </li>
             ))}
           </ul>

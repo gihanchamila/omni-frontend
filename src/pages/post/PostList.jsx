@@ -342,6 +342,7 @@ const PostList = () => {
               liked={likedPosts[post._id]}
               currentUser={currentUser}
               handleLike={handleLike}
+              followStatuses={handleFollow}
             />
           ))
         ) : (
