@@ -4,7 +4,7 @@ import axios from "../utils/axiosInstance.js";
 import Button from '../component/button/Button.jsx';
 import signUpValidator from '../validators/signUpValidator.js'
 import { HiOutlineMail, HiLockClosed, HiOutlineUserCircle,  HiEye, HiEyeOff } from "react-icons/hi";
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
 
@@ -109,7 +109,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await axios.post('/auth/signup', formData);
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
       setFormData(initialFormData);
       setFormError(initialFormError);
       setLoading(false);
@@ -121,7 +121,7 @@ const Signup = () => {
     } catch (error) {
       setLoading(false);
       setFormError(initialFormError);
-      toast.error(error.response?.data?.message || "An unexpected error occurred.");
+      // toast.error(error.response?.data?.message || "An unexpected error occurred.");
     }
   };
   

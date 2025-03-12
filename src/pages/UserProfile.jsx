@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from '../utils/axiosInstance.js';
 import { useParams } from "react-router-dom";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 

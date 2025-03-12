@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
 import moment from 'moment';
 import { motion } from 'framer-motion';
@@ -43,7 +43,7 @@ const CategoryList = () => {
         setLoading(false);
         const response = error.response;
         const data = response.data;
-        toast.error(data.message);
+        // toast.error(data.message);
       }
     };
 
@@ -73,7 +73,7 @@ const CategoryList = () => {
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -82,7 +82,7 @@ const CategoryList = () => {
 
       const response = await axios.delete(`/category/${categoryId}`)
       const data = response.data
-      toast.success(data.message)
+      // toast.success(data.message)
 
       const response2 = await axios.get(`/category?page=${currentPage}&q=${searchValue}`)
       const data2 = response2.data.data
@@ -93,7 +93,7 @@ const CategoryList = () => {
     }catch(error){
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   }
 

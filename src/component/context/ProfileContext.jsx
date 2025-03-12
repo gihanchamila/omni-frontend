@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useSocket } from './useSocket.jsx';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import axios from '../../utils/axiosInstance.js';
 
 export const ProfileContext = createContext();
@@ -34,7 +34,7 @@ export const ProfileProvider = ({ children }) => {
                 setProfilePicUrl(data.data.url);
             }
         } catch (error) {
-            toast.error('Error fetching profile picture');
+            // toast.error('Error fetching profile picture');
         }
     }, []);
 
@@ -52,7 +52,7 @@ export const ProfileProvider = ({ children }) => {
                     setProfilePicUrl(getDefaultAvatarUrl(user)); 
                 }
             } else if (isMounted.current) {
-                toast.error('User data is incomplete');
+                // toast.error('User data is incomplete');
             }
         } catch (error) {
             if (isMounted.current) {

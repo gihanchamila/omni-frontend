@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../component/button/Button.jsx'
 import axios from '../utils/axiosInstance.js'
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import BackButton from '../component/button/BackButton.jsx'
@@ -30,7 +30,7 @@ const ForgotPassword = () => {
 
   const handleEmailSubmit = async (email) => {
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Please enter a valid email address.")
+      // toast.error("Please enter a valid email address.")
       return
     }
 
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
       const response = await axios.post('/auth/forgot-password-code', { email })
       const data = response.data;
       console.log(response)
-      toast.success(data.message)
+      // toast.success(data.message)
       setStep("new-password")
       setLoading(false)
     } catch (error) {
@@ -47,13 +47,13 @@ const ForgotPassword = () => {
       const response = error.response;
       const data = response.data;
       console.log(response)
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   }
 
   const handleSubmit = async (email, code, password) => {
     if (!code || !password || password.length < 6) {
-      toast.error("Please enter a valid code and password (at least 6 characters).")
+      // toast.error("Please enter a valid code and password (at least 6 characters).")
       return
     }
 
@@ -61,14 +61,14 @@ const ForgotPassword = () => {
       setLoading(true)
       const response = await axios.post('/auth/recover-password', { email, code, password })
       const data = response.data;
-      toast.success(data.message)
+      // toast.success(data.message)
       navigate('/login')
       setLoading(false)
     } catch (error) {
       setLoading(false)
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   }
 

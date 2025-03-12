@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from '../utils/axiosInstance.js';
 import { useNavigate, useParams } from "react-router-dom";
 import { useProfile } from "../component/context/useProfilePic.jsx";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import Post from "../component/post/Post.jsx";
 import Skeleton from "react-loading-skeleton";
 import { coverPhoto } from "../assets/index.js";

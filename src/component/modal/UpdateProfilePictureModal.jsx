@@ -5,9 +5,8 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { RiCloseLargeFill } from "react-icons/ri";
 import axios from "../../utils/axiosInstance.js";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { useSocket } from "../context/useSocket.jsx";
-import useClickOutside from "../context/useClickOutside.jsx";
 import imageCompression from "browser-image-compression";
 
 function UpdateProfilePictureModal() {
@@ -39,10 +38,10 @@ function UpdateProfilePictureModal() {
             profilePicId.current = data.data.user.profilePic._id;
           }
         } else {
-          toast.error("User data is incomplete");
+          // toast.error("User data is incomplete");
         }
       } catch (error) {
-        toast.error("Error getting user");
+        // toast.error("Error getting user");
       }
     };
     getCurrentUser();
@@ -65,11 +64,12 @@ function UpdateProfilePictureModal() {
   }, [removeModal, showModal]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    if (!acceptedFiles.length) return toast.error("No file selected");
+    if (!acceptedFiles.length) return 
+    // toast.error("No file selected");
   
     const file = acceptedFiles[0];
     if (!["image/png", "image/jpeg"].includes(file.type)) {
-      return toast.error("Invalid file type");
+      // return toast.error("Invalid file type");
     }
   
     try {
@@ -83,7 +83,7 @@ function UpdateProfilePictureModal() {
       setFile(compressedFile);
       setImage(URL.createObjectURL(compressedFile));
     } catch (error) {
-      toast.error("Image compression failed");
+      // toast.error("Image compression failed");
     }
   }, []);
 
@@ -126,10 +126,10 @@ function UpdateProfilePictureModal() {
 
       socket.emit("profilePicUpdated", { userId: currentUser.current._id, signedUrl: tempProfileKey.current });
 
-      toast.success("Profile picture updated successfully!");
+      // toast.success("Profile picture updated successfully!");
       handleCloseModal();
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      // toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -144,15 +144,13 @@ function UpdateProfilePictureModal() {
       deleteProfileKey.current = null;
       tempProfileKey.current = null;
 
-      toast.success("Profile picture removed successfully!");
+      // toast.success("Profile picture removed successfully!");
       setRemoveModal(false);
       socket.emit("profilePicRemoved", { userId: currentUser.current._id });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete profile picture");
+      // toast.error(error.response?.data?.message || "Failed to delete profile picture");
     }
   };
-
-  useClickOutside(modalRef, () => setShowModal(false));
 
   return (
     <div>

@@ -1,14 +1,13 @@
 import { NavLink, useLocation, useNavigate} from "react-router-dom";
 import axios from '../utils/axiosInstance.js';
 import { useState, useEffect, useCallback, useRef} from "react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { useProfile } from "./context/useProfilePic.jsx";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { useAuth } from '../component/context/useAuth.jsx';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useNotification } from "./context/useNotification.jsx";
 import { useSocket } from "./context/useSocket.jsx";
-import useClickOutside from "./context/useClickOutside.jsx";
 import { motion } from "framer-motion";
 
 const PrivateNavBar = () => {
@@ -46,12 +45,12 @@ const PrivateNavBar = () => {
           setProfileKey(user.profilePic.key);
         }
       } else {
-        toast.error('User data is incomplete');
+        // toast.error('User data is incomplete');
       }
     } catch (error) {
       const response = error.response;
       const data = response.data;
-      toast.error(data.message);
+      // toast.error(data.message);
     }
   };
 
@@ -98,7 +97,7 @@ const PrivateNavBar = () => {
 
     } catch (error) {
       console.error("Failed to delete notification", error);
-      toast.error("Failed to delete notification");
+      // toast.error("Failed to delete notification");
     } finally {
       setLoading(false);
     }
@@ -108,7 +107,7 @@ const PrivateNavBar = () => {
     window.localStorage.removeItem('blogData');
     setCurrentUser(null);
     setProfilePicUrl(null);
-    toast.success("Logout successful");
+    // toast.success("Logout successful");
     setTimeout(() => {
       navigate('/login');
     }, 0);

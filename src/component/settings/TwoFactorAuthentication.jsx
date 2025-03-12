@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../button/Button.jsx';
 import axios from '../../utils/axiosInstance.js';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import Modal from '../modal/Modal.jsx';
 
 const TwoFactorAuthentication = ({
@@ -24,13 +24,13 @@ const TwoFactorAuthentication = ({
       try {
         const response = await axios.get('/auth/verification-status');
         const data = response.data
-        toast.success(data.message)
+        // toast.success(data.message)
         setIsVerified(response.data.isVerified);
         setStep(response.data.isVerified ? 'success' : 'email');
       } catch (error) {
         const response = error.response
         const data = response.data.data
-        toast.error(data.message)
+        // toast.error(data.message)
       }
     };
 
@@ -45,7 +45,7 @@ const TwoFactorAuthentication = ({
         await onEmailSubmit(email);
         setStep('verify');
       } catch (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,7 @@ const TwoFactorAuthentication = ({
         setEmail('');
         setVerificationCode('');
       } catch (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
       } finally {
         setLoading(false);
       }
@@ -74,11 +74,11 @@ const TwoFactorAuthentication = ({
     try{
       const response = await axios.put("/auth/update-verification-status")
       const data = response.data
-      toast.success(data.message)
+      // toast.success(data.message)
     }catch(error){
       const response = error.response
       const data = response.data
-      toast.error(data.message)
+      // toast.error(data.message)
     }
     setStep('email');
     setIsVerified(false); 

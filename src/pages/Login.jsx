@@ -3,7 +3,7 @@ import axios from "../utils/axiosInstance.js"
 import Button from '../component/button/Button.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 import { HiOutlineMail, HiLockClosed, HiEye, HiEyeOff  } from "react-icons/hi";
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 import { useProfile } from "../component/context/useProfilePic.jsx"
 import { motion } from "framer-motion";
 

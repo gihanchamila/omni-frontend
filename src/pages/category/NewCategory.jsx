@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from '../../utils/axiosInstance.js';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { motion } from "framer-motion";
 
 import Button from '../../component/button/Button.jsx';
@@ -36,14 +36,14 @@ const NewCategory = () => {
 
         const response = await axios.post('/category', formData);
         const data = response.data;
-        toast.success(data.message);
+        // toast.success(data.message);
 
         setFormData(initialFormData);
         setFormError(initialFormError);
         navigate('/categories')
       } catch (error) {
         setFormError(initialFormError);
-        toast.error(error.message);
+        // toast.error(error.message);
       } finally {
         setLoading(false);
       }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import { useNotification } from '../../component/context/useNotification.jsx';
 import axios from '../../utils/axiosInstance.js';
@@ -528,7 +528,7 @@ const SinglePost = () => {
     } catch (error) {
         setLoading(false)
         setReplyFormError({ content: error.message || 'An error occurred' });
-        toast.error(error.message);
+        // toast.error(error.message);
     }
   };
 
@@ -583,7 +583,7 @@ const SinglePost = () => {
     } catch (error) {
         setLoading(false)
         setReplyToReplyFormError({ content: error.message || 'An error occurred' });
-        toast.error(error.message);
+        // toast.error(error.message);
     }
   };
 
@@ -610,7 +610,7 @@ const SinglePost = () => {
         setLoading(true)
         const response = await axios.delete(`/comments/${commentId}`);
         const data = response.data;
-        toast.success(data.message);
+        // toast.success(data.message);
 
         const response2 = await axios.get(`/comments/${postId}/comments`);
         const data2 = response2.data.data; 
@@ -620,7 +620,7 @@ const SinglePost = () => {
         setLoading(false)
         const response = error.response;
         const data = response?.data || {};
-        toast.error(data.message || 'An error occurred');
+        // toast.error(data.message || 'An error occurred');
     }
   };
 
@@ -640,14 +640,14 @@ const SinglePost = () => {
         }
 
         // Notify user and navigate
-        toast.success(data.message);
+        // toast.success(data.message);
         closeModal(); // Ensure closeModal is defined in your scope
         navigate('/');
     }catch(error){
         console.error("Error while deleting post:", error);
         const response = error.response;
         const message = response?.data?.message || "An error occurred while deleting the post";
-        toast.error(message);
+        // toast.error(message);
     }
   }
 

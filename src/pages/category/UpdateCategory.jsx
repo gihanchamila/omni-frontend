@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from '../../utils/axiosInstance.js';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 import addCategoryValidator from "../../validators/addCategoryValidator.js";
 
@@ -35,7 +35,7 @@ const UpdateCategory = () => {
                 }catch(error){
                     const response = error.response
                     const data = response.data
-                    toast.error(data.message)
+                    // toast.error(data.message)
                 }
             }
             getCategory()
@@ -59,7 +59,7 @@ const UpdateCategory = () => {
 
                 const response = await axios.put(`/category/${categoryId}`, formData)
                 const data = response.data
-                toast.success(data.message)
+                // toast.success(data.message)
 
                 setFormData(initialFormData)
                 setFormError(initialFormError)
@@ -70,7 +70,7 @@ const UpdateCategory = () => {
                 setFormError(initialFormError)
                 const response = error.response
                 const data = response.data
-                toast.error(data.message)
+                // toast.error(data.message)
             }
             
         }

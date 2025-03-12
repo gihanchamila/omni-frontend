@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaTh, FaUsers } from 'react-icons/fa';
 import { MdAdminPanelSettings } from "react-icons/md";
 import axios from '../utils/axiosInstance.js';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { useProfile } from '../component/context/useProfilePic.jsx';
 import { motion } from 'framer-motion';
 

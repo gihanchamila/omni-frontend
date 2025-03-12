@@ -3,7 +3,7 @@ import { useNotification } from '../component/context/useNotification'
 import Button from '../component/button/Button';
 import { useSocket } from '../component/context/useSocket';
 import { useCallback } from 'react';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 const NotificationList = () => {
 
@@ -31,7 +31,7 @@ const NotificationList = () => {
 
     } catch (error) {
       console.error("Failed to delete notification", error);
-      toast.error("Failed to delete notification");
+      // toast.error("Failed to delete notification");
     } finally {
       setLoading(false);
     }
