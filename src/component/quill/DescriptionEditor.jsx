@@ -91,6 +91,15 @@ const DescriptionEditor = ({ formData, handleChange }) => {
           padding-top: 10px; /* Add padding to avoid clipping the top */
         }
 
+        @media (prefers-color-scheme: dark) {
+          .ql-container, ql-editor {
+            background-color: #1e293b; /* slate-900 */
+          }
+
+          p {
+            color:White;
+          }
+        }
         /* Remove shadow */
         .ql-toolbar.ql-snow, .ql-container.ql-snow {
           box-shadow: none !important;

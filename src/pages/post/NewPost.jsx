@@ -154,9 +154,9 @@ const NewPost = () => {
   
 
   return (
-    <div className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl w-full">
+    <div className="lg:bg-gray-50 dark:bg-slate-900 flex items-center justify-center py-12 rounded-xl w-full">
       <motion.div 
-        className="lg:bg-white sm:bg-slate-900 rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
+        className="lg:bg-white  sm:bg-slate-900 rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -265,7 +265,7 @@ const NewPost = () => {
                   {formData.file && (
                     <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" />
                   )}
-                  <ReactQuill className='p-0 m-0 dark:sm:text-white dark:sm:bg-white dark:sm:rounded-lg dark:lg:text-slate-700' value={formData.description} readOnly={true} theme="bubble" />
+                  <ReactQuill className='p-0 m-0 dark:sm:text-white dark:sm:bg-slate-900 dark:sm:rounded-lg dark:lg:text-slate-700' value={formData.description} readOnly={true} theme="bubble" />
                 </div>
 
                 <div className="flex justify-end">

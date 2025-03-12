@@ -42,12 +42,13 @@ export const NotificationProvider = ({ children }) => {
   }, []) 
 
   useEffect(() => {
-    notifications.forEach((notification) => {
-      if (!notification.isRead) {
+    const unreadNotifications = notifications.filter((n) => !n.isRead);
+    if (unreadNotifications.length > 0) {
+      unreadNotifications.forEach((notification) => {
         markAsRead(notification.id);
-      }
-    });
-  }, [markAsRead, notifications]);
+      });
+    }
+  }, [markAsRead]);
 
   const deleteNotification = async (id) => {
     try {

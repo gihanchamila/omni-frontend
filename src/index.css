@@ -177,7 +177,7 @@
     }
 
     .ql-editor p {
-      @apply dark:sm:text-slate-700  dark:lg:text-slate-700
+      @apply dark:sm:text-white dark:lg:text-white
     }
 
     .notification-bottom {

@@ -168,7 +168,7 @@ const UpdatePost = () => {
   };
 
   return (
-    <section className="lg:bg-gray-50 flex items-center justify-center py-12 rounded-xl ">
+    <section className="lg:bg-gray-50 dark:bg-slate-900 flex items-center justify-center py-12 rounded-xl ">
       <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 sm:p-0">
         
         {/* Form Section */}
@@ -267,7 +267,7 @@ const UpdatePost = () => {
                       className="w-full lg:h-[50rem] sm:h-[25rem]  object-cover mb-2 rounded-lg" 
                     />
                   ) : null}
-                <ReactQuill className='p-0 m-0' value={formData.description} readOnly={true} theme="bubble" />
+                <ReactQuill className='p-0 m-0 dark:bg-slate-900 rounded-lg' value={formData.description} readOnly={true} theme="bubble" />
               </div>
 
               <div className="flex justify-end">
