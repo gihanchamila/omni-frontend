@@ -63,15 +63,11 @@ const PrivateNavBar = () => {
 
   useEffect(() => {
     if (unreadCount > 0) {
-      // Start animation every 5 seconds
       const interval = setInterval(() => {
         setShowAnimation(true);
-
-        setTimeout(() => {
-          setShowAnimation(false);
-        }, 2000); // Animation duration (2 seconds)
-      }, 5000);  // Trigger animation every 5 seconds
-
+        setTimeout(() => setShowAnimation(false), 2000);
+      }, 5000);
+  
       return () => clearInterval(interval);
     }
   }, [unreadCount]);
