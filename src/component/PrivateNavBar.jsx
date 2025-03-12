@@ -311,8 +311,7 @@ const PrivateNavBar = () => {
               </div>
               <div className="pt-[5rem] mt-[2rem]">
                 <NavLink className="mobile-nav-link" to="/" onClick={toggleMobileMenu}>Home</NavLink>
-                <NavLink className="mobile-nav-link" to="/posts" onClick={toggleMobileMenu}>Posts</NavLink>
-                <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Write</NavLink>
+                <NavLink className="mobile-nav-link" to="/posts/new-post" onClick={toggleMobileMenu}>Create post</NavLink>
                 <NavLink className="mobile-nav-link" to="/notifications" onClick={toggleMobileMenu}>Notifications</NavLink>
                 
                 <div className="border-t mt-4 pt-4">
