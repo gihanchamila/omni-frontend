@@ -365,11 +365,11 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}>
-            <h2 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">General Settings</h2>
+            <h6 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">General Settings</h6>
             <div className="grid gap-y-7 md:grid-cols-1">
               
               <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h2 className="h6">Profile Picture</h2>
+                <h4 className="h6">Profile Picture</h4>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
                   <div className="relative flex flex-col items-center md:flex-row lg:bg-white sm:bg-gray-50 p-4 rounded-lg">
                     <div>
@@ -391,7 +391,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                       </div>   
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
-                      <h2 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h2>
+                      <h4 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h4>
                       <p className="text-gray-600">{currentUser.email}</p>
                     </div>
                   </div>
@@ -406,7 +406,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
               <div className="grid gap-6 md:grid-cols-2">
 
                 <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                  <h2 className="subTitle">User Information</h2>
+                  <h4 className="subTitle">User Information</h4>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
@@ -550,9 +550,9 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
 
                 <div className="">
                   <div className='flex flex-col bg-white lg:p-8 sm:p-6 rounded-lg space-y-4'>
-                    <h2 className="h6 lg:pl-0">Account Management</h2>
+                    <h4 className="h6 lg:pl-0">Account Management</h4>
                     <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                      <h3 className="text-xl font-semibold mb-3  pb-2">Account Report (Under construction)</h3>
+                      <h4 className="text-xl font-semibold mb-3  pb-2">Account Report (Under construction)</h4>
                       <div className="">
                           <p className='dark:text-gray-700'>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
                           <p className='dark:text-gray-700'>For any concerns, contact support.</p>
@@ -561,7 +561,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                     </div>
 
                     <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                      <h3 className="text-xl font-semibold mb-3 text-red-600 pb-2">Account Deletion</h3>
+                      <h4 className="text-xl font-semibold mb-3 text-red-600 pb-2">Account Deletion</h4>
                       <div className="">
                         <p className="text-gray-700 space-y-2" >Deleting your Omni account is a permanent action.</p>
                         <p className="text-gray-700">You are about to delete your Omni account. This action is permanent and cannot be undone. </p>
@@ -587,11 +587,11 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
           >
-            <h2 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">Security Settings</h2>
+            <h6 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">Security Settings</h6>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
               <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                <h4 className="text-lg font-semibold mb-4">Change Password</h4>
                 <form className='' onSubmit={handleChangePasswordSubmit}>
                   <div className="flex flex-col space-y-6">
                     <div className="groupBox">
@@ -643,7 +643,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
 
               {/* Additional Security Settings Section */}
               <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4">Additional Security Settings</h3>
+                <h4 className="text-lg font-semibold mb-4">Additional Security Settings</h4>
                 <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>
                     <div className="groupBox">

@@ -86,7 +86,7 @@ const TwoFactorAuthentication = ({
 
   return (
     <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-      <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
+      <h4 className="text-lg font-semibold mb-4">Two-Factor Authentication</h4>
       <p className="pb-4 dark:text-gray-700">
         {step === 'email' && (
           <>
