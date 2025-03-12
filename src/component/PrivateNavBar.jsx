@@ -98,9 +98,7 @@ const PrivateNavBar = () => {
       }
 
       await deleteNotification(id); 
-      await setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification._id !== id)
-      );
+      setNotifications((prev) => prev.filter((notification) => notification._id !== id));
 
     } catch (error) {
       console.error("Failed to delete notification", error);
