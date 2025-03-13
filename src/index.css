@@ -76,7 +76,7 @@
     }
 
     .toast {
-      @apply relative w-[22rem] h-[4rem] rounded-xl inline-flex items-center p-5 border font-bold
+      @apply relative lg:w-[22rem] lg:h-[3rem] sm:w-[10rem] sm:h-[3rem] rounded-md inline-flex items-center p-3 border font-bold
     }
 
     .error {
@@ -104,7 +104,7 @@
     }
 
     .closeButton {
-      @apply absolute left-[20rem] top-4 w-10 h-10 hover:font-bold  hover:bg-none 
+      @apply absolute lg:left-[20rem] lg:top-4 w-10 h-10 hover:font-bold  hover:bg-none sm:left-[22rem] sm:top-2
     }
 
 

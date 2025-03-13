@@ -68,7 +68,7 @@ function App() {
             </Routes>
           </Suspense>
           
-          {/* 
+          {
             <Toaster  closeButton={<HiOutlineXMark />} description
               toastOptions={{
                 unstyled: true,
@@ -90,7 +90,7 @@ function App() {
                 warning: <HiExclamation className="iconSize" /> 
               }}
             /> 
-          */}
+         }
         </div>
       </div>
     </>

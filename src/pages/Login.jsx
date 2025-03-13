@@ -3,7 +3,7 @@ import axios from "../utils/axiosInstance.js"
 import Button from '../component/button/Button.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 import { HiOutlineMail, HiLockClosed, HiEye, HiEyeOff  } from "react-icons/hi";
-// import { toast } from 'sonner'
+import { toast } from 'sonner'
 import { useProfile } from "../component/context/useProfilePic.jsx"
 import { motion } from "framer-motion";
 
@@ -80,26 +80,18 @@ const Login = () => {
           fetchProfilePic(profilePicKey);
         }
         window.localStorage.setItem("blogData", JSON.stringify(data.data));
-        // toast.success(data.message);
+        toast.success(data.message);
   
         setFormData(initialFormData);
         setFormError(initialFormError);
         setLoading(false);
-
         navigate('/');
       } catch (error) {
-        console.error("Error occurred:", error);
         setLoading(false);
-        setFormError(initialFormError);
-  
-        let errorMessage = "An error occurred. Please try again.";
-        if (error.response && error.response.data) {
-          errorMessage = error.response.data.message || errorMessage;
-        } else {
-          errorMessage = "Network error. Please check your connection and try again.";
-        }
-  
-        // toast.error(errorMessage);
+        const response = error.response
+        console.log(response)
+        const data = response.data
+        toast.error(data.message)
       }
     }
   };
