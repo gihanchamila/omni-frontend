@@ -89,7 +89,6 @@ const Login = () => {
       } catch (error) {
         setLoading(false);
         const response = error.response
-        console.log(response)
         const data = response.data
         toast.error(data.message)
       }
