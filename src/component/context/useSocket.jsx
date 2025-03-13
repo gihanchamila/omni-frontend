@@ -10,6 +10,7 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
 
     // import.meta.env.VITE_SOCKET_URL is the URL of the socket server in backend on railway "https://omni-backend-production.up.railway.app"
+    // The URL is stored in the .env file in the root directory of the frontend project
 
      const socket = io(import.meta.env.VITE_SOCKET_URL , {
         transports: ["websocket", "polling"]
