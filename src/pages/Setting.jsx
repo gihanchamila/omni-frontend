@@ -4,7 +4,7 @@ import { useSocket } from '../component/context/useSocket.jsx';
 import { useNotification } from '../component/context/useNotification.jsx';
 import { FiCamera } from "react-icons/fi";
 import { FaBars} from 'react-icons/fa';
-import { toast } from 'sonner';
+import { toastError, toastSuccess } from '../utils/toastMessages.js';
 import { FaShieldAlt, FaUserCircle } from 'react-icons/fa';
 import Button from '../component/button/Button.jsx';
 import axios from "../utils/axiosInstance.js"
@@ -52,9 +52,9 @@ const Setting = () => {
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
+
         const response = await axios.get(`/auth/current-user`); // Removed formData from GET request
         const user = response.data.data.user;
-  
         if (user && user._id) {
           setCurrentUser(user);
   
@@ -74,32 +74,16 @@ const Setting = () => {
             about: user.about || '',
             gender : user.gender
           });
+          toastSuccess(response.data)
         } else {
-          toast.error('User data is incomplete');
+           return null
         }
       } catch (error) {
-        toast.error('Error getting user');
+        toastError(error)
       }
     };
   
     getCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    const getDevices = async() => {
-      try{
-        setLoading(true)
-        const response = await axios.get("/user/devices")
-        const data = response.data.data.devices
-        setDevices(data)
-      }catch(error){
-        const response = error.response
-        const data = response.data.data
-        toast.error(data.message)
-      }
-    }
-
-    getDevices()
   }, []);
 
   useEffect(() => {
@@ -178,7 +162,7 @@ const Setting = () => {
             _id : notificationId
           }]);
 
-          // toast.success(data.data.message)
+          toastSuccess(data)
           setFormData(initialFormData)
           setFormError(initialFormError)
           setLoading(false)
@@ -186,9 +170,7 @@ const Setting = () => {
       }catch(error){
           setLoading(false)
           setFormError(initialFormError)
-          const response = error.response
-          const data = response.data
-          // toast.error(data.message)
+          toastError(error)
       }
     }   
   };
@@ -217,15 +199,11 @@ const Setting = () => {
         _id : notificationId
       }]);
 
-      // toast.success(data.message);
+      toastSuccess(data)
       setPasswordData(initialPasswordData);
     } catch (error) {
       setLoading(false);
-      const response = error.response;
-      const data = response.data;
-      // toast.error(data.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      toastError(error)
     }
   };
 
@@ -235,13 +213,11 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post('/auth/security-question', securityQuestionData)
       const data = response.data;
-      // toast.success(data.message)
+      toastSuccess(data)
       setSecurityQuestionData(initialQuestionData)
     }catch(error){
       setLoading(false);
-      const response = error.response;
-      const data = response.data;
-      // toast.error(data?.message || "Something went wrong");
+      toastError(error)
     }
   };
 
@@ -262,13 +238,11 @@ const Setting = () => {
         isRead: false,
         _id : notificationId
       }]);
-
-      // toast.success(data.message)
+      setLoading(false)
+      toastSuccess(data)
     }catch(error){
       setLoading(false);
-      const response = error.response;
-      const data = response.data;
-      // toast.error(data.message);
+      toastError(error)
     }
   };
 
@@ -277,17 +251,11 @@ const Setting = () => {
       setLoading(true)
       const response = await axios.post(`/auth/verify-user`, {email , code : verificationCode})
       const data = response.data;
-      // toast.success(data.message)
+      toastSuccess(data)
+      setLoading(false)
     }catch(error){
       setLoading(false);
-      console.error('Verification error:', error);
-      const response = error.response;
-      const data = response.data;
-        if (data?.message) {
-          throw new Error(data.message); 
-        } else {
-          throw new Error('An unexpected error occurred');
-        }
+      toastError(error)
     } 
   };
 
@@ -297,13 +265,10 @@ const Setting = () => {
       const data = response.data;window.localStorage.removeItem('blogData');
       setCurrentUser(null)
       setProfilePicUrl(null)
-      // toast.success(data.message)
       handleCloseModal()
       navigate("/login")
     }catch(error){
-      const response = error.response;
-      const data = response.data;
-      // toast.error(data.message)
+      toastError(error)
     }
   }
 

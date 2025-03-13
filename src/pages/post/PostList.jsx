@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
-// import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { toastError, toastSuccess } from '../../utils/toastMessages.js';
 
 
 // Custom Components
@@ -12,6 +12,7 @@ import Post from '../../component/post/Post.jsx';
 import PostSkeleton from '../../component/post/PostSkeleton.jsx';
 import Skeleton from 'react-loading-skeleton';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 
 const PostList = () => {
@@ -47,24 +48,24 @@ const PostList = () => {
   .filter(post => post && post.author && post.author._id)
   .map(post => post.author._id), [posts]);
   
+  const getPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/posts?page=${currentPage}&q=${searchValue}`);
+      const data = response.data.data;
+      toastSuccess(response.data);
+      setPosts(data.posts);
+      setTotalPage(data.pages);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toastError(error);
+    }
+  };
+ 
   useEffect(() => {
-    const getPosts = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/posts?page=${currentPage}&q=${searchValue}`);
-        const data = response.data.data;
-        setPosts(data.posts);
-        setTotalPage(data.pages);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        const response = error.response;
-        const data = response.data;
-        // toast.error(data.message);
-      }
-    };
     getPosts();
-  }, [currentPage, searchValue]);
+  }, [currentPage]);
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -75,18 +76,17 @@ const PostList = () => {
       if (user && user._id) {
           setCurrentUser(user); 
       } else {
-          // toast.error('User data is incomplete');
+          toast.error('Error getting user');
       }
     }catch(error){
-      // toast.error('Error getting user');
+      toastError(error);
     }
     };
-
     getCurrentUser();
   },[]);
 
   const visiblePosts = useMemo(() => {
-    return posts.slice((currentPage - 1) * 10, currentPage * 10); // Assuming 10 posts per page
+    return posts.slice((currentPage - 1) * 5, currentPage * 5); // Assuming 10 posts per page
   }, [posts, currentPage]);
 
   const filesToFetch = useMemo(() => {
@@ -96,42 +96,48 @@ const PostList = () => {
   useEffect(() => {
     const getPostFiles = async () => {
       if (filesToFetch.length === 0) return;
-      const filePromises = filesToFetch.map(post => 
-        axios.get(`/file/signed-url?key=${post.file.key}`)
-          .then(response => ({
-            id: post._id,
-            url: response.data.data.url
-          }))
-          .catch(error => {
-            console.error("Failed to fetch file URL", error);
-            return null;
-          })
-      );
-      const fileResults = await Promise.all(filePromises);
-      const newFiles = {};
-      fileResults.forEach(result => {
-        if (result) newFiles[result.id] = result.url;
-      });
-
-      setPostFiles(prevFiles => ({ ...prevFiles, ...newFiles }));
+      try{
+        const filePromises = filesToFetch.map(post => 
+          axios.get(`/file/signed-url?key=${post.file.key}`)
+            .then(response => ({
+              id: post._id,
+              url: response.data.data.url
+            }))
+            .catch(error => {
+              console.error("Failed to fetch file URL", error);
+              return null;
+            })
+        );
+        const fileResults = await Promise.all(filePromises);
+        const newFiles = {};
+        fileResults.forEach(result => {
+          if (result) newFiles[result.id] = result.url;
+        });
+        setPostFiles(prevFiles => ({ ...prevFiles, ...newFiles }));
+      } catch (error) {
+        toastError(error);
+      }
     };
-
     getPostFiles();
   }, [filesToFetch]);
 
   useEffect(() => {
     const getLikedPosts = async () => {
-      const response = await axios.get('/likes/posts/liked');
-      const likedPostsData = response.data.data.reduce((acc, post) => {
-        acc[post?._id] = true;
-        return acc;
-      }, {});
-      setLikedPosts(likedPostsData);
+      try{
+        const response = await axios.get('/likes/posts/liked');
+        const likedPostsData = response.data.data.reduce((acc, post) => {
+          acc[post?._id] = true;
+          return acc;
+        }, {});
+        setLikedPosts(likedPostsData);
+      } catch(error){
+        toastError(error);
+      }
     }
     getLikedPosts();
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (posts.length === 0) return;
 
     const loadImages = async () => {
@@ -163,12 +169,11 @@ useEffect(() => {
         const response = await axios.get('/posts/features/latest-posts')
         const data = response.data.data
         setLatestPosts(data)
+        toastSuccess(response.data)
         setLoading(false)
       } catch (error) {
         setLoading(false)
-        const response = error.response;
-        const data = response.data;
-        // toast.error(data.message)          
+        toastError(error)       
       }
     }
     latestPosts()
@@ -181,11 +186,10 @@ useEffect(() => {
         const response = await axios.get('/posts/features/popular-posts')
         const data = response.data.data
         setPopularPosts(data)
+        // toastSuccess(response.data)
         setLoading(false)
       }catch(error){
-        const response = error.response
-        const data = response.data
-        // toast.error(data.message)
+        toastError(error)
       }
     }
     popularPosts()

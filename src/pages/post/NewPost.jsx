@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosInstance.js';
-// import { toast } from 'sonner';
+import { toastError, toastSuccess } from '../../utils/toastMessages.js';
 import Button from '../../component/button/Button.jsx';
 import ImageUploader from './ImageUploader.jsx';
 import DescriptionEditor from '../../component/quill/DescriptionEditor.jsx';
@@ -36,12 +36,11 @@ const NewPost = () => {
       try {
         const response = await axios.get('/category');
         setCategories(response.data.data.categories);
-
-        // toast.success(response.data.message);
+        setLoading(false)
+        // toastSuccess(response)
       } catch (error) {
-        // toast.error(error.response?.data?.message || "Failed to fetch categories");
-      } finally {
         setLoading(false);
+        toastError(error);
       }
     };
 
@@ -103,33 +102,34 @@ const NewPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true)
     try {
       const formInput = { ...formData };
 
       if (formData.file) {
+        
         const imageFormData = new FormData();
         imageFormData.append("image", formData.file);
-
         const fileResponse = await axios.post("/file/upload", imageFormData);
         formInput.file = fileResponse.data.data.id;
-        // toast.success(fileResponse.data.message);
+        toastSuccess(fileResponse)
+        
       }
-
       const response = await axios.post('/posts', formInput);
       const notificationId = response.data.data.notificationId;
-      // toast.success(response.data.message);
+      toastSuccess(response)
 
       if (socket) {
         socket.emit("postAddedNotification", {notificationId});
       }
+
       setFormData(initialFormData);
       setFormError(initialFormError);
+      setLoading(false)
       navigate('/');
     } catch (error) {
-      // toast.error(error.response?.data?.message || "Unexpected Error");
-    } finally {
-      setLoading(false);
+      setLoading(false)
+      toastError(error)
     }
   };
 
@@ -161,17 +161,6 @@ const NewPost = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* <div className="relative w-full h-2 bg-gray-200 rounded-sm overflow-hidden mb-6">
-          <motion.div
-            className="h-full bg-blue-500"
-            initial={{ width: 0 }}
-            animate={{ width: `${(step / 3) * 100}%` }}
-            transition={{
-              duration: 0.6,
-              ease: "easeInOut",
-            }}
-          />
-        </div> */}
         <BackButton onClick={handleBack} />
         <motion.div className="step bg-blue-50 rounded-lg p-4 mb-4 relative">
           <motion.div

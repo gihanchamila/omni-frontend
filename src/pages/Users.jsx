@@ -4,10 +4,10 @@ import Pagination from '../component/pagination/Pagination.jsx';
 import Button from '../component/button/Button.jsx';
 import Modal from '../component/modal/Modal.jsx';
 import moment from 'moment';
-// import { toast } from 'sonner';
 import SearchBar from '../component/search/SearchBar.jsx';
 import { useSocket } from '../component/context/useSocket.jsx';
 import { motion } from 'framer-motion';
+import { toastError, toastSuccess } from '../utils/toastMessages.js';
 
 const Users = () => {
 
@@ -38,13 +38,13 @@ const Users = () => {
             },
           });
           const data = response.data;
+          toastSuccess(data)
           setUsers(data.users);
           setTotalPage(data.pages || 1);
         } catch (error) {
-          // toast.error('Failed to fetch users');
-        } finally {
-          setLoading(false);
-        }
+          setLoading(false)
+          toastError(error)
+        } 
       };
       fetchUsers()
   }, [currentPage, sortField, sortOrder, searchQuery])
@@ -77,9 +77,9 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`/user/delete-single-user/${id}`);
-      // toast.success(response.data.message);
+      const data = response.data;
+      toastSuccess(data);
       setShowModal(false);
-
       if(socket){
         socket.emit('User-deleted', {id})
         setUsers((prevUsers) => prevUsers.filter(user => user._id !== id));
@@ -87,9 +87,7 @@ const Users = () => {
         console.error('Socket is undefined');
       }
     } catch (error) {
-      const response = error.response;
-      const data = response.data
-      // toast.error(data.message || 'Failed to delete user');
+      toastError(error);
     }
   };
 

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../component/button/Button.jsx'
 import axios from '../utils/axiosInstance.js'
-// import { toast } from 'sonner'
+import { toastSuccess, toastError } from '../utils/toastMessages.js'
 import { motion } from 'framer-motion'
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import BackButton from '../component/button/BackButton.jsx'
@@ -39,15 +39,12 @@ const ForgotPassword = () => {
       const response = await axios.post('/auth/forgot-password-code', { email })
       const data = response.data;
       console.log(response)
-      // toast.success(data.message)
+      toastSuccess(data)
       setStep("new-password")
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      const response = error.response;
-      const data = response.data;
-      console.log(response)
-      // toast.error(data.message);
+      toastError(error)
     }
   }
 
@@ -61,14 +58,12 @@ const ForgotPassword = () => {
       setLoading(true)
       const response = await axios.post('/auth/recover-password', { email, code, password })
       const data = response.data;
-      // toast.success(data.message)
+      toastSuccess(data)
       navigate('/login')
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      const response = error.response;
-      const data = response.data;
-      // toast.error(data.message);
+      toastError(error)
     }
   }
 

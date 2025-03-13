@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSocket } from '../../component/context/useSocket.jsx';
 import axios from '../../utils/axiosInstance.js';
-// import { toast } from 'sonner';
+import { toastSuccess, toastError } from '../../utils/toastMessages.js';
 
 
 // Custom Components
@@ -37,9 +37,10 @@ const UpdatePost = () => {
   useEffect(() => {
     const getPost = async () => {
       try {
+        setLoading(true)
         const response = await axios.get(`/posts/${postId}`);
         const postData = response.data?.data?.post;
-  
+        // toastSuccess(response.data)
         if (postData) {
           setFileKey(postData.file?.key || ""); 
           setFormData({
@@ -48,12 +49,13 @@ const UpdatePost = () => {
             file: postData.file?._id || null,
             category: postData.category?._id || "",
           });
+        setLoading(false)
         } else {
           throw new Error("Unexpected response structure");
         }
       } catch (error) {
-        const errorMessage = error.response?.data?.message || error.message || "An error occurred while fetching post data";
-        // toast.error(errorMessage); // Display the error message
+        setLoading(false)
+        toastError(error)
       }
     };
 
@@ -63,11 +65,10 @@ const UpdatePost = () => {
               const response = await axios.get(`/file/signed-url?key=${fileKey}`);
               const data = response.data.data;
               setFile(response.data.data.url)
-              // toast.success(data.message);
+              // toastSuccess(response.data)
           } catch (error) {
-              const response = error.response;
-              const data = response.data;
-              // toast.error(data.message || "Failed to fetch existing file");
+              setLoading(false)
+              toastError(error)
           }
       }
     };
