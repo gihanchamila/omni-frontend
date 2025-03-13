@@ -1,8 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import { Suspense, lazy } from "react";
-import { motion } from "framer-motion";
-
 import { Toaster } from "sonner";
+
 import { HiCheckCircle } from "react-icons/hi";
 import { HiInformationCircle } from "react-icons/hi";
 import { HiExclamationCircle } from "react-icons/hi";

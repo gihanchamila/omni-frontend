@@ -15,9 +15,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <SocketProvider>
           <ProfileProvider>
             <NotificationProvider>
-              <React.StrictMode>
-                <App />
-              </React.StrictMode>
+                <React.StrictMode>
+                  <App />
+                </React.StrictMode>
             </NotificationProvider>
           </ProfileProvider> 
         </SocketProvider>

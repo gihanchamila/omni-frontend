@@ -4,7 +4,6 @@ import axios from '../../utils/axiosInstance.js';
 import { motion } from 'framer-motion';
 import { toastError, toastSuccess } from '../../utils/toastMessages.js';
 
-
 // Custom Components
 import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
@@ -53,18 +52,52 @@ const PostList = () => {
       setLoading(true);
       const response = await axios.get(`/posts?page=${currentPage}&q=${searchValue}`);
       const data = response.data.data;
-      toastSuccess(response.data);
       setPosts(data.posts);
       setTotalPage(data.pages);
+      
+      // Fetch post files after setting posts
+      fetchPostFiles(data.posts);
+      
       setLoading(false);
     } catch (error) {
       setLoading(false);
       toastError(error);
     }
   };
+
+  const fetchPostFiles = async (newPosts) => {
+    const filesToFetch = newPosts.filter(post => post.file && !postFiles[post._id]);
+    if (filesToFetch.length === 0) return;
+  
+    try {
+      const filePromises = filesToFetch.map(post => 
+        axios.get(`/file/signed-url?key=${post.file.key}`)
+          .then(response => ({
+            id: post._id,
+            url: response.data.data.url
+          }))
+          .catch(error => {
+            console.error("Failed to fetch file URL", error);
+            return null;
+          })
+      );
+  
+      const fileResults = await Promise.all(filePromises);
+      const newFiles = {};
+      fileResults.forEach(result => {
+        if (result) newFiles[result.id] = result.url;
+      });
+  
+      setPostFiles(prevFiles => ({ ...prevFiles, ...newFiles }));
+    } catch (error) {
+      toastError(error);
+    }
+  };
  
   useEffect(() => {
-    getPosts();
+    if (!loading) {
+      getPosts();
+    }
   }, [currentPage]);
 
   useEffect(() => {
@@ -94,30 +127,36 @@ const PostList = () => {
   }, [visiblePosts, postFiles]);
 
   useEffect(() => {
+    if (!filesToFetch.length) return;
+  
     const getPostFiles = async () => {
-      if (filesToFetch.length === 0) return;
-      try{
-        const filePromises = filesToFetch.map(post => 
-          axios.get(`/file/signed-url?key=${post.file.key}`)
-            .then(response => ({
-              id: post._id,
-              url: response.data.data.url
-            }))
-            .catch(error => {
-              console.error("Failed to fetch file URL", error);
-              return null;
-            })
+      try {
+        setLoading(true);
+        const filePromises = filesToFetch.map(post =>
+          axios.get(`/file/signed-url?key=${post.file.key}`).then(response => ({
+            id: post._id,
+            url: response.data.data.url,
+          }))
         );
-        const fileResults = await Promise.all(filePromises);
+  
+        const fileResults = await Promise.allSettled(filePromises);
+        console.log(fileResults)
         const newFiles = {};
+  
         fileResults.forEach(result => {
-          if (result) newFiles[result.id] = result.url;
+          if (result.status === 'fulfilled') {
+            newFiles[result.value.id] = result.value.url;
+          }
         });
+  
         setPostFiles(prevFiles => ({ ...prevFiles, ...newFiles }));
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         toastError(error);
       }
     };
+  
     getPostFiles();
   }, [filesToFetch]);
 
@@ -137,28 +176,25 @@ const PostList = () => {
     getLikedPosts();
   }, []);
 
+
   useEffect(() => {
-    if (posts.length === 0) return;
-
     const loadImages = async () => {
+      if (!posts.length) return;
       const totalImages = posts.length;
-
-      // Track loading images and their success
+  
       const imagePromises = posts.map(post => {
         return new Promise(resolve => {
           const img = new Image();
-          img.src = postFiles[post._id] || post.file;
+          img.src = postFiles[post._id] || post.file; 
           img.onload = resolve;
-          img.onerror = resolve; // In case of error, just resolve.
+          img.onerror = resolve; 
         });
       });
-
-      // Wait for all images to be loaded
-      await Promise.all(imagePromises);
-
+  
+      await Promise.all(imagePromises); 
       setImagesLoaded(true);
     };
-
+  
     loadImages();
   }, [posts, postFiles]);
 
@@ -320,7 +356,6 @@ const PostList = () => {
       // toast.error(data.message);
     }
   };
-
 /*   const handleSearch = async (e) => {
     try {
       const input = e.target.value;

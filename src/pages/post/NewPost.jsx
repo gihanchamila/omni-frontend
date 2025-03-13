@@ -29,7 +29,6 @@ const NewPost = () => {
   const inputRef = useRef(null)
   const topRef = useRef(null)
 
-
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -122,7 +121,6 @@ const NewPost = () => {
       if (socket) {
         socket.emit("postAddedNotification", {notificationId});
       }
-
       setFormData(initialFormData);
       setFormError(initialFormError);
       setLoading(false)

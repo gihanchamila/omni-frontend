@@ -14,10 +14,14 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get("/notification/get-notifications");
-      const data = response.data.data;
-      setNotifications(data);
-      setUnreadCount(data.filter((n) => !n.isRead).length);
+      if(auth){
+        const response = await axios.get("/notification/get-notifications");
+        const data = response.data.data;
+        setNotifications(data);
+        setUnreadCount(data.filter((n) => !n.isRead).length);
+      } else {
+        return null
+      }
     } catch (error) {
       const response = error.response;
       const data = response.data;
