@@ -1,38 +1,37 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
-
-// Toggle this to enable/disable WebSockets
-const USE_SOCKET = false; 
 
 export const useSocket = () => {
     return useContext(SocketContext);
 };
 
 export const SocketProvider = ({ children }) => {
-    const [socket, setSocket] = useState(null);
+    // This is used for vercel
 
+     const socket = io('https://omni-backend-production.up.railway.app', {
+        transports: ["websocket", "polling"]
+    }); 
+
+    // This is used for localhost
+    // const socket = io('http://localhost:8000');
+      
     useEffect(() => {
-        if (!USE_SOCKET) return; // Do not initialize if disabled
-
-        const newSocket = io('https://omni-backend-production.up.railway.app', {
-            transports: ["websocket", "polling"]
+        socket.emit('clientToServer', { message: 'Hello from client!' });
+        socket.on('serverToClient', (data) => {
         });
-
-        setSocket(newSocket);
-
-        newSocket.emit('clientToServer', { message: 'Hello from client!' });
-
-        newSocket.on('serverToClient', (data) => {
-            console.log("Message from server:", data);
-        });
-
+    
         return () => {
-            newSocket.off('serverToClient');
-            newSocket.disconnect();
+            socket.off('serverToClient'); // Cleanup event listener
         };
-    }, []);
+    }, [socket]);
+     
+    useEffect(() => {
+        return () => {
+            socket.disconnect(); 
+        };
+    }, [socket]);
 
     return (
         <SocketContext.Provider value={socket}>
