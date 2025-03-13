@@ -8,14 +8,10 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-    // This is used for vercel
-
-     const socket = io('https://omni-backend-production.up.railway.app', {
+    
+     const socket = io(import.meta.env.VITE_SOCKET_URL , {
         transports: ["websocket", "polling"]
     }); 
-
-    // This is used for localhost
-    // const socket = io('http://localhost:8000');
       
     useEffect(() => {
         socket.emit('clientToServer', { message: 'Hello from client!' });
