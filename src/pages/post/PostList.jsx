@@ -96,22 +96,26 @@ const PostList = () => {
   useEffect(() => {
     const getPostFiles = async () => {
       if (filesToFetch.length === 0) return;
-  
-      const files = {};
-      await Promise.all(
-        filesToFetch.map(async (post) => {
-          try {
-            const response = await axios.get(`/file/signed-url?key=${post.file.key}`);
-            files[post._id] = response.data.data.url;
-          } catch (error) {
+      const filePromises = filesToFetch.map(post => 
+        axios.get(`/file/signed-url?key=${post.file.key}`)
+          .then(response => ({
+            id: post._id,
+            url: response.data.data.url
+          }))
+          .catch(error => {
             console.error("Failed to fetch file URL", error);
-          }
-        })
+            return null;
+          })
       );
-  
-      setPostFiles(prevFiles => ({ ...prevFiles, ...files }));
+      const fileResults = await Promise.all(filePromises);
+      const newFiles = {};
+      fileResults.forEach(result => {
+        if (result) newFiles[result.id] = result.url;
+      });
+
+      setPostFiles(prevFiles => ({ ...prevFiles, ...newFiles }));
     };
-  
+
     getPostFiles();
   }, [filesToFetch]);
 
@@ -127,22 +131,29 @@ const PostList = () => {
     getLikedPosts();
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     if (posts.length === 0) return;
-  
-    let loadedImages = 0;
-    const totalImages = posts.length;
-  
-    posts.forEach(post => {
-      const img = new Image();
-      img.src = postFiles[post._id] || post.file;
-      img.onload = () => {
-        loadedImages += 1;
-        if (loadedImages === totalImages) {
-          setImagesLoaded(true);
-        }
-      };
-    });
+
+    const loadImages = async () => {
+      const totalImages = posts.length;
+
+      // Track loading images and their success
+      const imagePromises = posts.map(post => {
+        return new Promise(resolve => {
+          const img = new Image();
+          img.src = postFiles[post._id] || post.file;
+          img.onload = resolve;
+          img.onerror = resolve; // In case of error, just resolve.
+        });
+      });
+
+      // Wait for all images to be loaded
+      await Promise.all(imagePromises);
+
+      setImagesLoaded(true);
+    };
+
+    loadImages();
   }, [posts, postFiles]);
 
   useEffect(() => {
