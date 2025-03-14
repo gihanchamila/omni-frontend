@@ -6,7 +6,6 @@ import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import moment from 'moment';
 import axios from '../../utils/axiosInstance.js';
 import { useProfile } from "../context/useProfilePic.jsx";
-import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 
 const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, handleFollow }) => {
