@@ -4,21 +4,15 @@ import axios from '../../utils/axiosInstance.js';
 import { motion } from 'framer-motion';
 import { toastError, toastSuccess } from '../../utils/toastMessages.js';
 
-// Custom Components
-import SanitizedContent from '../../component/quill/SanitizedContent.jsx';
 import Pagination from '../../component/pagination/Pagination.jsx';
 import Post from '../../component/post/Post.jsx';
 import PostSkeleton from '../../component/post/PostSkeleton.jsx';
-import Skeleton from 'react-loading-skeleton';
 import LatestPost from './LatestPost.jsx';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PopularPost from './PopularPost.jsx';
 
 
 const PostList = () => {
-
-  const navigate = useNavigate()
   const socket = useSocket()
 
   const [loading, setLoading] = useState(false);
@@ -28,8 +22,6 @@ const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [postFiles, setPostFiles] = useState([]);
   const [likedPosts, setLikedPosts] = useState({});
-
-  const [popularPosts, setPopularPosts] = useState([]);
   
   // Pagination
   const [totalPage, setTotalPage] = useState(1);
@@ -340,45 +332,39 @@ const PostList = () => {
 
   return (
     <motion.div 
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 1 }}
-    className="mx-auto md:px-[10rem] py-10">
-      <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4 md:space-y-0 md:space-x-2">
-
-        {/* Left Section: Post List */}
-        <div className="w-full space-y-4">
-        {posts.length > 0 && loading || !imagesLoaded ? (
-          Array.from({ length: 2 }).map((_, index) => <PostSkeleton key={index} />)
-        ) : posts.length > 0 ? (
-          posts.map((post) => (
-            <Post
-              key={post._id}
-              post={post}
-              postFile={postFiles[post._id]}
-              liked={likedPosts[post._id]}
-              currentUser={currentUser}
-              handleLike={handleLike}
-              followStatuses={handleFollow}
-            />
-          ))
-        ) : (
-          <p className="text-center text-gray-500 text-lg">No posts available</p>
-        )}
-      </div>
-
-        {/* Right Section: Sidebar */}
-        <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
-          <LatestPost/>
-          <PopularPost />
-          
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="mx-auto md:px-[10rem] py-10">
+        <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4 md:space-y-0 md:space-x-2">
+          {/* Left Section: Post List */}
+          <div className="w-full space-y-4">
+            {posts.length > 0 && loading || !imagesLoaded ? (
+              Array.from({ length: 2 }).map((_, index) => <PostSkeleton key={index} />)
+            ) : posts.length > 0 ? (
+              posts.map((post) => (
+                <Post
+                  key={post._id}
+                  post={post}
+                  postFile={postFiles[post._id]}
+                  liked={likedPosts[post._id]}
+                  currentUser={currentUser}
+                  handleLike={handleLike}
+                  followStatuses={handleFollow}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-500 text-lg">No posts available</p>
+            )}
+          </div>
+          <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
+            <LatestPost/>
+            <PopularPost />
+          </div>
         </div>
-      </div>
       <Pagination currentPage={currentPage} totalPage={totalPage} pageCount={pageCount} onPageChange={setCurrentPage}/>
     </motion.div>
   );
-
-
 };
 
 export default PostList;
