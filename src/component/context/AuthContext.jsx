@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode"
 
 export const AuthContext = createContext(null);
 
