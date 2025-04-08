@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
         const currentTime = Date.now() / 1000; // Current time in seconds
 
         if (decodedToken.exp < currentTime) {
-          // Token is expired
           window.localStorage.removeItem("blogData");
           setAuth(null);
           navigate("/login", { state: { from: location }, replace: true });
