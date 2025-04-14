@@ -52,7 +52,7 @@ const PublicNavBar = () => {
       </nav>
 
       {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-50  bg-white dark:text-white dark:bg-slate-900 dark:hover:text-slate-800 dark:hover:bg-white flex flex-col py-5 px-6 text-black transition-transform duration-300 ease-in-out transform">
+          <div className="md:hidden fixed inset-0 z-50  bg-white dark:text-white dark:bg-slate-900 dark:hover:text-slate-800 dark:hover:bg-white flex flex-col py-5 px-6 text-black transition-transform duration-300 ease-in-out transform dark:xs:rounded-sm">
             <button
               onClick={toggleMobileMenu}
               className="self-end text-gray-500"
@@ -75,7 +75,7 @@ const PublicNavBar = () => {
                 Sign In
               </NavLink>
               <NavLink
-                className="block py-4 text-sm px-4 font-semibold hover:bg-slate-100 hover:rounded-lg dark:hover:bg-white dark:hover:text-slate-800 sm:bg-slate-800 sm:text-white sm:rounded-lg sm:hover:bg-slate-500 dark:bg-white dark:text-slate-700"
+                className="block py-4 text-sm px-4 font-semibold hover:bg-slate-100 hover:rounded-lg dark:hover:bg-white dark:hover:text-slate-800 sm:bg-slate-800 sm:text-white sm:rounded-lg sm:hover:bg-slate-500 dark:bg-white dark:text-slate-700 dark:xs:rounded-lg"
                 to="/signup"
                 onClick={toggleMobileMenu}
               >

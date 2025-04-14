@@ -90,17 +90,17 @@ export default {
       },
 
       ".input-box": {
-        "@apply flex w-full border border-gray-300 rounded-md bg-white py-2 pl-4  text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
+        "@apply flex w-full border border-gray-300 rounded-md bg-white sm:py-2 sm:pl-4 xs:py-1 sm:text-sm xs:text-xs active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
         {},
       },
 
       ".input-box-2": {
-        "@apply flex w-full border border-gray-300 rounded-md bg-white py-2 pl-10 text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
+        "@apply flex w-full border border-gray-300 rounded-md bg-white py-2 pl-10 sm:text-sm xs:text-xs active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
         {},
       },
 
       ".label": {
-        "@apply text-gray-700 font-medium dark:lg:text-slate-700":
+        "@apply text-gray-700 font-medium dark:lg:text-slate-700 xs:text-xs sm:text-sm lg:text-sm":
         {},
       },
 

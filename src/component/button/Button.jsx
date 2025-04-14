@@ -7,7 +7,7 @@ const Button = forwardRef(
     const finalVariant = primary ? "primary" : variant;
 
     const baseClasses =
-      "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-2.5 sm:rounded-md sm:text-xs focus:outline-none tracking-wider";
+      "transition-colors duration-100 lg:font-medium lg:rounded-lg lg:text-sm lg:px-2 lg:py-2 sm:px-2 sm:py-2.5 xs:py-2 xs:px-2 xs:rounded-md sm:rounded-md sm:text-xs xs:text-xs focus:outline-none tracking-wider";
 
     // Variant-based classes
     const variantClasses = {

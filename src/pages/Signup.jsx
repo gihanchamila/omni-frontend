@@ -136,21 +136,21 @@ const Signup = () => {
   const { label, color } = getPasswordStrength();
 
   return (
-    <div className='sm:h-[90.6vh] dark:sm:min-h-screen'>
+    <div className='sm:h-[90.6vh] dark:sm:min-h-screen dark:xs:min-h-screen'>
           <motion.div 
-            className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  sm:bg-gray-50 sm:rounded-2xl' 
+            className='lg:flex lg:items-center lg:justify-center sm:block lg:bg-white dark:bg-slate-900  xs:bg-gray-50 xs:rounded-2xl' 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             transition={{ duration: 0.6 }}
           >
             <motion.div 
-              className='md:border-2 md:border-slate-800 dark:bg-white lg:w-[38rem]  lg:px-12 lg:py-12 sm:px-8  sm:py-12 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
+              className='md:border-2 md:border-slate-800  dark:bg-white lg:w-[38rem] lg:px-12 lg:py-12 sm:px-8 sm:py-12 xs:py-6 xs:px-5 mt-[3rem] mb-[5rem] rounded-2xl sm:flex sm:flex-col '
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6 }}
             >
               <div className="body-1">
-                <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome</h1>
+                <h1 className="sm:text-4xl font-bold text-slate-800 pb-5 xs:text-2xl ">Welcome</h1>
               </div>
 
               {/* Sign up form */}
@@ -324,18 +324,18 @@ const Signup = () => {
 
                 {/* Sign Up button */}
                 <motion.div 
-                  className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row sm:w-full mt-6 space-y-4 lg:space-y-0 "
+                  className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row xs:w-full mt-6 xs:mt-0 space-y-4 lg:space-y-0 "
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.8, duration: 0.6 }}
                 >
                   <div className="flex-grow lg:block sm:mt-5 lg:mt-0  sm:flex sm:flex-col sm:space-y-4 sm:text-center lg:text-left">
-                    <span className='font-base text-sm text-color-s'>
+                    <span className='font-base sm:text-sm text-color-s xs:text-xs'>
                       Already have an account? <Link className='hover:underline text-blue-500' to="/login">Sign In</Link>
                     </span>
                   </div>
-                  <div className='lg:flex lg:w-[5rem] sm:w-full sm:block'>
-                    <Button ref={signUpRef} type="submit" className="lg:w-[5rem] sm:w-full" variant='info' primary={false}>
+                  <div className='lg:flex lg:w-[5rem] xs:w-full xs:block'>
+                    <Button ref={signUpRef} type="submit" className="lg:w-[5rem] xs:w-full" variant='info' primary={false}>
                       {loading ? 'Signing up...' : 'Sign up'}
                     </Button>
                   </div>

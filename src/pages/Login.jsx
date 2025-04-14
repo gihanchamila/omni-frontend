@@ -95,15 +95,15 @@ const Login = () => {
 
 
   return (
-    <div className="flex justify-center items-center sm:h-[93vh] lg:h-screen ">
+    <div className="xs:flex xs:justify-center xs:items-center sm:h-[93vh] xs:h-[90vh] lg:h-screen ">
       <motion.div
-        className='lg:border-2 lg:bg-white sm:mb-10 sm:bg-gray-50  sm:rounded-2xl sm:px-8  sm:py-12 lg:border-slate-800 lg:w-[25rem] sm:w-[25rem] lg:px-12 lg:py-12 rounded-2xl'
+        className='lg:border-2 lg:bg-white sm:mb-10 xs:bg-gray-50 sm:rounded-2xl sm:px-8 sm:py-12 xs:px-6 xs:py-8   lg:border-slate-800 lg:w-[25rem] sm:w-[25rem] xs:w-full lg:px-12 lg:py-12 rounded-2xl'
         initial={{ opacity: 0, scale : 0.8 }} 
         animate={{ opacity: 1, scale : 1 }} 
         transition={{ duration: 0.6 }}
       >
         <div className="body-1">
-            <h1 className="text-4xl font-bold text-slate-800 pb-5">Welcome Back</h1>
+            <h1 className="sm:text-4xl font-bold text-slate-800 pb-5 xs:text-2xl">Welcome Back</h1>
         </div>
 
         <form action="" className="space-y-4" onSubmit={handleSubmit}>
@@ -181,7 +181,7 @@ const Login = () => {
                 type="checkbox"
                 className="w-4 h-4 text-primary border-color-s accent-color-s border-2 checked:bg-color-s rounded focus:ring-primary"
               />
-              <label htmlFor="remember-me" className="ml-2 text-sm text-color-s ">
+              <label htmlFor="remember-me" className="ml-2 sm:text-sm text-color-s xs:text-xs">
                 Remember Me
               </label>
             </motion.div >
@@ -192,7 +192,7 @@ const Login = () => {
               animate={{ opacity: 1 }}
               transition={{delay : 0.8, duration: 0.6 }}
             >
-              <Link className="font-base text-sm text-blue-500 hover:underline" to="/forgot-password">
+              <Link className="font-base sm:text-sm text-blue-500 hover:underline xs:text-xs" to="/forgot-password">
                 Forgot Password?
               </Link>
             </motion.div>
@@ -214,7 +214,7 @@ const Login = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{delay : 1, duration: 0.6 }}>
-            <span className='font-base text-sm text-color-s center'>
+            <span className='font-base sm:text-sm text-color-s center xs:text-xs'>
               Don't have an account? <Link className='hover:underline text-blue-500' to="/signup">Sign up</Link>
             </span>
           </motion.div>
