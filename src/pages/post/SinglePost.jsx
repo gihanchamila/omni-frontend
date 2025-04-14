@@ -430,6 +430,7 @@ const SinglePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
     const errors = addCommentValidator({ content: formData.content });
     if (errors.content) {
@@ -437,7 +438,7 @@ const SinglePost = () => {
       return; 
     }
     try {
-      setLoading(true);
+      
       const response = await axios.post(`/comments/${postId}`, formData);
       const newComment = response.data.data;
       const { notificationId, message } = response.data;
@@ -738,7 +739,6 @@ const SinglePost = () => {
               )}
             </div>
             <div>
-          {/* Skeleton will be displayed while image is loading */}
           {!isLoaded && (
             <Skeleton
               height="50rem"
@@ -816,7 +816,7 @@ const SinglePost = () => {
                       <div className="flex items-center mt-4 space-x-4">
                         <button
                           type="button"
-                          className="flex items-center text-sm text-gray-500 dark:text-white hover:underline font-medium"
+                          className="flex items-center text-sm text-gray-500 dark:text-white hover:underline font-medium sm:text-base xs:text-xs"
                           onClick={() => {
                             handleClick(comment._id);
                           }}
@@ -855,7 +855,7 @@ const SinglePost = () => {
                                 <div className="flex items-center mt-4 space-x-4">
                                 <button
                                   type="button"
-                                  className="flex items-center text-sm text-gray-500 hover:underline font-medium dark:sm:text-white"
+                                  className="flex items-center  text-gray-500 hover:underline font-medium dark:sm:text-white sm:text-base xs:text-xs"
                                   onClick={() => {toggleNestedReplies(comment._id); toggleReplyToReplyForm(reply._id)}}
                                   >
                                   <IoChatbubblesOutline className='iconSize' />
