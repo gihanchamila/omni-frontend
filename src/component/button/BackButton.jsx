@@ -6,7 +6,7 @@ const BackButton = ({ children, className, ...props }) => {
 
   return (
     <button
-      className={`flex items-center p-2 mb-5 bg-gray-100 hover:bg-gray-200 rounded-full dark:bg-white gap-2 ${className}`}
+      className={`flex items-center p-2  bg-gray-100 hover:bg-gray-200 rounded-full dark:bg-white gap-2 ${className}`}
       onClick={() => navigate(-1)}
       {...props}
     > 
@@ -16,7 +16,7 @@ const BackButton = ({ children, className, ...props }) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-4 h-4 "
+        className="h-4 w-4"
       >
         <path
           strokeLinecap="round"

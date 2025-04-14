@@ -18,9 +18,9 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
       className="flex items-center"
       >
         <motion.p 
-        className="inline-flex items-center mr-3 text-sm text-slate-800 dark:text-white font-semibold">
+        className="inline-flex items-center mr-3 text-sm text-slate-800 dark:text-white font-semibold sm:text-base xs:text-xs">
           <img
-            className="mr-2 w-6 h-6 rounded-full dark:text-white"
+            className="mr-2 w-6 h-6 rounded-full dark:text-white "
             src={imageUrl}
             alt={authorName}
           />
@@ -29,7 +29,7 @@ const CommentFooter = ({ author, createdAt, dropdownId, actionHandlers, imageUrl
         <motion.p 
           className="text-sm text-gray-600"
         >
-          <time dateTime={createdAt} className='dark:text-white'>
+          <time dateTime={createdAt} className='dark:text-white sm:text-base xs:text-xs'>
             {new Date(createdAt).toLocaleDateString()}
           </time>
         </motion.p>

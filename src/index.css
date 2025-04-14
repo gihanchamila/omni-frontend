@@ -149,7 +149,7 @@
     }
 
     p {
-      @apply lg:text-slate-700 font-light dark:lg:text-white dark:sm:text-white
+      @apply lg:text-slate-700 font-light dark:lg:text-white dark:xs:text-white
     }
 
     .tableTh {

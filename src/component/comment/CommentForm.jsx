@@ -18,7 +18,7 @@ const CommentForm = ({
 }) => {
   return (
     <form className={className} onSubmit={handleSubmit}>
-      <div className="lg:py-4 lg:px-4 sm:mb-4 bg-white rounded-lg rounded-t-lg border sm:p-4 lg:p-0 border-gray-200">
+      <div className="xs:p-4 xs:mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
         <label htmlFor="comment" className="sr-only">
           {placeholder}
         </label>

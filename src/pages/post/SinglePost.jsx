@@ -663,7 +663,7 @@ const SinglePost = () => {
 
       <div className=' mx-auto md:px-[10rem]'>
           <div className=' py-8 max-w-5xl z-auto m-0'>
-            <div className='flex justify-between items-center'>
+            <div className='flex justify-between items-center xs:mb-5'>
 
               {!isLoaded ? (
                 <Skeleton circle={true} width="2rem" height="2rem" />
@@ -671,7 +671,7 @@ const SinglePost = () => {
                 <BackButton />
               )}
               
-              <div className='flex space-x-4 z-auto'>
+              <div className='xs:flex space-x-4 z-auto'>
                 {currentUser && post && currentUser === post?.author?._id ? (
                   <>
                   {!isLoaded  ? (
@@ -683,12 +683,12 @@ const SinglePost = () => {
                     // Actual Update and Delete buttons
                     <>
                       <Link to={`/posts/update-post/${post._id}`}>
-                        <div className='p-2 text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full'>
+                        <div className='p-2 sm:text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full xs:text-xs'>
                           Update
                         </div>
                       </Link>
                       <button onClick={openModal}>
-                        <div className='p-2 text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full'>
+                        <div className='p-2 sm:text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full xs:text-xs'>
                           Delete
                         </div>
                       </button>
@@ -698,7 +698,7 @@ const SinglePost = () => {
                 ) : null}
               </div>
             </div>
-            <div className='h2 font-bold w-full dark:text-white'>
+            <div className='sm:text-2xl xs:text-xl font-bold w-full dark:text-white'>
               {!isLoaded ? (
                 <Skeleton height="2rem" width="80%" />
               ) : (
@@ -710,9 +710,9 @@ const SinglePost = () => {
               {!isLoaded ? (
                 <Skeleton circle={true} height="3rem" width="3rem" />
               ) : (
-                <img className='w-[3rem] h-[3rem]  rounded-full object-cover' src={authorProfilePic} alt="Image" />)}</div>
+                <img className='sm:w-[3rem] sm:h-[3rem] xs:w-[2rem] xs:h-[2rem]  rounded-full object-cover' src={authorProfilePic} alt="Image" />)}</div>
               <Link to={`/user-profile/${post?.author?._id}`}>
-              <span className='m-0 px-4 dark:text-white'>
+              <span className='m-0 px-4 dark:text-white xs:text-xs sm:text-sm'>
                 {!isLoaded ? (
                   <Skeleton height="1.5rem" width="8rem" />
                 ) : (
@@ -747,14 +747,14 @@ const SinglePost = () => {
             />
           )}
             <img
-            className={`rounded-xl w-full lg:h-[50rem] sm:h-[25rem] lg:mb-24 sm:mb-12 object-cover ${isLoaded ? 'block' : 'hidden'}`}
+            className={`rounded-xl w-full lg:h-[50rem] sm:h-[25rem] xs:h-[20rem] lg:mb-24 xs:mb-12  object-cover ${isLoaded ? 'block' : 'hidden'}`}
             src={fileUrl}
             alt="Post Image"
             onLoad={() => setIsLoaded(true)} 
             />
             </div>
             <div>
-              <article className='text-lg sm:mb-12 '>
+              <article className='sm:text-lg xs:text-sm sm:mb-12 '>
                 {!isLoaded ? (
                   <Skeleton height="2rem" width='full' />
                   ) : (
@@ -765,7 +765,7 @@ const SinglePost = () => {
 
             {/* Post comment */}
 
-            <section className="bg-white dark:bg-slate-900 pt-0 py-8 lg:py-16 lg:pt-5 antialiased">
+            <section className="bg-white dark:bg-slate-900 pt-0 sm:py-8 lg:py-16 lg:pt-5 xs:pt-3 antialiased">
               <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
                   {!isLoaded ? (
@@ -812,7 +812,7 @@ const SinglePost = () => {
                         currentUser ={currentUser._id}
                         imageUrl={comment.author._id === currentUser? profilePicUrl : comment.author.profilePic}
                       />
-                      <p className="text-gray-500 dark:text-white">{comment.content}</p>
+                      <p className="text-gray-500 dark:text-white sm:text-base xs:text-xs">{comment.content}</p>
                       <div className="flex items-center mt-4 space-x-4">
                         <button
                           type="button"
@@ -851,7 +851,7 @@ const SinglePost = () => {
                                   actionHandlers={actionHandlers}
                                   imageUrl={reply.author._id === currentUser? profilePicUrl : reply.author.profilePic}
                                 />
-                                <p className="text-gray-500 dark:sm:text-white">{reply.content}</p>
+                                <p className="text-gray-500 dark:sm:text-white sm:text-base xs:text-xs">{reply.content}</p>
                                 <div className="flex items-center mt-4 space-x-4">
                                 <button
                                   type="button"
@@ -889,7 +889,7 @@ const SinglePost = () => {
                                     actionHandlers={actionHandlers}
                                     imageUrl={nestedReply.author._id === currentUser? profilePicUrl : nestedReply.author.profilePic}
                                   />
-                                  <p className="text-gray-500 pb-4 dark:sm:text-white">{nestedReply.content}</p>
+                                  <p className="text-gray-500 pb-4 dark:sm:text-white sm:text-base xs:text-xs">{nestedReply.content}</p>
                                 </article>
                               ))}
                           </article>
