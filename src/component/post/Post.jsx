@@ -53,18 +53,18 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       <div className="flex flex-col md:flex-row">
         <div onClick={() => navigate(`/posts/${post._id}`)} className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] cursor-pointer">
         <img
-          className="object-cover lg:w-[160px] lg:h-[176px] sm:w-full sm:h-[250px] rounded-t-lg md:rounded-l-lg"
+          className="object-cover lg:w-[160px] lg:h-[175px] xs:w-full sm:h-[250px] xs:h-[200px] rounded-t-lg md:rounded-l-lg"
           sizes="(max-width: 600px) 500px, (max-width: 1024px) 1000px, 2000px"
           src={postFile || post.file || 'fallback-image.jpg'}  
           alt={post.file || 'fallback-image.jpg'}
           loading="lazy"
         />
         </div>
-        <div className="flex flex-col justify-between p-3 w-full sm:space-y-2 lg:space-y-0">
+        <div className="flex flex-col justify-between p-3 w-full xs:space-y-2 lg:space-y-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs text-gray-500">
               <img className="rounded-full w-5 h-5 object-cover" src={authorProfilePic} alt="author-profile-pic" loading="lazy" />
-              <span className="px-2">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
+              <span className="px-2 xs:text-xs">{`${post?.author?.firstName} ${post?.author?.lastName}`}</span>
               {currentUser && post?.author?._id !== currentUser._id && (
                 <span
                   className={`text-blue-500 hover:underline cursor-pointer ${
@@ -76,12 +76,12 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
                 </span>
               )}
             </div>
-            <span className="text-xs text-gray-500">{formatDate}</span>
+            <span className="xs:text-xs text-gray-500">{formatDate}</span>
           </div>
-          <h5 onClick={() => navigate(`/posts/${post._id}`)} className="text-lg font-bold tracking-tight text-gray-900 hover:underline cursor-pointer line-clamp-2 leading-6">
+          <h5 onClick={() => navigate(`/posts/${post._id}`)} className="sm:text-lg xs:text-sm font-bold tracking-tight text-gray-900 hover:underline cursor-pointer line-clamp-2 leading-6">
             {post.title}
           </h5>
-          <p className="text-gray-700 text-sm line-clamp-2">
+          <p className="text-gray-700 sm:text-sm xs:text-xs line-clamp-2">
             <SanitizedContent htmlContent={post.description} allowedTags={['h1', 'strong', 'font']} />
           </p>
           <div className="flex space-x-4">
