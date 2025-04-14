@@ -24,10 +24,10 @@ const FooterSiteMap = () => {
     <footer className="sticky  py-4 mt-10 rounded-t-xl">
       <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
       <div className="flex justify-between pt-4">
-          <p className="dark:text-white  text-sm">
+          <p className="dark:text-white  sm:text-sm xs:text-xs">
             © {new Date().getFullYear()} Omni. All rights reserved.
           </p>
-          <p className="dark:text-white  text-sm">
+          <p className="dark:text-white sm:text-sm xs:text-xs">
             Gihan Chamila
           </p>
       </div>
