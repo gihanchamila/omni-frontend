@@ -154,12 +154,12 @@ const NewPost = () => {
   return (
     <div className="lg:bg-gray-50 dark:bg-slate-900 flex items-center justify-center py-12 rounded-xl w-full">
       <motion.div 
-        className="lg:bg-white  sm:bg-slate-900 rounded-lg lg:w-3/4 sm:w-full lg:p-10 "
+        className="lg:bg-white  sm:bg-slate-900 rounded-lg lg:w-3/4 xs:w-full lg:p-10 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <BackButton onClick={handleBack} />
+        <BackButton className={'xs:mb-5'} onClick={handleBack} />
         <motion.div className="step bg-blue-50 rounded-lg p-4 mb-4 relative">
           <motion.div
             ref={topRef}
@@ -179,7 +179,7 @@ const NewPost = () => {
             {step === 1 && (
               <form onSubmit={handleNext} className="space-y-6">
                 <div className='space-y-2'>
-                  <label htmlFor="title" className="label  dark:sm:text-white dark:lg:text-slate-700">Title</label>
+                  <label htmlFor="title" className="label  dark:xs:text-white dark:lg:text-slate-700">Title</label>
                   <input
                     ref={inputRef}
                     type="text"
@@ -187,7 +187,7 @@ const NewPost = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full sm:px-4 sm:py-3 xs:px-2 xs:py-2 xs:text-xs border border-gray-200 sm:rounded-lg xs:rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter the title of your post"
                     required
                   />

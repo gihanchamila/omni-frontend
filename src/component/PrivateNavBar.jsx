@@ -143,7 +143,7 @@ const PrivateNavBar = () => {
               animate={{ rotate: mobileMenuOpen ? 180 : 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              {mobileMenuOpen ? <AiOutlineClose className="w-6 h-6 font-bold dark:text-white" /> : <AiOutlineMenu className="w-6 h-6 dark:text-white" />}
+              {mobileMenuOpen ? <AiOutlineClose className="sm:size-6 xs:size-4 font-bold dark:text-white" /> : <AiOutlineMenu className="sm:size-6 xs:size-4 dark:text-white" />}
             </motion.div>
           </button>
         </div>
@@ -274,7 +274,7 @@ const PrivateNavBar = () => {
 
           <div className="relative">
             <button onClick={toggleDropdown} ref={profileRef} className="flex items-center">
-              <img height={40} width={40}  src={profilePicUrl} alt="Profile" className="w-[40px] h-[40px] rounded-full object-cover" />
+              <img src={profilePicUrl} alt="Profile" className="sm:size-[40px] xs:size[20px] rounded-full object-cover" />
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 space-y-2 bg-white p-4 w-[12rem] h-[10rem] rounded-lg border border-slate-200 z-50">
@@ -299,7 +299,7 @@ const PrivateNavBar = () => {
               <div className="absolute flex justify-between mt-3 top-4 left-5 right-5">
                 <div className="flex items-center">
                   <img src={profilePicUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover ml-3" />
-                  <span className="text-md pl-3 font-semibold dark:text-white">Hey, {currentUser?.firstName} {currentUser?.lastName}</span>
+                  <span className="sm:text-base xs:text-sm pl-3 font-semibold dark:text-white ">Hey, {currentUser?.firstName} {currentUser?.lastName}</span>
                 </div>
                 <button onClick={toggleMobileMenu} className="text-slate-400">
                   <AiOutlineClose className="w-5 h-5 dark:text-white" />

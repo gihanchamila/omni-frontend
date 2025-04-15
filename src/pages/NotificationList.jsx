@@ -55,15 +55,15 @@ const NotificationList = () => {
             {notifications.map((notification) => (
                 <div
                 key={notification.id}
-                className="flex justify-between items-center py-3"
+                className="sm:flex sm:justify-between sm:items-center sm:py-3 xs:space-y-3 sm:space-y-0"
                 >
                     <div className="flex-1">
                         {notification.isRead ? (
-                          <p className="text-gray-800 lg:text-md font-regular sm:text-sm">{notification.message}</p>
+                          <p className="text-gray-800 lg:text-md font-regular sm:text-sm xs:text-xs">{notification.message}</p>
                       ) : (
-                        <p className="text-gray-800 lg:text-md font-regular font-semibold sm:text-sm">{notification.message}</p>
+                        <p className="text-gray-800 lg:text-md font-regular font-semibold sm:text-sm xs:text-xs">{notification.message}</p>
                       )}
-                        <span className="lg:text-md sm:text-sm text-gray-500">
+                        <span className="lg:text-md sm:text-sm xs:text-xs text-gray-500">
                         {new Date(notification.createdAt).toLocaleString()}
                         </span>             
                     </div>

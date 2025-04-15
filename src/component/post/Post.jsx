@@ -53,7 +53,7 @@ const Post = ({ post, postFile, liked, handleLike, followStatuses, currentUser, 
       <div className="flex flex-col md:flex-row">
         <div onClick={() => navigate(`/posts/${post._id}`)} className="flex-shrink-0 w-full md:w-[10rem] lg:h-[11rem] cursor-pointer">
         <img
-          className="object-cover lg:w-[160px] lg:h-[175px] xs:w-full sm:h-[250px] xs:h-[200px] rounded-t-lg md:rounded-l-lg"
+          className="object-cover lg:w-[160px] lg:h-[176px] xs:w-full sm:h-[250px] xs:h-[200px] rounded-t-lg md:rounded-l-lg"
           sizes="(max-width: 600px) 500px, (max-width: 1024px) 1000px, 2000px"
           src={postFile || post.file || 'fallback-image.jpg'}  
           alt={post.file || 'fallback-image.jpg'}

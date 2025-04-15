@@ -172,9 +172,9 @@ const Profile = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="bg-slate-50 rounded-xl lg:p-4">
+    className="sm:bg-slate-50 rounded-xl lg:p-4">
       <div className="relative">
-        <div className="h-72 w-full rounded-lg flex items-center justify-center relative">
+        <div className="sm:h-72 xs:h-48 w-full rounded-lg flex items-center justify-center relative">
           {/* Cover Photo with Gradient Overlay */}
             <div 
               className="w-full h-full absolute top-0 left-0 rounded-lg bg-gradient-to-b from-blue-500 to-indigo-700"
@@ -189,7 +189,7 @@ const Profile = () => {
               {loadingProfile ? (
                 <Skeleton circle={true} height={225} width={225} />
               ) : (
-                <div className="relative group w-52 h-52">
+                <div className="relative group sm:w-52 sm:h-52 xs:size-40">
                   {/* Profile Image */}
                   <img
                     src={profilePicUrl}
@@ -213,12 +213,12 @@ const Profile = () => {
             {loadingProfile ? (
               <Skeleton width={150} height={24} />
             ) : (
-              <h1 className="text-4xl font-bold text-gray-800">{currentUser?.firstName} {currentUser?.lastName}</h1>
+              <h1 className="sm:text-4xl xs:text-2xl font-bold text-gray-800 dark:xs:text-white dark:sm:text-gray-800">{currentUser?.firstName} {currentUser?.lastName}</h1>
             )}
             {loadingProfile ? (
               <Skeleton width={200} height={18} />
             ) : (
-              <p className="text-sm text-gray-500">{currentUser?.email}</p>
+              <p className="sm:text-sm xs:text-xs text-gray-500 dark:xs:text-white dark:sm:text-gray-500">{currentUser?.email}</p>
             )}
             <div className="flex justify-center space-x-6 mt-4">
               <div className="followers">
@@ -226,8 +226,8 @@ const Profile = () => {
                   <Skeleton width={70} height={20} />
                 ) : (
                   <>
-                    <span className="text-gray-600 font-semibold">{followers}</span>
-                    <p className="text-gray-400 text-xs">Followers</p>
+                    <span className="text-gray-600 dark:xs:text-white font-semibold dark:sm:text-gray-600">{followers}</span>
+                    <p className="text-gray-400 dark:xs:text-white dark:sm:text-gray-400 xs:text-xs sm:text-sm">Followers</p>
                   </>
                 )}
               </div>
@@ -236,8 +236,8 @@ const Profile = () => {
                   <Skeleton width={70} height={20} />
                 ) : (
                   <>
-                    <span className="text-gray-600 font-semibold">{following}</span>
-                    <p className="text-gray-400 text-xs">Following</p>
+                    <span className="text-gray-600 font-semibold dark:xs:text-white  dark:sm:text-gray-600">{following}</span>
+                    <p className="text-gray-400 dark:xs:text-white dark:sm:text-gray-400 xs:text-xs sm:text-sm">Following</p>
                   </>
                 )}
               </div>
@@ -246,19 +246,19 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="space-y-4 p-8">
+      <div className="space-y-4 sm:p-8">
         <div>
           {loadingProfile ? (
             <Skeleton width="100%" height={20} className="mb-4" />
           ) : (
             <div>
-              <h2 className="text-lg font-semibold text-gray-700 dark:text- mb-2">About me</h2>
-              <p className="dark:text-gray-700">{currentUser?.about}</p>
+              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">About me</h2>
+              <p className="dark:text-gray-700 dark:xs:text-white dark:sm:text-gray-700">{currentUser?.about}</p>
             </div>
           )}
         </div>
         <div className="">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Interests</h2>
+          <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">Interests</h2>
           <div className="flex flex-wrap gap-2">
             {loadingProfile ? (
               <>
@@ -282,7 +282,7 @@ const Profile = () => {
             <Skeleton width="100%" height={20} className="mb-4" />
           ) : (
             <>
-              <h2 className="text-lg font-semibold text-gray-700 mb-2">Your Posts</h2>
+              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">Your Posts</h2>
               {userPosts.length > 0 ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {userPosts.map((post) => (
