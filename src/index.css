@@ -192,6 +192,18 @@
       @apply dark:text-white
     }
 
+    .settingMainTitle {
+      @apply text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0 dark:xs:text-white dark:sm:text-gray-800
+    }
+
+    .settingsubTitle {
+      @apply h6 dark:xs:text-white dark:sm:text-gray-800
+    }
+
+    .twofactorbodyText {
+      @apply  dark:xs:text-white dark:sm:text-gray-700 dark:xs:text-sm dark:sm:text-base
+    }
+
     
   }
   

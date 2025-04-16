@@ -85,8 +85,8 @@ const TwoFactorAuthentication = ({
   };
 
   return (
-    <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-      <h4 className="text-lg font-semibold mb-4">Two-Factor Authentication</h4>
+    <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 sm:p-6 xs:p-0 rounded-lg">
+      <h4 className="settingsubTitle">Two-Factor Authentication</h4>
       <p className="pb-4 dark:text-gray-700">
         {step === 'email' && (
           <>
@@ -97,9 +97,9 @@ const TwoFactorAuthentication = ({
         {step === 'success' && (
           <>
           <div className='pb-6'>
-          <p className='dark:text-gray-700'>Your account is protected with 2-Step Verification.</p><br/>
-          <p className='dark:text-gray-700'>Prevent hackers from accessing your account with an additional layer of security.</p><br/>
-          <p className='dark:text-gray-700'>Unless you’re signing in with a passkey, you’ll be asked to complete the most secure second step available on your account.</p>
+          <p className='twofactorbodyText'>Your account is protected with 2-Step Verification.</p><br/>
+          <p className='twofactorbodyText'>Prevent hackers from accessing your account with an additional layer of security.</p><br/>
+          <p className='twofactorbodyText'>Unless you’re signing in with a passkey, you’ll be asked to complete the most secure second step available on your account.</p>
           </div>
             
           </>

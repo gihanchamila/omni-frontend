@@ -324,17 +324,17 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
         </div>
       </div>
 
-      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 lg:bg-gray-50 sm:bg-white lg:p-8 sm:p-0 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      { currentUser && ( <div className={`lg:col-span-full lg:col-start-1 md:col-start-5 lg:col-end-16 lg:bg-gray-50 sm:bg-white lg:p-8 sm:p-4 rounded-xl transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
         {activeTab === "general" && (
           <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}>
-            <h6 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">General Settings</h6>
+            <h6 className="settingMainTitle">General Settings</h6>
             <div className="grid gap-y-7 md:grid-cols-1">
               
-              <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h4 className="h6">Profile Picture</h4>
+              <div className="lg:bg-white sm:bg-gray-50 sm:p-6 rounded-lg">
+                <h4 className="settingsubTitle">Profile Picture</h4>
                 <div className="flex flex-col md:flex-row items-center justify-between space-x-0 md:space-x-6">
                   <div className="relative flex flex-col items-center md:flex-row lg:bg-white sm:bg-gray-50 p-4 rounded-lg">
                     <div>
@@ -356,8 +356,8 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                       </div>   
                     </div>
                     <div className="flex flex-col items-center md:pl-6 md:items-start">
-                      <h4 className="text-lg font-semibold">{currentUser.firstName} {currentUser.lastName}</h4>
-                      <p className="text-gray-600">{currentUser.email}</p>
+                      <h4 className="text-lg font-semibold dark:xs:text-white dark:sm:text-gray-800">{currentUser.firstName} {currentUser.lastName}</h4>
+                      <p className="text-gray-600 dark:xs:text-gray-300 dark:sm:text-gray-800">{currentUser.email}</p>
                     </div>
                   </div>
 
@@ -369,9 +369,8 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
               </div>
               
               <div className="grid gap-6 md:grid-cols-2">
-
-                <div className="lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                  <h4 className="subTitle">User Information</h4>
+                <div className="lg:bg-white sm:bg-gray-50 sm:p-4 xs:p-0 rounded-lg">
+                  <h4 className="settingsubTitle">User Information</h4>
                   <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-8 gap-x-4 gap-y-4">
                     <div className="col-span-full md:col-start-1 md:col-end-5 space-y-4">
@@ -427,7 +426,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                           placeholder="2001-05-15"
                           value={formData.dateOfBirth}
                           onChange={handleChange}
-                          className="border border-gray-300 rounded-md bg-white py-2 pl-4  text-sm active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none"
+                          className="border border-gray-300 rounded-md bg-white py-2 sm:pl-4 xs:pl-2  sm:text-sm xs:text-xs active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none"
                         />
                       </div>
                       <div className="groupBox">
@@ -514,22 +513,22 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
               </div> */}
 
                 <div className="">
-                  <div className='flex flex-col bg-white lg:p-8 sm:p-6 rounded-lg space-y-4'>
-                    <h4 className="h6 lg:pl-0">Account Management</h4>
+                  <div className='flex flex-col sm:bg-white xs:bg-slate-900 lg:p-8 sm:p-6 rounded-lg space-y-4'>
+                    <h4 className="settingsubTitle">Account Management</h4>
                     <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                      <h4 className="text-xl font-semibold mb-3  pb-2">Account Report (Under construction)</h4>
+                      <h4 className="sm:text-xl xs:text-base font-semibold mb-3  pb-2">Account Report (Under construction)</h4>
                       <div className="">
-                          <p className='dark:text-gray-700'>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
-                          <p className='dark:text-gray-700'>For any concerns, contact support.</p>
+                          <p className='dark:text-gray-700 xs:text-sm sm:text-base'>Request a detailed report of your Omni account, including activity history, uploaded files, and stored data.  Once generated, it will be sent to your registered email. </p>
+                          <p className='dark:text-gray-700 xs:text-sm sm:text-base'>For any concerns, contact support.</p>
                         <Button variant="info" className="mt-4">Get report</Button>
                       </div>
                     </div>
 
                     <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                      <h4 className="text-xl font-semibold mb-3 text-red-600 pb-2">Account Deletion</h4>
+                      <h4 className="text-xl font-semibold mb-3  text-red-600 pb-2">Account Deletion</h4>
                       <div className="">
-                        <p className="text-gray-700 space-y-2" >Deleting your Omni account is a permanent action.</p>
-                        <p className="text-gray-700">You are about to delete your Omni account. This action is permanent and cannot be undone. </p>
+                        <p className="text-gray-700 space-y-2 xs:text-sm sm:text-base" >Deleting your Omni account is a permanent action.</p>
+                        <p className="text-gray-700 xs:text-sm sm:text-base">You are about to delete your Omni account. This action is permanent and cannot be undone. </p>
                         <Button onClick={() => {setShowModal(true); }} variant="error" className="mt-4">Delete Account</Button>
                       </div>
                     </div>
@@ -552,20 +551,20 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
           >
-            <h6 className="text-2xl font-bold mb-6 sm:pt-6 sm:pl-6 lg:pt-0 lg:pl-0">Security Settings</h6>
+            <h6 className="settingMainTitle">Security Settings</h6>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Change Password Section */}
-              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h4 className="text-lg font-semibold mb-4">Change Password</h4>
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 sm:p-6 xs:p-0 rounded-lg">
+                <h4 className="settingsubTitle">Change Password</h4>
                 <form className='' onSubmit={handleChangePasswordSubmit}>
                   <div className="flex flex-col space-y-6">
                     <div className="groupBox">
-                      <label htmlFor="oldPassword" className="text-gray-700 font-medium">Current Password</label>
+                      <label htmlFor="oldPassword" className="label">Current Password</label>
                       <input
                         type="password"
                         name="oldPassword"
                         id="oldPassword"
-                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        className="input-box"
                         placeholder="Enter current password"
                         value={passwordData.oldPassword}
                         onChange={handlePasswordChange}
@@ -574,12 +573,12 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                       
                     </div>
                     <div className="groupBox">
-                      <label htmlFor="newPassword" className="text-gray-700 font-medium">New Password</label>
+                      <label htmlFor="newPassword" className="label">New Password</label>
                       <input
                         type="password"
                         name="newPassword"
                         id="newPassword"
-                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        className="input-box"
                         placeholder="Enter new password"
                         value={passwordData.newPassword}
                         onChange={handlePasswordChange}
@@ -587,12 +586,12 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                       />
                     </div>
                     <div className="groupBox">
-                      <label htmlFor="confirmNewPassword" className="text-gray-700 font-medium">Confirm New Password</label>
+                      <label htmlFor="confirmNewPassword" className="label">Confirm New Password</label>
                       <input
                         type="password"
                         name="confirmNewPassword"
                         id="confirmNewPassword"
-                        className="input-box px-4 py-2 border rounded-lg focus:outline-none mb-5"
+                        className="input-box"
                         placeholder="Confirm new password"
                         value={passwordData.confirmNewPassword}
                         onChange={handlePasswordChange}
@@ -607,29 +606,29 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
               </div>
 
               {/* Additional Security Settings Section */}
-              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 p-6 rounded-lg">
-                <h4 className="text-lg font-semibold mb-4">Additional Security Settings</h4>
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 sm:p-6 xs:p-0 rounded-lg">
+                <h4 className="settingsubTitle">Additional Security Settings</h4>
                 <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>
                     <div className="groupBox">
-                      <label htmlFor="securityQuestion" className="text-gray-700 font-medium">Security Question</label>
+                      <label htmlFor="securityQuestion" className="label">Security Question</label>
                       <input
                         name="securityQuestion"
                         id="securityQuestion"
                         onChange={handleSecurityQuestionChange}
                         value={securityQuestionData.securityQuestion}
-                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
+                        className="input-box"
                         placeholder="Enter your security question"
                       />
                     </div>
                     <div className="groupBox">
-                      <label htmlFor="securityAnswer" className="text-gray-700 font-medium">Security Answer</label>
+                      <label htmlFor="securityAnswer" className="label">Security Answer</label>
                       <textarea
                         name="securityAnswer"
                         id="securityAnswer"
                         onChange={handleSecurityQuestionChange}
                         value={securityQuestionData.securityAnswer}
-                        className="input-box px-4 border rounded-lg pb-[1.35rem] focus:outline-none"
+                        className="input-box"
                         placeholder="Enter your answer"
                         rows="5"
                       />

@@ -90,7 +90,7 @@ export default {
       },
 
       ".input-box": {
-        "@apply flex w-full border border-gray-300 rounded-md bg-white sm:py-2 sm:pl-4 xs:py-1 sm:text-sm xs:text-xs active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
+        "@apply flex w-full border border-gray-300 rounded-md bg-white sm:py-2 xs:pl-2 sm:pl-4 xs:py-2 sm:text-sm xs:text-xs active:border-blue-500 active:border focus:border focus:border-blue-500 outline-none":
         {},
       },
 
@@ -100,7 +100,7 @@ export default {
       },
 
       ".label": {
-        "@apply text-gray-700 font-medium dark:lg:text-slate-700 xs:text-xs sm:text-sm lg:text-sm":
+        "@apply text-gray-700 font-medium dark:lg:text-slate-700 xs:text-xs sm:text-sm lg:text-sm dark:xs:text-white dark:sm:text-gray-800":
         {},
       },
 
