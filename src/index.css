@@ -145,11 +145,15 @@
     }
 
     .step {
-      @apply bg-blue-50 font-bold text-blue-500 rounded-lg p-4 mb-4
+      @apply bg-blue-50 font-bold text-blue-500 rounded-lg p-4 mb-4 sm:rounded-lg sm:p-4 xs:p-2 sm:text-base xs:text-xs xs:rounded-md  relative
+    }
+
+    .postInput {
+      @apply block w-full sm:px-4 sm:py-3 xs:px-2 xs:py-2 xs:text-xs border border-gray-200 sm:rounded-lg xs:rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500
     }
 
     p {
-      @apply lg:text-slate-700 font-light dark:lg:text-white dark:xs:text-white
+      @apply lg:text-slate-700 font-light dark:lg:text-white dark:xs:text-white dark:xs:text-sm font-sans
     }
 
     .tableTh {

@@ -122,6 +122,18 @@ const DescriptionEditor = ({ formData, handleChange }) => {
         .ql-editor:focus {
           outline: none; /* Remove the default focus outline */
         }
+
+        @media (prefers-color-scheme: dark) and (min-width: 321px) {
+          p {
+              color:White;
+              font-size: 12px;
+            }
+
+          .ql-toolbar button {
+            font-size: 12px;
+            padding: 8px;
+          }
+        }
       `}
       </style>
     </div>

@@ -335,7 +335,7 @@ const PostList = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="mx-auto  py-10">
+      className="mx-auto lg:px-[10rem] py-10">
         <div className="flex flex-col lg:space-x-4 md:flex-row space-y-4 md:space-y-0 md:space-x-2">
           {/* Left Section: Post List */}
           <div className="w-full space-y-4">
@@ -357,7 +357,7 @@ const PostList = () => {
               <p className="text-center text-gray-500 text-lg">No posts available</p>
             )}
           </div>
-          <div className="w-full md:w-2/4 space-y-4 overflow-hidden hidden md:block">
+          <div className="w-full md:w-1/3 space-y-4 overflow-hidden hidden md:block">
             <LatestPost/>
             <PopularPost />
           </div>

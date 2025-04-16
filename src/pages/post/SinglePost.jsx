@@ -684,12 +684,12 @@ const SinglePost = () => {
                     // Actual Update and Delete buttons
                     <>
                       <Link to={`/posts/update-post/${post._id}`}>
-                        <div className='p-2 sm:text-sm px-4 bg-gray-100 hover:bg-gray-200 rounded-full xs:text-xs'>
+                        <div className='sm:p-2 sm:text-sm sm:px-4 bg-gray-100 hover:bg-gray-200 rounded-full xs:text-xs xs:p-1 xs:px-2'>
                           Update
                         </div>
                       </Link>
                       <button onClick={openModal}>
-                        <div className='p-2 sm:text-sm px-4 text-white bg-red-500 hover:bg-red-600 rounded-full xs:text-xs'>
+                        <div className='sm:p-2 sm:text-sm sm:px-4 text-white bg-red-500 hover:bg-red-600 rounded-full xs:text-xs xs:p-1 xs:px-2'>
                           Delete
                         </div>
                       </button>

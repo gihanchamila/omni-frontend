@@ -173,20 +173,20 @@ const UpdatePost = () => {
       <div className="lg:bg-white rounded-lg lg:w-3/4 sm:w-full lg:p-10 sm:p-0">
         
         {/* Form Section */}
-        <div className="bg-white rounded-lg sm:p-6 lg:p-0">
-          <BackButton />
+        <div className="sm:bg-white xs:bg-slate-900 rounded-lg sm:p-6 lg:p-0">
+          <BackButton className={'xs:mb-5'}  />
           <h4 className="step">{getTitle()}</h4>
           {loading && <div className="text-center">Loading...</div>}
 
           {step === 1 && (
             <form onSubmit={handleNext} className="space-y-6">
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+                <label htmlFor="title" className="label">Title</label>
                 <input
                   type="text"
                   name="title"
                   id="title"
-                  className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="postInput"
                   placeholder="Enter title"
                   required
                   value={formData.title || ""}
@@ -223,10 +223,10 @@ const UpdatePost = () => {
               {formError.description && <p className="text-red-500 text-sm mt-2">{formError.description}</p>}
 
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">Select Category</label>
+                <label htmlFor="category" className="label">Select Category</label>
                 <select
                   id="category"
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className="postInput mt-2"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
@@ -254,7 +254,7 @@ const UpdatePost = () => {
           {step === 3 && (
             <div className="space-y-6">
               <div className="rounded-lg space-y-4">
-                <h4 className="h4 font-bold w-full">{formData.title}</h4>
+                <h4 className="h4 font-bold w-full dark:xs:text-white dark:lg:text-slate-700 dark:xs:text-lg dark:sm:text-2xl">{formData.title}</h4>
                 {(formData.file instanceof File) ? (
                     <img 
                       src={URL.createObjectURL(formData.file)} 

@@ -16,7 +16,7 @@ const BackButton = ({ children, className, ...props }) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="h-4 w-4"
+        className="sm:h-4 sm:w-4 xs:h-2 xs:w-2"
       >
         <path
           strokeLinecap="round"

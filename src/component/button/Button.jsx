@@ -16,7 +16,7 @@ const Button = forwardRef(
       success: "bg-green-500 text-white hover:bg-green-500",
       info: "bg-blue-500 text-white hover:bg-blue-600",
       back: "bg-gray-300 rounded-full",
-      outline: "border border-gray-200 hover:bg-gray-50 text-gray-800 dark:sm:text-slate-700 dark:lg:text-slate-700",
+      outline: "border border-gray-200 hover:bg-gray-50 dark:md:text-gray-800 dark:sm:text-slate-700 dark:lg:text-slate-700 dark:xs:text-white",
     };
 
     // Custom disabled color

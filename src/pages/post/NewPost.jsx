@@ -160,7 +160,7 @@ const NewPost = () => {
         transition={{ duration: 0.5 }}
       >
         <BackButton className={'xs:mb-5'} onClick={handleBack} />
-        <motion.div className="step bg-blue-50 rounded-lg p-4 mb-4 relative">
+        <motion.div className="step">
           <motion.div
             ref={topRef}
             className="absolute top-0 left-0 h-full bg-blue-100 rounded-lg"
@@ -179,7 +179,7 @@ const NewPost = () => {
             {step === 1 && (
               <form onSubmit={handleNext} className="space-y-6">
                 <div className='space-y-2'>
-                  <label htmlFor="title" className="label  dark:xs:text-white dark:lg:text-slate-700">Title</label>
+                  <label htmlFor="title" className="label">Title</label>
                   <input
                     ref={inputRef}
                     type="text"
@@ -187,7 +187,7 @@ const NewPost = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="block w-full sm:px-4 sm:py-3 xs:px-2 xs:py-2 xs:text-xs border border-gray-200 sm:rounded-lg xs:rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="postInput"
                     placeholder="Enter the title of your post"
                     required
                   />
@@ -195,7 +195,7 @@ const NewPost = () => {
                 </div>
 
                 <div className='space-y-4'>
-                  <h3 className="label dark:text-white dark:lg:text-slate-700">Upload an Image</h3>
+                  <h3 className="label">Upload an Image</h3>
                   <ImageUploader onUpload={handleImageUpload} file={formData.file} />
 
                   {formError.file && <p className="text-red-500 text-sm mt-2">{formError.file}</p>}
@@ -217,10 +217,10 @@ const NewPost = () => {
                 </div>
 
                 <div className="w-full mt-4">
-                  <label htmlFor="category" className="label dark:text-white dark:lg:text-slate-700">Select a category</label>
+                  <label htmlFor="category" className="label">Select a category</label>
                   <select
                     id="category"
-                    className="mt-2 block w-full px-4 py-3 text-gray-900 rounded-lg border border-gray-200"
+                    className="mt-2 postInput"
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
@@ -248,7 +248,7 @@ const NewPost = () => {
             {step === 3 && (
               <div className="space-y-6">
                 <div className="rounded-lg space-y-4 ">
-                  <h4 className="h4 font-bold w-full dark:sm:text-white dark:lg:text-slate-700">{formData.title}</h4>
+                  <h4 className="h4 font-bold w-full dark:xs:text-white dark:lg:text-slate-700 dark:xs:text-lg dark:sm:text-2xl">{formData.title}</h4>
                   {formData.file && (
                     <img src={URL.createObjectURL(formData.file)} alt="Uploaded" className="w-full lg:h-[50rem] sm:h-[25rem] object-cover mb-2 rounded-lg" />
                   )}
