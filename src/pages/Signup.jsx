@@ -88,7 +88,6 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hel")
     const errors = signUpValidator(
       { 
         firstName :formData.firstName,
@@ -99,9 +98,6 @@ const Signup = () => {
         confirmPassword: formData.confirmPassword
       }
     )
-
-    console.log(formData)
-
     if(errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword){
       setFormError(errors);
       return
