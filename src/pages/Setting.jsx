@@ -606,7 +606,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
               </div>
 
               {/* Additional Security Settings Section */}
-              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 sm:p-6 xs:p-0 rounded-lg">
+              <div className="flex flex-col space-y-6 lg:bg-white sm:bg-gray-50 sm:p-6 xs:p-0 pb-4 rounded-lg">
                 <h4 className="settingsubTitle">Additional Security Settings</h4>
                 <form onSubmit={handleSecurityQuestionSubmit}>
                   <div className='flex flex-col space-y-6'>
@@ -621,7 +621,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                         placeholder="Enter your security question"
                       />
                     </div>
-                    <div className="groupBox">
+                    <div className="groupBox pb-2">
                       <label htmlFor="securityAnswer" className="label">Security Answer</label>
                       <textarea
                         name="securityAnswer"
@@ -633,7 +633,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                         rows="5"
                       />
                     </div>
-                    <Button type='submit' className={"sm:py-2 sm:text-sm"} variant="info">Save Security Settings</Button>
+                      <Button type='submit' className={"sm:py-2 sm:text-sm lg:p-6"} variant="info">Save Security Settings</Button>
                   </div>
                 </form>
               </div>
