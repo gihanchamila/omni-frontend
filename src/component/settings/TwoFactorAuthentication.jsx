@@ -89,9 +89,9 @@ const TwoFactorAuthentication = ({
       <h4 className="settingsubTitle">Two-Factor Authentication</h4>
       <p className="pb-4 dark:text-gray-700">
         {step === 'email' && (
-          <>
+          <p className='dark:sm:text-gray-700 pb-8'>
             Two-Factor Authentication (2FA) enhances your account's security by requiring both your password and a unique code sent to your email. This extra layer of protection helps prevent unauthorized access, even if your password is compromised.
-          </>
+          </p>
         )}
         {step === 'verify' && `A code has been successfully sent to your email address (${email}). Please enter the code below to complete the verification.`}
         {step === 'success' && (

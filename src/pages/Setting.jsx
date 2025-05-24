@@ -637,54 +637,6 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                   </div>
                 </form>
               </div>
-
-              {/* Two-Factor Authentication Section */}
-
-              {
-              /* <div className="flex flex-col space-y-6 bg-white p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
-                <p className='pb-4'>Two Factor Authentication boosts security by requiring both your password and a code sent to your email, ensuring extra protection against unauthorized access</p>
-                <form>
-                  <div className='flex flex-col space-y-6'>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        name="two-factor"
-                        id="two-factor"
-                        className="form-checkbox"
-                      />
-                      <label htmlFor="two-factor" className="text-gray-700">
-                        Enable Two-Factor Authentication
-                      </label>
-                    </div>
-                    <div className="groupBox">
-                      <label htmlFor="verify-email" className="text-gray-700 font-medium">Verify Email Address</label>
-                      <input
-                        type="email"
-                        name="verify-email"
-                        id="verify-email"
-                        className="input-box px-4 py-2 border  rounded-lg focus:outline-none"
-                        placeholder="Enter verification email"
-                      />
-                    </div>
-                    {
-                    /*
-                    <div className="groupBox">
-                      <label htmlFor="verify-mobile" className="text-gray-700 font-medium">Verify Mobile</label>
-                      <input
-                        type="tel"
-                        name="verify-mobile"
-                        id="verify-mobile"
-                        className="input-box px-4 py-2 border rounded-lg focus:outline-none"
-                        placeholder="Enter verification mobile number"
-                      />
-                    </div>
-                    
-                    <Button variant="info">Verify Email Address</Button>
-                  </div>
-                </form>
-              </div> */}
-
               <TwoFactorAuthentication onEmailSubmit={handleEmailSubmit} onCodeSubmit={handleVerificationSubmit}/>
 
             </div>
