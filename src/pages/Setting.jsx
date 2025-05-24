@@ -621,7 +621,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                         placeholder="Enter your security question"
                       />
                     </div>
-                    <div className="groupBox pb-2">
+                    <div className="groupBox pb-2.5">
                       <label htmlFor="securityAnswer" className="label">Security Answer</label>
                       <textarea
                         name="securityAnswer"
