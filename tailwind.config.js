@@ -100,7 +100,7 @@ export default {
       },
 
       ".label": {
-        "@apply text-gray-700 font-medium dark:lg:text-slate-700 xs:text-xs sm:text-sm lg:text-sm dark:xs:text-white dark:sm:text-gray-800 dark:xs:text-white dark:lg:text-slate-700":
+        "@apply text-gray-700 font-medium dark:lg:text-slate-700 xs:text-xs sm:text-sm lg:text-sm dark:xs:text-white dark:sm:text-gray-800 dark:xs:text-gray-700 dark:lg:text-slate-700":
         {},
       },
 
