@@ -149,7 +149,7 @@
     }
 
     .postInput {
-      @apply block w-full sm:px-4 sm:py-3 xs:px-2 xs:py-2 xs:text-xs border border-gray-200 sm:rounded-lg xs:rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500
+      @apply block w-full sm:px-4 sm:py-3 xs:px-2 xs:py-2 xs:text-xs lg:text-sm border border-gray-200 sm:rounded-lg xs:rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500
     }
 
     p {
