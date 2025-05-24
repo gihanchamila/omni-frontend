@@ -134,7 +134,6 @@ const PostList = () => {
         );
   
         const fileResults = await Promise.allSettled(filePromises);
-        console.log(fileResults)
         const newFiles = {};
   
         fileResults.forEach(result => {

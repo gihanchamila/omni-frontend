@@ -252,13 +252,13 @@ const Profile = () => {
             <Skeleton width="100%" height={20} className="mb-4" />
           ) : (
             <div>
-              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">About me</h2>
+              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white dark:sm:text-gray-700 ">About me</h2>
               <p className="dark:text-gray-700 dark:xs:text-white dark:sm:text-gray-700">{currentUser?.about}</p>
             </div>
           )}
         </div>
         <div className="">
-          <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">Interests</h2>
+          <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white dark:sm:text-gray-700 ">Interests</h2>
           <div className="flex flex-wrap gap-2">
             {loadingProfile ? (
               <>
@@ -282,7 +282,7 @@ const Profile = () => {
             <Skeleton width="100%" height={20} className="mb-4" />
           ) : (
             <>
-              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white ">Your Posts</h2>
+              <h2 className="text-lg font-semibold text-gray-700  mb-2 dark:xs:text-white dark:sm:text-gray-700  ">Your Posts</h2>
               {userPosts.length > 0 ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {userPosts.map((post) => (
