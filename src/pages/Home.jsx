@@ -27,8 +27,6 @@ const Home = () => {
           if (user.profilePic?.key) {
             setProfileKey(user.profilePic.key);
           }
-  
-          // Set role text once
           setRoleText(user.role === 1 ? "Super admin" : user.role === 2 ? "Admin" : "User");
   
         } catch {

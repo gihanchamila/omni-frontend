@@ -250,7 +250,7 @@ const Signup = () => {
 
                 {/* Password and Confirm Password fields */}
                 <motion.div 
-                  className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4"
+                  className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0 mt-4 mb-5"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.6 }}
@@ -322,7 +322,7 @@ const Signup = () => {
                   </div>
                 </motion.div>
 
-                {/* Sign Up button */}
+       
                 <motion.div 
                   className="flex flex-col-reverse items-center justify-between lg:w-full lg:flex-row md:flex-row xs:w-full mt-6 xs:mt-0 space-y-4 lg:space-y-0 "
                   initial={{ opacity: 0 }}
