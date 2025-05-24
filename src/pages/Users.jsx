@@ -23,31 +23,56 @@ const Users = () => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchQuery, setSearchQuery] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const fetchUsers = async () => {
-        setLoading(true);
-        try {
-          const response = await axios.get('/user/all-users', {
-            params: {
-              page: currentPage,
-              size: 10,
-              sortField,
-              sortOrder,
-              q: searchQuery,
-            },
-          });
-          const data = response.data;
-          toastSuccess(data)
-          setUsers(data.users);
-          setTotalPage(data.pages || 1);
-        } catch (error) {
-          setLoading(false)
-          toastError(error)
-        } 
-      };
-      fetchUsers()
-  }, [currentPage, sortField, sortOrder, searchQuery])
+      setLoading(true);
+      try {
+        const response = await axios.get('/user/all-users', {
+          params: {
+            page: currentPage,
+            size: 10,
+            sortField,
+            sortOrder,
+          },
+        });
+        const data = response.data;
+        toastSuccess(data);
+        setAllUsers(data.users); // Store all users
+        setUsers(data.users);    // Show all users initially
+        setTotalPage(data.pages || 1);
+      } catch (error) {
+        toastError(error);
+      } finally {
+        setLoading(false);
+      }
+  };
+
+  fetchUsers();
+  }, [currentPage, sortField, sortOrder]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setUsers(allUsers); // Always reset to all users
+    } else {
+      const filtered = allUsers.filter(user =>
+        user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setUsers(filtered);
+    }
+  }, [searchQuery, allUsers]);
+
+  const handleSearch = (e) => {
+    // If called from a form submit, prevent default
+    if (e && e.preventDefault) e.preventDefault();
+    // If called from input change, get value
+    const value = e.target ? e.target.value : e;
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
     if (totalPage > 1) {
@@ -104,11 +129,6 @@ const Users = () => {
     const order = field === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(field);
     setSortOrder(order);
-  };
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to the first page for new search results
   };
 
   return (
