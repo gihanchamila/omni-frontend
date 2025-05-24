@@ -45,7 +45,7 @@ const TwoFactorAuthentication = ({
         await onEmailSubmit(email);
         setStep('verify');
       } catch (error) {
-        // toast.error(error.message);
+        //toast.error(error.message);
       } finally {
         setLoading(false);
       }

@@ -223,23 +223,28 @@ const Setting = () => {
 
   const handleEmailSubmit = async (email) => {
     try{
+      
       setLoading(true)
-      const response = await axios.post('/auth/send-verification-email', {email})
-      const data = response.data;
-      const {notificationId, message} = response.data
+      if(email === currentUser.email){
+        const response = await axios.post('/auth/send-verification-email', {email})
+        const data = response.data;
+        const {notificationId, message} = response.data
 
-      if (socket) {
-        socket.emit("verification-code-sent", {notificationId});
+        if (socket) {
+          socket.emit("verification-code-sent", {notificationId});
+        }
+    
+        setNotifications(prev => [...prev, {
+          type: "Email Verification",
+          message,
+          isRead: false,
+          _id : notificationId
+        }]);
+        setLoading(false)
+        toastSuccess(data)
+      }else{
+        return toastError("Email does not match with current user email")
       }
-  
-      setNotifications(prev => [...prev, {
-        type: "Email Verification",
-        message,
-        isRead: false,
-        _id : notificationId
-      }]);
-      setLoading(false)
-      toastSuccess(data)
     }catch(error){
       setLoading(false);
       toastError(error)
@@ -274,9 +279,9 @@ const Setting = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-};
+  };
 
-const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
+  const isFormValid = formData.gender && formData.about && formData.interests && formData.dateOfBirth;
 
   return (
     <div className={`py-4 mx-auto rounded-xl grid lg:grid-cols-16 gap-6 transition-all duration-300 ${isSidebarOpen ? 'lg:grid-cols-16' : 'lg:grid-cols-12'}`}>
@@ -471,47 +476,6 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                   </form>
                 </div>
 
-              {/* User Device Information Section */}
-              {/* <div className="bg-white p-6 rounded-lg">
-                <h2 className="subTitle">Devices Logged In</h2>
-                <div {...handlers} className="overflow-hidden">
-                  <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${activeDeviceIndex * 100}%)` }}>
-                    {devices.map((device, index) => {
-                      let imageUrl = '';
-
-                      switch (device.deviceType.toLowerCase()) {
-                        case 'mobile':
-                          imageUrl = '/images/mobile.png';  // Path to mobile image
-                          break;
-                        case 'tablet':
-                          imageUrl = '/images/tablet.png';  // Path to tablet image
-                          break;
-                        case 'laptop':
-                        default:
-                          imageUrl = 'public/windows.png';  // Default to laptop image
-                          break;
-                      }
-
-                      return (
-                        <div key={index} className="min-w-full p-4 border rounded-lg">
-                          <div className="grid grid-cols-2 gap-4 items-center">
-                            <div>
-                              <img src={imageUrl} alt={device.deviceType} className="w-42 h-auto object-cover" />
-                            </div>
-                            <div>
-                              <div className='flex py-1'><p className="text-sm">Device Type: </p><p className="text-sm pl-1"> {device.deviceType}</p></div>
-                              <div className='flex py-1'><p className="text-sm">Browser: </p> <p className="text-sm pl-1"> {device.browser}</p></div>
-                              <div className='flex py-1'><p className="text-sm">OS: </p><p className="text-sm pl-1"> {device.os}</p></div>
-                              <div className='flex py-1'><p className="text-sm">Login Time: </p> <p className="text-sm pl-1"> {new Date(device.loggedInAt).toLocaleString()}</p></div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div> */}
-
                 <div className="">
                   <div className='flex flex-col sm:bg-white xs:bg-slate-900 lg:p-8 sm:p-6 rounded-lg space-y-4'>
                     <h4 className="settingsubTitle">Account Management</h4>
@@ -637,7 +601,7 @@ const isFormValid = formData.gender && formData.about && formData.interests && f
                   </div>
                 </form>
               </div>
-              <TwoFactorAuthentication onEmailSubmit={handleEmailSubmit} onCodeSubmit={handleVerificationSubmit}/>
+              <TwoFactorAuthentication onEmailSubmit={() => handleEmailSubmit(currentUser.email)} onCodeSubmit={handleVerificationSubmit}/>
 
             </div>
           </motion.div>
