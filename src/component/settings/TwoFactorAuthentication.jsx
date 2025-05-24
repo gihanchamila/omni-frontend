@@ -130,7 +130,7 @@ const TwoFactorAuthentication = ({
 
           {step === 'verify' && (
             <>
-              <div className="flex flex-col space-y-4 justify-between">
+              <div className="flex flex-col space-y-4 justify-between lg:pb-16">
                 <label htmlFor="verification-code" className="text-gray-700 font-medium">Enter 6-digit Code</label>
                 <input
                   type="text"
