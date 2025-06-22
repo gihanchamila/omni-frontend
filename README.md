@@ -51,10 +51,6 @@ npm run build
 
 The output will be in the `dist` directory, ready for deployment.  
 
-## Contributing  
-
-Contributions are welcome! Please fork the repository and create a pull request with your changes.  
-
 ## License  
 
 This project is licensed under the MIT License.  
